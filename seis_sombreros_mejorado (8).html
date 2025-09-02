@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Seis Sombreros para Pensar — Guía práctica + ejemplo</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --panel:#111827ee;
+      --muted:#94a3b8;
+      --text:#e5e7eb;
+      --acc:#22d3ee;
+      --accent-2:#a78bfa;
+      --ok:#22c55e; --warn:#eab308; --risk:#ef4444; --info:#38bdf8;
+      --radius:16px; --shadow:0 10px 30px rgba(0,0,0,.25);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: radial-gradient(1200px 600px at 10% 0%, #1f2937 0%, #0b1224 40%, #070b16 100%);
+      color:var(--text); line-height:1.55; min-height:100vh;
+    }
+    header{position:sticky; top:0; z-index:5; backdrop-filter:saturate(1.2) blur(6px); background:#0b1020cc; border-bottom:1px solid #1f2a44}
+    .wrap{max-width:1100px; margin:0 auto; padding:22px}
+    h1{font-size:clamp(1.6rem, 1.2rem + 2vw, 2.4rem); margin:6px 0 2px; letter-spacing:.3px}
+    h2{font-size:1.2rem; color:#cbd5e1; margin:8px 0 4px}
+    p{color:#cbd5e1}
+    .grid{display:grid; grid-template-columns: 320px 1fr; gap:24px; align-items:start}
+    @media (max-width: 920px){.grid{grid-template-columns:1fr}}
+
+    .card{background:linear-gradient(180deg, #0c1428 0%, #0b0f1a 100%); border:1px solid #1e293b; border-radius:var(--radius); box-shadow:var(--shadow); transition: box-shadow 0.3s ease}
+    .card:hover{box-shadow:0 20px 40px rgba(0,0,0,.35)}
+    .card .hd{padding:16px 18px; border-bottom:1px solid #1f2a44}
+    .card .bd{padding:16px 18px}
+
+    .pill{display:inline-flex; gap:8px; align-items:center; font-size:.9rem; padding:8px 12px; border:1px solid #223056; border-radius:999px; color:#d1d5db; background:#0b1222}
+
+    .steps{display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:12px}
+    .step{padding:14px; border-radius:14px; border:1px dashed #273552; transition: all 0.2s ease}
+    .step:hover{border-color:#22d3ee; transform: translateY(-2px)}
+    .step b{display:block; margin-bottom:6px}
+
+    .tabs{display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:10px}
+    .tab{position:relative; padding:14px; border-radius:14px; border:1px solid #1f2a44; cursor:pointer; user-select:none; background:linear-gradient(180deg,#0e1630,#0a0f1d); transition: all 0.2s ease}
+    .tab:hover{border-color:#22d3ee; transform: translateY(-1px)}
+    .tab[aria-selected="true"]{outline:2px solid var(--acc); box-shadow:inset 0 0 0 1px #0e7490; transform: translateY(-1px)}
+    .tab small{display:block; color:var(--muted)}
+
+    .hat{display:none; animation: fadeIn 0.3s ease}
+    .hat.active{display:block}
+    .hat h3{margin:6px 0 4px}
+
+    @keyframes fadeIn{from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:translateY(0)}}
+
+    .kicker{font-size:.95rem; color:#a7b5d8}
+    .badge{font-size:.75rem; padding:2px 8px; border-radius:999px; background:#1e293b; border:1px solid #273552; color:#d1d5db; transition: all 0.2s ease}
+
+    .stack{display:grid; gap:12px}
+
+    .hat textarea{width:100%; min-height:120px; border-radius:12px; background:#0a1020; border:1px solid #223056; color:#e5e7eb; padding:12px; resize:vertical; font-family: inherit; transition: border-color 0.2s ease}
+    .hat textarea:focus{outline:none; border-color:var(--acc); box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.1)}
+
+    .example{display:grid; gap:10px}
+    .row{display:grid; grid-template-columns: 170px 1fr; gap:10px; align-items:start}
+    @media (max-width: 700px){.row{grid-template-columns:1fr}}
+
+    .btns{display:flex; flex-wrap:wrap; gap:8px}
+    button{border:none; border-radius:12px; padding:10px 14px; font-weight:600; color:#0a1020; background:var(--acc); cursor:pointer; transition: all 0.2s ease; font-family: inherit}
+    button:hover{transform: translateY(-1px); box-shadow: 0 4px 12px rgba(34, 211, 238, 0.3)}
+    button:active{transform: translateY(0)}
+    button.secondary{background:#0ea5e9; color:#06101f}
+    button.secondary.active{background:var(--acc); color:#0a1020; transform: translateY(-1px)}
+    button.ghost{background:transparent; color:#d1d5db; border:1px dashed #334155}
+    button.ghost:hover{background:#334155; transform: translateY(-1px)}
+
+    .example-btn{font-size:0.85rem; padding:6px 12px}
+    .example-btn.active{box-shadow: 0 2px 8px rgba(34, 211, 238, 0.4)}
+
+    input{width:100%; padding:12px; border-radius:12px; border:1px solid #1f2a44; background:#0b1220; color:var(--text); font-family: inherit; transition: border-color 0.2s ease}
+    input:focus{outline:none; border-color:var(--acc); box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.1)}
+
+    .footer{opacity:.8; font-size:.9rem; margin-top:10px}
+    a{color:var(--acc); text-decoration:none; transition: color 0.2s ease}
+    a:hover{color:#67e8f9}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+
+    /* Progress indicator */
+    .progress-bar{height:4px; background:#1e293b; border-radius:2px; overflow:hidden; margin-bottom:12px}
+    .progress-fill{height:100%; background:linear-gradient(90deg, var(--acc), var(--accent-2)); width:0%; transition: width 0.3s ease; border-radius:2px}
+
+    /* Timer styles */
+    .timer{background:#0a1020; border:1px solid #223056; border-radius:8px; padding:8px 12px; font-family: monospace; color:var(--acc); font-weight:600; min-width:80px; text-align:center}
+    .timer.running{background:#22c55e; color:#0a1020}
+    .timer.warning{background:#eab308; color:#0a1020}
+
+    /* Notification styles */
+    .notification{position:fixed; top:20px; right:20px; background:var(--ok); color:#0a1020; padding:12px 16px; border-radius:8px; font-weight:600; transform:translateX(400px); transition: transform 0.3s ease; z-index:10}
+    .notification.show{transform:translateX(0)}
+
+    /* Auto-save indicator */
+    .save-status{font-size:.75rem; color:var(--muted); opacity:0; transition: opacity 0.2s ease}
+    .save-status.saving{opacity:1; color:var(--warn)}
+    .save-status.saved{opacity:1; color:var(--ok)}
+
+    /* Accessibility improvements */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important}
+    }
+
+    /* Print styles */
+    @media print {
+      body{background:white; color:black}
+      .card{box-shadow:none; border:1px solid #ccc}
+      button, .timer, .progress-bar, .notification, .save-status{display:none !important}
+      header{position:static; background:white; border-bottom:1px solid #ccc}
+      
+      /* Hide example section in print */
+      .example-section{display:none !important}
+      
+      /* Show print-friendly reto */
+      .print-reto{display:block !important}
+      
+      /* Hide tabs in print */
+      .tabs{display:none !important}
+      
+      /* CRITICAL: Override the default .hat display:none and show ALL hats */
+      .hat, .hat.active, .hat:not(.active) {
+        display:block !important; 
+        page-break-inside:avoid; 
+        margin-bottom:20px !important;
+        animation: none !important;
+      }
+      
+      /* Force show specific hat IDs */
+      article#azul, article#blanco, article#rojo, article#negro, article#amarillo, article#verde {
+        display:block !important;
+        visibility:visible !important;
+        opacity:1 !important;
+      }
+      
+      /* Hide textareas in print and show print content instead */
+      textarea{display:none !important}
+      .print-content{
+        display:block !important; 
+        background:white !important; 
+        border:1px solid #ccc !important; 
+        min-height:60px !important; 
+        padding:12px !important; 
+        color:black !important; 
+        font-size:12px !important;
+        white-space:pre-wrap !important;
+        font-family: Arial, sans-serif !important;
+        line-height:1.4 !important;
+        margin-top:8px !important;
+      }
+      
+      /* Print the reto prominently */
+      .print-reto{
+        font-size:1.1em !important; 
+        font-weight:bold !important; 
+        margin-bottom:20px !important; 
+        padding:10px !important; 
+        border:2px solid #333 !important;
+      }
+      
+      /* Adjust layout for print */
+      .grid{grid-template-columns:1fr !important}
+      .wrap{max-width:100% !important; padding:20px !important}
+      
+      /* Hide sidebar in print */
+      aside{display:none !important}
+      
+      /* Better spacing for print */
+      .hat h3{
+        margin-top:20px !important; 
+        margin-bottom:10px !important;
+        font-size:1.1em !important;
+        page-break-after:avoid !important;
+      }
+      .hat ul, .hat p{margin-bottom:8px !important; display:none !important}
+      
+      /* Ensure proper page structure */
+      main{display:block !important}
+      section.stack{display:block !important}
+      section.card{display:block !important}
+      .stack{display:block !important}
+    }
+  </style>
+</head>
+<body>
+  <div class="notification" id="notification"></div>
+
+  <header>
+    <div class="wrap" style="display:flex; align-items:center; gap:14px; justify-content:space-between">
+      <div>
+        <h1>Los Seis Sombreros para pensar</h1>
+        <div class="kicker">Guía práctica para idear y resolver problemas — con plantilla y ejemplo</div>
+      </div>
+      <div class="btns">
+        <div class="timer" id="timer">00:00</div>
+        <button id="btn-timer" class="secondary" title="Iniciar/pausar temporizador (5 min por sombrero)">⏱️ Timer</button>
+        <button id="btn-imprimir" title="Imprimir o guardar como PDF">📄 Imprimir</button>
+        <button class="ghost" id="btn-limpiar" title="Vaciar la plantilla">🗑️ Limpiar</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap grid">
+    <aside class="card">
+      <div class="hd"><b>Guion rápido (facilitación)</b></div>
+      <div class="bd stack">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress"></div>
+        </div>
+        <div class="steps">
+          <div class="step"><b>1. Define el reto</b><br><span class="mono">Qué + Para quién + Dónde</span> en una frase de 1–2 líneas.</div>
+          <div class="step"><b>2. Cronometra</b><br>5–8 min por sombrero. Silencio activo, luego compartir.</div>
+          <div class="step"><b>3. Regla de oro</b><br>Un sombrero cada vez. Sin mezclar ni discutir.</div>
+          <div class="step"><b>4. Cierra</b><br>Elige 3 ideas, define primer experimento (1 semana).</div>
+        </div>
+        <div>
+          <h2>Orden sugerido</h2>
+          <p class="mono">Azul → Blanco → Rojo → Negro → Amarillo → Verde → Azul</p>
+        </div>
+        <div>
+          <h2>Materiales</h2>
+          <ul>
+            <li>Temporizador y pizarra (o este HTML).</li>
+            <li>Post-its / tarjetas o el área de notas de cada sombrero.</li>
+            <li>Criterios de éxito visibles.</li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+
+    <section class="stack">
+      <section class="card">
+        <div class="hd" style="display:flex; align-items:center; justify-content:space-between">
+          <div>
+            <b>Plantilla interactiva</b>
+            <div class="kicker">Usa las pestañas de cada sombrero y completa las notas</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px">
+            <span class="save-status" id="save-status">Guardado</span>
+            <span class="badge" id="reto-badge">Reto: <span id="reto-out">(escribe abajo)</span></span>
+          </div>
+        </div>
+        <div class="bd stack">
+          <label for="reto" class="mono">Formula tu reto</label>
+          <input id="reto" placeholder="Ej.: Reducir el ruido de sillas en el aula mediante soluciones tecnológicas duraderas y fáciles de implementar" autocomplete="off">
+
+          <div class="tabs" role="tablist" aria-label="Sombreros">
+            <div class="tab" role="tab" tabindex="0" data-target="#azul" aria-selected="true">🔵 Sombrero Azul <small>Proceso & foco</small></div>
+            <div class="tab" role="tab" tabindex="0" data-target="#blanco">⚪ Sombrero Blanco <small>Hechos & datos</small></div>
+            <div class="tab" role="tab" tabindex="0" data-target="#rojo">🔴 Sombrero Rojo <small>Emociones</small></div>
+            <div class="tab" role="tab" tabindex="0" data-target="#negro">⚫ Sombrero Negro <small>Riesgos</small></div>
+            <div class="tab" role="tab" tabindex="0" data-target="#amarillo">🟡 Sombrero Amarillo <small>Beneficios</small></div>
+            <div class="tab" role="tab" tabindex="0" data-target="#verde">🟢 Sombrero Verde <small>Ideas</small></div>
+          </div>
+
+          <div class="stack">
+            <!-- Print-friendly reto display -->
+            <div class="print-reto" id="print-reto" style="display:none">
+              <strong>Reto definido:</strong> <span id="print-reto-text">No definido</span>
+            </div>
+
+            <article id="azul" class="hat active" aria-labelledby="Sombrero Azul">
+              <h3>🔵 Azul — Proceso y objetivos</h3>
+              <p>Define el alcance, criterios de éxito y orden del taller.</p>
+              <ul>
+                <li><b>Alcance:</b> ¿Qué parte del problema atacamos primero?</li>
+                <li><b>Criterios:</b> ¿Cómo sabremos que la solución funciona?</li>
+                <li><b>Recursos y límites:</b> tiempo, presupuesto, permisos, personas.</li>
+              </ul>
+              <textarea data-hat="azul" placeholder="Ej.: En 4 semanas queremos reducir un 20% el desperdicio medido en kg/día con presupuesto < 300€."></textarea>
+              <div class="print-content" data-for="azul" style="display: none;"></div>
+            </article>
+
+            <article id="blanco" class="hat" aria-labelledby="Sombrero Blanco">
+              <h3>⚪ Blanco — Hechos y datos</h3>
+              <p>Reúne datos objetivos. Si faltan, registra hipótesis y cómo medirlas.</p>
+              <ul>
+                <li>¿Cuánto se tira? ¿En qué platos y en qué días?</li>
+                <li>¿Qué opinan cocina, alumnado, monitores, familias?</li>
+                <li>Normativa, proveedores, logística.</li>
+              </ul>
+              <textarea data-hat="blanco" placeholder="Ej.: 30 sillas/aula, 15-20 movimientos/día. Ruido actual: 65-75dB. Suelo: baldosa cerámica. Sillas: 3 años, buen estado. Presupuesto: 200€."></textarea>
+              <div class="print-content" data-for="blanco" style="display: none;"></div>
+            </article>
+
+            <article id="rojo" class="hat" aria-labelledby="Sombrero Rojo">
+              <h3>🔴 Rojo — Emociones e intuiciones</h3>
+              <p>Sin justificar. ¿Qué sientes tú o perciben los usuarios?</p>
+              <textarea data-hat="rojo" placeholder="Ej.: Profesorado: estrés e interrupción constante. Alumnado: distracción y pérdida de concentración. Sensación de aula 'incómoda'."></textarea>
+              <div class="print-content" data-for="rojo" style="display: none;"></div>
+            </article>
+
+            <article id="negro" class="hat" aria-labelledby="Sombrero Negro">
+              <h3>⚫ Negro — Riesgos y dificultades</h3>
+              <p>Lista objeciones y riesgos reales. Útil para diseñar mitigaciones.</p>
+              <textarea data-hat="negro" placeholder="Ej.: Protectores pueden despegarse o romperse. Mantenimiento constante. Resistencia del alumnado. Tiempo de instalación."></textarea>
+              <div class="print-content" data-for="negro" style="display: none;"></div>
+            </article>
+
+            <article id="amarillo" class="hat" aria-labelledby="Sombrero Amarillo">
+              <h3>🟡 Amarillo — Beneficios y oportunidades</h3>
+              <p>Busca valor: económico, social, ambiental, educativo.</p>
+              <textarea data-hat="amarillo" placeholder="Ej.: Mejor concentración = mejor rendimiento. Menos estrés docente. Aula más profesional y confortable. Reconocimiento como 'aula innovadora'."></textarea>
+              <div class="print-content" data-for="amarillo" style="display: none;"></div>
+            </article>
+
+            <article id="verde" class="hat" aria-labelledby="Sombrero Verde">
+              <h3>🟢 Verde — Ideas y alternativas</h3>
+              <p>Diverge sin juzgar. Cantidad sobre calidad. Luego agrupa.</p>
+              <textarea data-hat="verde" placeholder="Ej.: Protectores de fieltro 3M, almohadillas de silicona antideslizante, tacos de goma antivibración, sistema de rieles en suelo, app para monitorizar dB, alfombras modulares con sensores, sillas con ruedas bloqueables electromagnéticamente."></textarea>
+              <div class="print-content" data-for="verde" style="display: none;"></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="hd"><b>Ejemplo completo (resumen) — Reducir el desperdicio de comida en el comedor escolar</b></div>
+        <div class="bd example">
+          <div class="row"><div><b>Reto</b></div><div>Reducir un 20% el desperdicio alimentario del comedor en 4 semanas, sin aumentar costes.</div></div>
+          <div class="row"><div><b>Blanco</b></div><div>Medición base: 12 kg/día (media semanal). Platos con más residuo: guarnición (60%). Días críticos: viernes. Encuesta rápida a 120 alumnos.</div></div>
+          <div class="row"><div><b>Rojo</b></div><div>Alumnado: raciones grandes y poca opción de elegir. Cocina: presión por cumplir tiempos. Familias: quieren variedad pero con nutrición asegurada.</div></div>
+          <div class="row"><div><b>Negro</b></div><div>Limitaciones de normativa sanitaria, tiempo de servicio y contratos con proveedor.</div></div>
+          <div class="row"><div><b>Amarillo</b></div><div>Ahorro previsto 10–15% en compra, aprendizaje ambiental (ODS 12), mejor satisfacción.</div></div>
+          <div class="row"><div><b>Verde</b></div><div>
+            <ul>
+              <li>Raciones S/M/L y "prueba de cucharada" antes de servir.</li>
+              <li>Panel de popularidad por colores y co-diseño mensual del menú.</li>
+              <li>Separación y pesado diario con cartel visible (feedback inmediato).</li>
+              <li>Compostaje escolar para huerto + informe mensual a familias.</li>
+            </ul>
+          </div></div>
+          <div class="row"><div><b>Azul (cierre)</b></div><div>
+            <ul>
+              <li><b>Experimento 1 (1 semana):</b> raciones S/M/L + pesado diario. Responsable: Jefe/a de comedor. Métrica: kg/día.</li>
+              <li><b>Criterio de éxito:</b> ≥ 15% de reducción durante 5 días seguidos.</li>
+              <li><b>Próximo paso:</b> Si funciona, extender a todo el mes y evaluar costes.</li>
+            </ul>
+          </div></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="hd"><b>Checklist de cierre</b></div>
+        <div class="bd">
+          <ul>
+            <li>¿Elegimos <b>tres</b> ideas priorizadas? ¿Cuál es el primer experimento?</li>
+            <li>¿Definimos <b>métricas</b> y quién las medirá?</li>
+            <li>¿Tenemos claro el <b>calendario</b> (1–4 semanas) y responsables?</li>
+            <li>¿Qué <b>riesgos</b> mitigaremos desde el inicio?</li>
+            <li>¿Cómo <b>comunicaremos</b> avances y resultados?</li>
+          </ul>
+        </div>
+      </section>
+
+      <div class="footer">Basado en la técnica de los <i>Seis Sombreros para Pensar</i> de Edward de Bono. Esta página es imprimible y editable localmente (no guarda datos en servidor).</div>
+    </section>
+  </main>
+
+  <script>
+    // Example switching functionality
+    const exampleBtns = document.querySelectorAll('.example-btn');
+    const exampleTitle = document.getElementById('example-title');
+    const examples = {
+      1: { title: 'Ejemplo 1 — Reducir el ruido de sillas en el aula', element: '#example-1' },
+      2: { title: 'Ejemplo 2 — Reducir desperdicio alimentario en comedor', element: '#example-2' }
+    };
+
+    exampleBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const exampleNum = btn.dataset.example;
+        
+        // Update button states
+        exampleBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        // Update title
+        exampleTitle.textContent = examples[exampleNum].title;
+        
+        // Show/hide examples
+        Object.values(examples).forEach(example => {
+          document.querySelector(example.element).style.display = 'none';
+        });
+        document.querySelector(examples[exampleNum].element).style.display = 'block';
+        
+        showNotification(`📋 Cambiado a ${examples[exampleNum].title.split(' — ')[0]}`);
+      });
+    });
+
+    // Enhanced tab behavior with keyboard navigation
+    const tabs = document.querySelectorAll('.tab');
+    const hats = document.querySelectorAll('.hat');
+    
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => selectTab(tab));
+      tab.addEventListener('keydown', handleTabKeydown);
+    });
+
+    function selectTab(tab) {
+      tabs.forEach(t => t.setAttribute('aria-selected', 'false'));
+      tab.setAttribute('aria-selected', 'true');
+      hats.forEach(h => h.classList.remove('active'));
+      
+      const target = document.querySelector(tab.dataset.target);
+      if (target) {
+        target.classList.add('active');
+        updateProgress();
+      }
+    }
+
+    function handleTabKeydown(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        selectTab(e.target);
+      } else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        const currentIndex = Array.from(tabs).indexOf(e.target);
+        const nextIndex = e.key === 'ArrowRight' 
+          ? (currentIndex + 1) % tabs.length 
+          : (currentIndex - 1 + tabs.length) % tabs.length;
+        tabs[nextIndex].focus();
+        selectTab(tabs[nextIndex]);
+      }
+    }
+
+    // Progress tracking
+    function updateProgress() {
+      const textareas = document.querySelectorAll('textarea');
+      const filled = Array.from(textareas).filter(t => t.value.trim().length > 10).length;
+      const percentage = (filled / textareas.length) * 100;
+      document.getElementById('progress').style.width = percentage + '%';
+    }
+
+    // Timer functionality
+    let timerInterval;
+    let seconds = 0;
+    let isRunning = false;
+    const timerDisplay = document.getElementById('timer');
+    const timerButton = document.getElementById('btn-timer');
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      timerDisplay.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+      
+      // Visual feedback
+      if (seconds >= 300) { // 5 minutes
+        timerDisplay.className = 'timer warning';
+      } else if (isRunning) {
+        timerDisplay.className = 'timer running';
+      } else {
+        timerDisplay.className = 'timer';
+      }
+    }
+
+    function startStopTimer() {
+      if (isRunning) {
+        clearInterval(timerInterval);
+        timerButton.textContent = '▶️ Continuar';
+      } else {
+        timerInterval = setInterval(() => {
+          seconds++;
+          updateTimerDisplay();
+          
+          // Notification at 5 minutes
+          if (seconds === 300) {
+            showNotification('⏰ 5 minutos completados para este sombrero');
+          }
+        }, 1000);
+        timerButton.textContent = '⏸️ Pausar';
+      }
+      isRunning = !isRunning;
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      seconds = 0;
+      isRunning = false;
+      timerButton.textContent = '⏱️ Timer';
+      updateTimerDisplay();
+    }
+
+    timerButton.addEventListener('click', startStopTimer);
+    timerDisplay.addEventListener('dblclick', resetTimer);
+
+    // Auto-save functionality
+    const retoInput = document.getElementById('reto');
+    const retoOut = document.getElementById('reto-out');
+    const saveStatus = document.getElementById('save-status');
+    const textareas = document.querySelectorAll('textarea');
+
+    let saveTimeout;
+
+    function showSaveStatus(status) {
+      saveStatus.className = `save-status ${status}`;
+      if (status === 'saved') {
+        setTimeout(() => {
+          saveStatus.className = 'save-status';
+        }, 2000);
+      }
+    }
+
+    function saveData() {
+      showSaveStatus('saving');
+      
+      const data = {
+        reto: retoInput.value,
+        hats: {}
+      };
+      
+      textareas.forEach(textarea => {
+        if (textarea.dataset.hat) {
+          data.hats[textarea.dataset.hat] = textarea.value;
+        }
+      });
+      
+      try {
+        // Simulate save delay
+        setTimeout(() => {
+          showSaveStatus('saved');
+          updateProgress();
+        }, 300);
+      } catch (error) {
+        console.warn('Auto-save failed:', error);
+      }
+    }
+
+    function debouncedSave() {
+      clearTimeout(saveTimeout);
+      saveTimeout = setTimeout(saveData, 1000);
+    }
+
+    // Bind events
+    retoInput.addEventListener('input', () => {
+      const retoText = retoInput.value.trim() || '(escribe abajo)';
+      retoOut.textContent = retoText;
+      // Update print version
+      document.getElementById('print-reto-text').textContent = retoInput.value.trim() || 'No definido';
+      debouncedSave();
+    });
+
+    textareas.forEach(textarea => {
+      textarea.addEventListener('input', () => {
+        // Update the corresponding print content
+        const hatName = textarea.dataset.hat;
+        if (hatName) {
+          const printContent = document.querySelector(`.print-content[data-for="${hatName}"]`);
+          if (printContent) {
+            printContent.textContent = textarea.value || '(Sin contenido escrito)';
+          }
+        }
+        debouncedSave();
+      });
+      
+      // Initialize print content immediately
+      const hatName = textarea.dataset.hat;
+      if (hatName) {
+        const printContent = document.querySelector(`.print-content[data-for="${hatName}"]`);
+        if (printContent) {
+          printContent.textContent = textarea.value || '(Sin contenido escrito)';
+        }
+      }
+    });
+
+    // Notification system
+    function showNotification(message, type = 'success') {
+      const notification = document.getElementById('notification');
+      notification.textContent = message;
+      notification.className = `notification show`;
+      
+      setTimeout(() => {
+        notification.className = 'notification';
+      }, 3000);
+    }
+
+    // Enhanced print and clear
+    document.getElementById('btn-imprimir').addEventListener('click', () => {
+      // Ensure all print content is up to date before printing
+      textareas.forEach(textarea => {
+        const hatName = textarea.dataset.hat;
+        if (hatName) {
+          const printContent = document.querySelector(`.print-content[data-for="${hatName}"]`);
+          if (printContent) {
+            printContent.textContent = textarea.value || '(Sin contenido escrito)';
+          }
+        }
+      });
+      
+      window.print();
+      // Small delay to show notification after print dialog
+      setTimeout(() => {
+        showNotification('📄 Diálogo de impresión abierto');
+      }, 100);
+    });
+
+    document.getElementById('btn-limpiar').addEventListener('click', () => {
+      if (confirm('¿Seguro que quieres limpiar todos los datos? Esta acción no se puede deshacer.')) {
+        textareas.forEach(t => {
+          t.value = '';
+          // Clear print content too
+          const hatName = t.dataset.hat;
+          const printContent = document.querySelector(`.print-content[data-for="${hatName}"]`);
+          if (printContent) {
+            printContent.textContent = '(Sin contenido escrito)';
+          }
+        });
+        retoInput.value = '';
+        retoOut.textContent = '(escribe abajo)';
+        document.getElementById('print-reto-text').textContent = 'No definido';
+        resetTimer();
+        updateProgress();
+        showNotification('🗑️ Plantilla limpiada correctamente');
+      }
+    });
+
+    // Initialize
+    updateProgress();
+    updateTimerDisplay();
+    
+    // Initialize print content for all textareas on page load
+    setTimeout(() => {
+      textareas.forEach(textarea => {
+        const hatName = textarea.dataset.hat;
+        if (hatName) {
+          const printContent = document.querySelector(`.print-content[data-for="${hatName}"]`);
+          if (printContent) {
+            printContent.textContent = textarea.value || '(Sin contenido escrito)';
+          }
+        }
+      });
+    }, 100);
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        switch (e.key) {
+          case 'p':
+            e.preventDefault();
+            document.getElementById('btn-imprimir').click();
+            break;
+          case 's':
+            e.preventDefault();
+            showNotification('💾 Datos guardados automáticamente');
+            break;
+        }
+      }
+      
+      if (e.altKey && e.key >= '1' && e.key <= '6') {
+        e.preventDefault();
+        const tabIndex = parseInt(e.key) - 1;
+        if (tabs[tabIndex]) {
+          selectTab(tabs[tabIndex]);
+        }
+      }
+    });
+
+    // Welcome message
+    setTimeout(() => {
+      showNotification('✨ ¡Bienvenido! Usa Alt+1-6 para navegar entre sombreros y Ctrl+P para imprimir');
+    }, 1000);
+  </script>
+</body>
+</html>
