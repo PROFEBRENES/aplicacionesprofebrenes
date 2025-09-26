@@ -211,8 +211,16 @@
     }
 
     .zoom-controls {
-      text-align: center;
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 5px;
       margin-bottom: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      text-align: center;
     }
 
     .zoom-controls button {
@@ -580,10 +588,9 @@
 
   <div class="controls">
     <button onclick="resetGame()">🔄 Restablecer</button>
-    <button onclick="showAllAnswers()">👁️ Mostrar Respuestas</button>
     <button onclick="studyMode()">📚 Modo Estudio</button>
     <button onclick="shuffleCards()">🎲 Mezclar</button>
-    <button onclick="showSolution()">💡 Ver Solución</button>
+    <button onclick="toggleKeywordSchema()">🗝️ Esquema Clave</button>
   </div>
 
   <div class="game-container">
@@ -811,9 +818,43 @@
       {id: 'D4', title: 'D.4', content: 'Comunidades abiertas, voluntariado tecnológico y proyectos de servicio a la comunidad.'}
     ];
 
+    const keywordSchema = {
+      'A': 'Proceso resolución problemas',
+      'A1': 'Estrategias y técnicas', 
+      'A11': 'Gestión proyectos técnicas iterativas',
+      'A12': 'Estudio necesidades centro Andalucía',
+      'A13': 'Técnicas de ideación',
+      'A14': 'Emprendimiento perseverancia creatividad',
+      'A2': 'Productos y materiales',
+      'A21': 'Ciclo vida producto fases',
+      'A22': 'Selección materiales propiedades requisitos',
+      'A3': 'Fabricación',
+      'A31': 'Herramientas diseño asistido computador',
+      'A32': 'Fabricación manual y mecánica',
+      'A33': 'Fabricación digital impresión 3D',
+      'A4': 'Difusión',
+      'A41': 'Presentación difusión comunicación efectiva',
+      'B': 'Operadores tecnológicos',
+      'B1': 'Electrónica analógica componentes básicos',
+      'B2': 'Electrónica digital básica',
+      'B3': 'Neumática básica circuitos',
+      'B4': 'Elementos mecánicos electrónicos robótica',
+      'C': 'Pensamiento computacional automatización robótica',
+      'C1': 'Componentes sistemas control programado',
+      'C2': 'Ordenador dispositivos móviles programación',
+      'C3': 'Telecomunicaciones sistemas control digital',
+      'C4': 'Robótica diseño construcción control',
+      'D': 'Tecnología sostenible',
+      'D1': 'Sostenibilidad accesibilidad selección materiales',
+      'D2': 'Arquitectura bioclimática sostenible',
+      'D3': 'Transporte y sostenibilidad',
+      'D4': 'Comunidades abiertas voluntariado tecnológico'
+    };
+
     let correctCount = 0;
     let selectedCard = null;
     let currentZoom = 1.0;
+    let showingKeywords = false;
 
     function createCard(item) {
       const card = document.createElement('div');
@@ -895,6 +936,36 @@
       container.style.transform = `scale(${zoomLevel})`;
     }
 
+    // Nueva función para mostrar esquema con palabras clave
+    function toggleKeywordSchema() {
+      showingKeywords = !showingKeywords;
+      
+      document.querySelectorAll('.dropzone').forEach(zone => {
+        const zoneId = zone.dataset.id;
+        if (showingKeywords) {
+          const keyword = keywordSchema[zoneId] || zoneId;
+          zone.innerHTML = `<div class="placed-card" style="background: linear-gradient(135deg, #9b59b6, #8e44ad); font-size: 11px;">${keyword}</div>`;
+        } else {
+          zone.innerHTML = '';
+        }
+      });
+
+      // Cambiar texto del botón
+      const button = event.target;
+      button.textContent = showingKeywords ? '🔄 Ocultar Claves' : '🗝️ Esquema Clave';
+      
+      // Ocultar/mostrar tarjetas
+      const cardsGrid = document.getElementById('cardsGrid');
+      cardsGrid.style.display = showingKeywords ? 'none' : 'grid';
+      
+      if (showingKeywords) {
+        document.getElementById('correctCount').textContent = '30';
+        document.getElementById('progressBar').style.width = '100%';
+      } else {
+        resetGame();
+      }
+    }
+
     function setupDropzones() {
       const dropzones = document.querySelectorAll('.dropzone');
       
@@ -935,18 +1006,22 @@
 
     function resetGame() {
       correctCount = 0;
+      showingKeywords = false;
       document.getElementById('correctCount').textContent = 0;
       document.getElementById('progressBar').style.width = '0%';
       document.querySelectorAll('.dropzone').forEach(z => z.innerHTML = '');
       document.getElementById('searchBox').value = '';
-      renderCards();
-    }
-
-    function showAllAnswers() {
-      document.querySelectorAll('.dropzone').forEach(zone => {
-        const item = items.find(i => i.id === zone.dataset.id);
-        if (item) zone.innerHTML = `<div class="placed-card">${item.content}</div>`;
+      document.getElementById('cardsGrid').style.display = 'grid';
+      
+      // Restaurar texto del botón
+      const buttons = document.querySelectorAll('button');
+      buttons.forEach(btn => {
+        if (btn.textContent.includes('Ocultar Claves')) {
+          btn.textContent = '🗝️ Esquema Clave';
+        }
       });
+      
+      renderCards();
     }
 
     function studyMode() {
@@ -958,11 +1033,9 @@
     }
 
     function shuffleCards() {
-      renderCards();
-    }
-
-    function showSolution() {
-      showAllAnswers();
+      if (!showingKeywords) {
+        renderCards();
+      }
     }
 
     // Inicializar
