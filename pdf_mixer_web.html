@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mezclador de PDFs Online</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .upload-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .upload-box {
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            padding: 40px 20px;
+            text-align: center;
+            background: #f8f9ff;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-box:hover {
+            border-color: #764ba2;
+            background: #f0f2ff;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+        }
+
+        .upload-box input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .file-name {
+            font-weight: bold;
+            color: #333;
+            margin-top: 10px;
+            padding: 10px;
+            background: #e8f2ff;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .mode-selector {
+            margin-bottom: 40px;
+        }
+
+        .mode-selector h3 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.5rem;
+        }
+
+        .mode-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .mode-option {
+            position: relative;
+        }
+
+        .mode-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .mode-option label {
+            display: block;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            background: #fafafa;
+        }
+
+        .mode-option input[type="radio"]:checked + label {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .mode-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .mode-description {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .process-button {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .process-button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .process-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .progress {
+            margin: 30px 0;
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .download-link {
+            display: inline-block;
+            margin: 20px 0;
+            padding: 15px 30px;
+            background: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .download-link:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .upload-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .mode-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔄 Mezclador de PDFs</h1>
+            <p>Combina y alterna páginas de dos PDFs de forma fácil y rápida</p>
+        </div>
+
+        <div class="card">
+            <div class="upload-section">
+                <div class="upload-box" onclick="document.getElementById('pdf1').click()">
+                    <input type="file" id="pdf1" accept=".pdf" onchange="handleFileSelect(1, this)">
+                    <div class="upload-icon">📄</div>
+                    <div class="upload-text">
+                        <strong>Primer PDF</strong><br>
+                        Haz clic para seleccionar
+                    </div>
+                    <div class="file-name" id="file1-name"></div>
+                </div>
+
+                <div class="upload-box" onclick="document.getElementById('pdf2').click()">
+                    <input type="file" id="pdf2" accept=".pdf" onchange="handleFileSelect(2, this)">
+                    <div class="upload-icon">📄</div>
+                    <div class="upload-text">
+                        <strong>Segundo PDF</strong><br>
+                        Haz clic para seleccionar
+                    </div>
+                    <div class="file-name" id="file2-name"></div>
+                </div>
+            </div>
+
+            <div class="mode-selector">
+                <h3>🎯 Modo de combinación:</h3>
+                <div class="mode-options">
+                    <div class="mode-option">
+                        <input type="radio" id="alternar" name="mode" value="alternar" checked>
+                        <label for="alternar">
+                            <div class="mode-title">Alternar</div>
+                            <div class="mode-description">PDF1-p1, PDF2-p1, PDF1-p2, PDF2-p2...</div>
+                        </label>
+                    </div>
+                    
+                    <div class="mode-option">
+                        <input type="radio" id="impares_pares" name="mode" value="impares_pares">
+                        <label for="impares_pares">
+                            <div class="mode-title">Impares + Pares</div>
+                            <div class="mode-description">Impares de PDF1 + Pares de PDF2</div>
+                        </label>
+                    </div>
+                    
+                    <div class="mode-option">
+                        <input type="radio" id="pares_impares" name="mode" value="pares_impares">
+                        <label for="pares_impares">
+                            <div class="mode-title">Pares + Impares</div>
+                            <div class="mode-description">Pares de PDF1 + Impares de PDF2</div>
+                        </label>
+                    </div>
+                    
+                    <div class="mode-option">
+                        <input type="radio" id="intercalar" name="mode" value="intercalar">
+                        <label for="intercalar">
+                            <div class="mode-title">Intercalar I+P</div>
+                            <div class="mode-description">Intercala impares de PDF1 con pares de PDF2</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <button class="process-button" onclick="processPDFs()" id="processBtn" disabled>
+                🚀 Combinar PDFs
+            </button>
+
+            <div class="progress" id="progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <div class="status" id="status"></div>
+        </div>
+    </div>
+
+    <script>
+        let pdf1File = null;
+        let pdf2File = null;
+
+        function handleFileSelect(pdfNumber, input) {
+            const file = input.files[0];
+            if (file && file.type === 'application/pdf') {
+                if (pdfNumber === 1) {
+                    pdf1File = file;
+                    document.getElementById('file1-name').textContent = file.name;
+                    document.getElementById('file1-name').style.display = 'block';
+                } else {
+                    pdf2File = file;
+                    document.getElementById('file2-name').textContent = file.name;
+                    document.getElementById('file2-name').style.display = 'block';
+                }
+                
+                checkFilesReady();
+            } else {
+                showStatus('Por favor selecciona un archivo PDF válido', 'error');
+            }
+        }
+
+        function checkFilesReady() {
+            const processBtn = document.getElementById('processBtn');
+            if (pdf1File && pdf2File) {
+                processBtn.disabled = false;
+                processBtn.textContent = '🚀 Combinar PDFs';
+            }
+        }
+
+        function showStatus(message, type = 'success') {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+        }
+
+        function updateProgress(percentage) {
+            const progressFill = document.getElementById('progressFill');
+            const progress = document.getElementById('progress');
+            
+            progress.style.display = 'block';
+            progressFill.style.width = percentage + '%';
+        }
+
+        async function processPDFs() {
+            if (!pdf1File || !pdf2File) {
+                showStatus('Por favor selecciona ambos archivos PDF', 'error');
+                return;
+            }
+
+            const processBtn = document.getElementById('processBtn');
+            processBtn.disabled = true;
+            processBtn.textContent = '⏳ Procesando...';
+
+            try {
+                updateProgress(10);
+                
+                // Cargar PDFs
+                const pdf1ArrayBuffer = await pdf1File.arrayBuffer();
+                const pdf2ArrayBuffer = await pdf2File.arrayBuffer();
+                
+                updateProgress(30);
+
+                // Crear PDFs usando pdf-lib
+                const pdf1 = await PDFLib.PDFDocument.load(pdf1ArrayBuffer);
+                const pdf2 = await PDFLib.PDFDocument.load(pdf2ArrayBuffer);
+                const mergedPdf = await PDFLib.PDFDocument.create();
+
+                updateProgress(50);
+
+                // Obtener páginas
+                const pdf1Pages = pdf1.getPageCount();
+                const pdf2Pages = pdf2.getPageCount();
+                
+                showStatus(`PDF 1: ${pdf1Pages} páginas | PDF 2: ${pdf2Pages} páginas`);
+
+                // Obtener modo seleccionado
+                const mode = document.querySelector('input[name="mode"]:checked').value;
+
+                updateProgress(60);
+
+                // Procesar según el modo
+                switch(mode) {
+                    case 'alternar':
+                        await modeAlternar(pdf1, pdf2, mergedPdf, pdf1Pages, pdf2Pages);
+                        break;
+                    case 'impares_pares':
+                        await modeImparesPares(pdf1, pdf2, mergedPdf, pdf1Pages, pdf2Pages);
+                        break;
+                    case 'pares_impares':
+                        await modeParesImpares(pdf1, pdf2, mergedPdf, pdf1Pages, pdf2Pages);
+                        break;
+                    case 'intercalar':
+                        await modeIntercalar(pdf1, pdf2, mergedPdf, pdf1Pages, pdf2Pages);
+                        break;
+                }
+
+                updateProgress(90);
+
+                // Generar PDF final
+                const pdfBytes = await mergedPdf.save();
+                
+                // Crear enlace de descarga
+                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+                
+                updateProgress(100);
+
+                // Mostrar enlace de descarga
+                const downloadLink = document.createElement('a');
+                downloadLink.href = url;
+                downloadLink.download = 'pdf_combinado.pdf';
+                downloadLink.className = 'download-link';
+                downloadLink.textContent = '⬇️ Descargar PDF Combinado';
+                
+                const status = document.getElementById('status');
+                status.innerHTML = '';
+                status.appendChild(downloadLink);
+                status.className = 'status success';
+                status.style.display = 'block';
+
+                // Auto-descarga
+                downloadLink.click();
+
+            } catch (error) {
+                console.error('Error:', error);
+                showStatus('Error al procesar los PDFs: ' + error.message, 'error');
+            } finally {
+                processBtn.disabled = false;
+                processBtn.textContent = '🚀 Combinar PDFs';
+                setTimeout(() => {
+                    document.getElementById('progress').style.display = 'none';
+                }, 2000);
+            }
+        }
+
+        async function modeAlternar(pdf1, pdf2, mergedPdf, pdf1Pages, pdf2Pages) {
+            const maxPages = Math.max(pdf1Pages, pdf2Pages);
+            
+            for (let i = 0; i < maxPages; i++) {
+                if (i < pdf1Pages) {
+                    const [page] = await mergedPdf.copyPages(pdf1, [i]);
+                    mergedPdf.addPage(page);
+                }
+                if (i < pdf2Pages) {
+                    const [page] = await mergedPdf.copyPages(pdf2, [i]);
+                    mergedPdf.addPage(page);
+                }
+            }
+        }
+
+        async function modeImparesPares(pdf1, pdf2, mergedPdf, pdf1Pages, pdf2Pages) {
+            // Páginas impares de PDF1 (índices 0, 2, 4...)
+            for (let i = 0; i < pdf1Pages; i += 2) {
+                const [page] = await mergedPdf.copyPages(pdf1, [i]);
+                mergedPdf.addPage(page);
+            }
+            
+            // Páginas pares de PDF2 (índices 1, 3, 5...)
+            for (let i = 1; i < pdf2Pages; i += 2) {
+                const [page] = await mergedPdf.copyPages(pdf2, [i]);
+                mergedPdf.addPage(page);
+            }
+        }
+
+        async function modeParesImpares(pdf1, pdf2, mergedPdf, pdf1Pages, pdf2Pages) {
+            // Páginas pares de PDF1 (índices 1, 3, 5...)
+            for (let i = 1; i < pdf1Pages; i += 2) {
+                const [page] = await mergedPdf.copyPages(pdf1, [i]);
+                mergedPdf.addPage(page);
+            }
+            
+            // Páginas impares de PDF2 (índices 0, 2, 4...)
+            for (let i = 0; i < pdf2Pages; i += 2) {
+                const [page] = await mergedPdf.copyPages(pdf2, [i]);
+                mergedPdf.addPage(page);
+            }
+        }
+
+        async function modeIntercalar(pdf1, pdf2, mergedPdf, pdf1Pages, pdf2Pages) {
+            const maxImpares = Math.ceil(pdf1Pages / 2);
+            const maxPares = Math.floor(pdf2Pages / 2);
+            const maxIntercalar = Math.min(maxImpares, maxPares);
+            
+            for (let i = 0; i < maxIntercalar; i++) {
+                // Página impar de PDF1 (índices 0, 2, 4...)
+                const imparIndex = i * 2;
+                if (imparIndex < pdf1Pages) {
+                    const [page] = await mergedPdf.copyPages(pdf1, [imparIndex]);
+                    mergedPdf.addPage(page);
+                }
+                
+                // Página par de PDF2 (índices 1, 3, 5...)
+                const parIndex = i * 2 + 1;
+                if (parIndex < pdf2Pages) {
+                    const [page] = await mergedPdf.copyPages(pdf2, [parIndex]);
+                    mergedPdf.addPage(page);
+                }
+            }
+            
+            // Agregar páginas restantes
+            for (let i = maxIntercalar * 2; i < pdf1Pages; i += 2) {
+                const [page] = await mergedPdf.copyPages(pdf1, [i]);
+                mergedPdf.addPage(page);
+            }
+            
+            for (let i = maxIntercalar * 2 + 1; i < pdf2Pages; i += 2) {
+                const [page] = await mergedPdf.copyPages(pdf2, [i]);
+                mergedPdf.addPage(page);
+            }
+        }
+    </script>
+</body>
+</html>
