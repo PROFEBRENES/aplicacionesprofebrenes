@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Contador de letras</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#06b6d4;--muted:#94a3b8;--glass:rgba(255,255,255,0.03)}
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;display:flex;align-items:flex-start;justify-content:center;margin:0;background:linear-gradient(180deg,#071025 0%, #071833 100%);color:#e6eef6;padding:24px 24px 0 24px}
+    .container{width:100%;max-width:980px}
+    header{display:flex;align-items:center;gap:14px;margin-bottom:18px;margin-top:20px}
+    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#7c3aed);display:flex;align-items:center;justify-content:center;font-weight:700}
+    .card{background:var(--card);border-radius:14px;padding:18px;box-shadow:0 6px 30px rgba(2,6,23,0.6);}
+    main{display:grid;grid-template-columns:1fr 320px;gap:16px}
+    textarea{width:100%;min-height:220px;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:var(--glass);color:inherit;font-size:15px;resize:vertical}
+    .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    label.switch{display:flex;align-items:center;gap:8px;font-size:14px}
+    input[type="checkbox"]{width:16px;height:16px}
+    button{background:var(--accent);border:0;padding:10px 12px;border-radius:10px;color:#042024;font-weight:600;cursor:pointer}
+    button.secondary{background:transparent;color:var(--accent);border:1px solid rgba(255,255,255,0.06)}
+    .panel{padding:14px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03)}
+    .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .stat{padding:12px;border-radius:8px;background:rgba(255,255,255,0.02);text-align:center}
+    .big{font-size:24px;font-weight:700}
+    .muted{color:var(--muted);font-size:13px}
+    footer{margin-top:12px;display:flex;justify-content:space-between;align-items:center}
+    .small{font-size:13px;color:var(--muted)}
+    @media (max-width:880px){main{grid-template-columns:1fr} .logo{width:48px;height:48px}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">CL</div>
+      <div>
+        <h1 style="margin:0;font-size:18px">Contador de letras</h1>
+        <div class="small">Cuenta letras (unicode), vocales, consonantes y caracteres. Resultado instantáneo.</div>
+      </div>
+    </header>
+
+    <div class="card">
+      <main>
+        <div>
+          <label for="inputText" class="muted">Escribe o pega la frase:</label>
+          <textarea id="inputText" placeholder="Escribe aquí tu texto...">"Su estructura básica incluye una tesis (la opinión a defender), los argumentos (razones que la apoyan) y una conclusión (que resume o reafirma la postura). "</textarea>
+
+          <div class="controls">
+            <label class="switch"><input type="checkbox" id="onlyLetters" checked> Contar solo letras (A–Z y letras con acento)</label>
+            <label class="switch"><input type="checkbox" id="countSpaces"> Incluir espacios</label>
+            <label class="switch"><input type="checkbox" id="countPunct"> Incluir puntuación</label>
+            <button id="countBtn">Contar ahora</button>
+            <button id="clearBtn" class="secondary">Limpiar</button>
+          </div>
+
+          <div style="margin-top:12px" class="panel">
+            <div class="stats">
+              <div class="stat">
+                <div class="muted">Letras</div>
+                <div id="letters" class="big">—</div>
+              </div>
+              <div class="stat">
+                <div class="muted">Total caracteres</div>
+                <div id="chars" class="big">—</div>
+              </div>
+              <div class="stat">
+                <div class="muted">Vocales</div>
+                <div id="vowels" class="big">—</div>
+              </div>
+              <div class="stat">
+                <div class="muted">Consonantes</div>
+                <div id="consonants" class="big">—</div>
+              </div>
+            </div>
+
+            <div style="margin-top:10px;display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap">
+              <div class="small">Resultado actualizado en tiempo real. Pulsa "Copiar" para llevar el número al portapapeles.</div>
+              <div style="display:flex;gap:8px">
+                <button id="copyBtn" class="secondary">Copiar</button>
+                <button id="downloadBtn">Descargar .txt</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <aside style="padding-left:12px">
+          <div class="panel">
+            <h3 style="margin-top:0">Opciones</h3>
+            <p class="small">Explicación rápida:</p>
+            <ul class="small" style="margin:6px 0 0 18px;padding:0">
+              <li>"Contar solo letras" usa propiedades unicode para reconocer letras en cualquier idioma.</li>
+              <li>Si marcas "Incluir espacios" o "Incluir puntuación" se añadirán al total de caracteres.</li>
+              <li>La app distingue entre vocales y consonantes en base a letras latinas.</li>
+            </ul>
+            <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:10px 0">
+            <div class="small"><strong>Atajos</strong></div>
+            <div class="small" style="margin-top:6px">Ctrl/Cmd + Enter → contar · Ctrl/Cmd + K → borrar</div>
+          </div>
+        </aside>
+      </main>
+
+      <footer>
+        <div class="small">Hecho con ❤️ — App offline, privada en tu navegador.</div>
+        <div class="small">Versión 1.0</div>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    const input = document.getElementById('inputText');
+    const lettersEl = document.getElementById('letters');
+    const charsEl = document.getElementById('chars');
+    const vowelsEl = document.getElementById('vowels');
+    const consEl = document.getElementById('consonants');
+    const onlyLetters = document.getElementById('onlyLetters');
+    const countSpaces = document.getElementById('countSpaces');
+    const countPunct = document.getElementById('countPunct');
+    const countBtn = document.getElementById('countBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    const reLetter = /\p{L}/gu;
+    const vowelsSet = new Set(['a','e','i','o','u','á','é','í','ó','ú','ü','à','è','ì','ò','ù']);
+
+    function analyze(text){
+      let totalChars = text.length;
+      const letters = Array.from(text.matchAll(reLetter),(m)=>m[0]);
+      const lettersCount = letters.length;
+      let usedCharsCount = totalChars;
+      if(onlyLetters.checked){
+        usedCharsCount = lettersCount;
+        if(countSpaces.checked){
+          usedCharsCount += (text.match(/ /g)||[]).length;
+        }
+        if(countPunct.checked){
+          usedCharsCount += (text.match(/[\p{P}\p{S}]/gu)||[]).length;
+        }
+      }
+      let vowels = 0, consonants = 0;
+      for(const ch of letters){
+        const c = ch.toLowerCase();
+        if(vowelsSet.has(c)) vowels++;
+        else consonants++;
+      }
+      return {letters: lettersCount, totalChars: usedCharsCount, vowels, consonants};
+    }
+
+    function update(){
+      const res = analyze(input.value);
+      lettersEl.textContent = res.letters;
+      charsEl.textContent = res.totalChars;
+      vowelsEl.textContent = res.vowels;
+      consEl.textContent = res.consonants;
+    }
+
+    input.addEventListener('input', update);
+    onlyLetters.addEventListener('change', update);
+    countSpaces.addEventListener('change', update);
+    countPunct.addEventListener('change', update);
+    countBtn.addEventListener('click', update);
+    clearBtn.addEventListener('click', ()=>{input.value='';update();input.focus();});
+    copyBtn.addEventListener('click', async ()=>{
+      const text = `Letras: ${lettersEl.textContent} · Total caracteres: ${charsEl.textContent}`;
+      try{ await navigator.clipboard.writeText(text); copyBtn.textContent='Copiado'; setTimeout(()=>copyBtn.textContent='Copiar',1200);}catch(e){alert('No se pudo copiar: '+e)}
+    });
+    downloadBtn.addEventListener('click', ()=>{
+      const blob = new Blob([input.value],{type:'text/plain;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'texto.txt'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    });
+    document.addEventListener('keydown',(e)=>{
+      if((e.ctrlKey||e.metaKey) && e.key==='Enter'){ e.preventDefault(); update(); }
+      if((e.ctrlKey||e.metaKey) && (e.key==='k' || e.key==='K')){ e.preventDefault(); input.value=''; update(); }
+    });
+    update();
+  </script>
+</body>
+</html>
