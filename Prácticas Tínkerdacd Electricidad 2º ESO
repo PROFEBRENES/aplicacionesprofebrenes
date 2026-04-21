@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Circuitos Eléctricos — Prácticas con Tinkercad | 2º ESO</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2330;
+    --border: #30363d;
+    --accent: #f0b429;
+    --accent2: #58a6ff;
+    --accent3: #3fb950;
+    --accent4: #ff7b72;
+    --accent5: #d2a8ff;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --mono: 'Space Mono', monospace;
+    --sans: 'Outfit', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── GRID BACKGROUND ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(rgba(240,180,41,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(240,180,41,.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  .page { max-width: 920px; margin: 0 auto; padding: 40px 24px 80px; position: relative; z-index: 1; }
+
+  /* ── COVER ── */
+  .cover {
+    text-align: center;
+    padding: 80px 0 60px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 60px;
+    position: relative;
+  }
+  .cover::after {
+    content: '';
+    position: absolute; bottom: -1px; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 2px; background: var(--accent);
+  }
+  .cover-tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 4px 14px;
+    border-radius: 2px;
+    margin-bottom: 28px;
+    animation: fadeUp .6s ease both;
+  }
+  .cover h1 {
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    font-weight: 900;
+    letter-spacing: -.02em;
+    line-height: 1.1;
+    animation: fadeUp .6s .1s ease both;
+  }
+  .cover h1 span { color: var(--accent); }
+  .cover-sub {
+    font-size: 1.1rem;
+    color: var(--muted);
+    margin-top: 16px;
+    animation: fadeUp .6s .2s ease both;
+  }
+  .cover-chips {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    justify-content: center; margin-top: 36px;
+    animation: fadeUp .6s .3s ease both;
+  }
+  .chip {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    border-radius: 3px;
+    color: var(--muted);
+  }
+  .chip b { color: var(--accent2); font-weight: 400; }
+
+  /* ── STUDENT DATA ── */
+  .student-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    margin: 40px 0;
+  }
+  .field {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px 20px;
+  }
+  .field label {
+    display: block;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .field-line {
+    border-bottom: 1px solid var(--border);
+    height: 28px;
+  }
+
+  /* ── SECTION / THEORY ── */
+  .section-header {
+    display: flex; align-items: center; gap: 16px;
+    margin: 56px 0 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: .1em;
+    white-space: nowrap;
+  }
+  .section-header h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -.01em;
+  }
+
+  /* ── ACTIVITY CARD ── */
+  .activity {
+    margin: 48px 0;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    break-inside: avoid;
+  }
+  .activity-header {
+    padding: 22px 28px;
+    display: flex; align-items: center; gap: 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .act-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--bg);
+    background: var(--accent);
+    padding: 5px 12px;
+    border-radius: 3px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .act-num.blue { background: var(--accent2); }
+  .act-num.green { background: var(--accent3); }
+  .act-num.red { background: var(--accent4); }
+  .act-num.purple { background: var(--accent5); }
+  .activity-header h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: -.01em;
+  }
+  .activity-body {
+    padding: 28px;
+    background: var(--surface);
+    display: flex; flex-direction: column; gap: 20px;
+  }
+
+  /* ── INFO BOX ── */
+  .info-box {
+    border-left: 3px solid var(--accent2);
+    background: var(--surface2);
+    padding: 16px 20px;
+    border-radius: 0 6px 6px 0;
+    font-size: 14px;
+  }
+  .info-box.yellow { border-color: var(--accent); }
+  .info-box.green { border-color: var(--accent3); }
+  .info-box.red { border-color: var(--accent4); }
+  .info-box.purple { border-color: var(--accent5); }
+  .info-box strong { color: var(--accent2); display: block; margin-bottom: 8px; font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+  .info-box.yellow strong { color: var(--accent); }
+  .info-box.green strong { color: var(--accent3); }
+  .info-box.red strong { color: var(--accent4); }
+  .info-box.purple strong { color: var(--accent5); }
+  .info-box ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .info-box ul li::before { content: '→ '; color: var(--muted); font-family: var(--mono); }
+
+  /* ── FORMULA ── */
+  .formula {
+    background: #0d1117;
+    border: 1px solid var(--accent5);
+    border-radius: 6px;
+    padding: 16px 24px;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 1.05rem;
+    color: var(--accent5);
+    letter-spacing: .05em;
+  }
+
+  /* ── TABLE ── */
+  .tbl-wrap { overflow-x: auto; border-radius: 6px; border: 1px solid var(--border); }
+  table {
+    width: 100%; border-collapse: collapse;
+    font-size: 13px;
+  }
+  thead th {
+    background: #1f2937;
+    color: var(--accent2);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  tbody tr:nth-child(odd) td { background: var(--surface2); }
+  tbody tr:nth-child(even) td { background: var(--surface); }
+  tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  .td-input {
+    background: rgba(255,255,255,.03) !important;
+    border-left: 1px dashed var(--border);
+  }
+
+  /* ── DRAW BOX ── */
+  .draw-box {
+    border: 1px dashed var(--border);
+    border-radius: 6px;
+    background: rgba(255,255,255,.015);
+    position: relative;
+    min-height: 200px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .draw-box-label {
+    position: absolute; top: 14px; left: 18px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    opacity: .7;
+  }
+  .draw-box-inner {
+    text-align: center; color: var(--muted); font-size: 13px;
+  }
+  .draw-icon { font-size: 2rem; display: block; margin-bottom: 8px; opacity: .3; }
+
+  /* ── ANSWER BOX ── */
+  .answer-box {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: rgba(255,255,255,.02);
+  }
+  .answer-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .answer-lines { padding: 8px 16px; }
+  .answer-line {
+    height: 34px;
+    border-bottom: 1px solid rgba(255,255,255,.07);
+  }
+  .answer-line:last-child { border-bottom: none; }
+
+  /* ── QUESTION ── */
+  .question {
+    background: rgba(240,180,41,.08);
+    border: 1px solid rgba(240,180,41,.25);
+    border-radius: 6px;
+    padding: 14px 18px;
+    font-size: 14px;
+  }
+  .question::before {
+    content: '❓ PREGUNTA — ';
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .1em;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* ── STEPS ── */
+  .steps { display: flex; flex-direction: column; gap: 10px; counter-reset: step; }
+  .step {
+    display: flex; gap: 14px; align-items: flex-start;
+    counter-increment: step;
+    font-size: 14px;
+  }
+  .step::before {
+    content: counter(step);
+    min-width: 28px; height: 28px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent2);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ── BULLETS ── */
+  .bullets { display: flex; flex-direction: column; gap: 8px; }
+  .bullet-item {
+    display: flex; gap: 12px; align-items: flex-start;
+    font-size: 14px;
+  }
+  .bullet-item::before {
+    content: '▸';
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* ── TWO COL ── */
+  .two-col {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  }
+  .col-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+  }
+  .col-card h4 {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .col-card.yellow h4 { color: var(--accent); }
+  .col-card.green h4 { color: var(--accent3); }
+  .col-card p { font-size: 13px; color: var(--muted); }
+
+  /* ── RUBRIC ── */
+  .rubric-grid { display: grid; gap: 2px; }
+  .rubric-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 2px; }
+  .rubric-cell {
+    background: var(--surface);
+    padding: 12px 14px;
+    font-size: 12.5px;
+    border-radius: 2px;
+  }
+  .rubric-head { background: #1f2937; }
+  .rubric-head .rubric-cell {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    background: #1f2937;
+  }
+  .score-4 { border-left: 3px solid var(--accent3); }
+  .score-3 { border-left: 3px solid var(--accent2); }
+  .score-2 { border-left: 3px solid var(--accent); }
+  .score-1 { border-left: 3px solid var(--accent4); }
+
+  /* ── PRINT ── */
+  .print-btn {
+    position: fixed;
+    bottom: 32px; right: 32px;
+    background: var(--accent);
+    color: var(--bg);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 12px 22px;
+    border: none; border-radius: 4px;
+    cursor: pointer;
+    font-weight: 700;
+    box-shadow: 0 8px 24px rgba(240,180,41,.4);
+    z-index: 100;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .print-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(240,180,41,.5); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .activity { animation: fadeUp .5s ease both; }
+
+  /* ── PRINT STYLES ── */
+  @media print {
+    body { background: #fff; color: #111; }
+    body::before { display: none; }
+    .print-btn { display: none; }
+    :root {
+      --bg: #fff; --surface: #f8f8f8; --surface2: #f0f0f0;
+      --border: #ddd; --text: #111; --muted: #555;
+      --accent: #d97706; --accent2: #2563eb; --accent3: #16a34a;
+      --accent4: #dc2626; --accent5: #7c3aed;
+    }
+    .formula { color: #7c3aed; border-color: #7c3aed; }
+    .activity { break-inside: avoid; }
+    .draw-box { min-height: 180px; }
+  }
+
+  @media (max-width: 600px) {
+    .two-col { grid-template-columns: 1fr; }
+    .rubric-row { grid-template-columns: 1fr 1fr; }
+    .student-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- COVER -->
+  <header class="cover">
+    <div class="cover-tag">Tecnología — 2.º E.S.O.</div>
+    <h1>Circuitos <span>Eléctricos</span></h1>
+    <p class="cover-sub">Prácticas con Tinkercad · 10 actividades</p>
+    <div class="cover-chips">
+      <span class="chip"><b>⚡</b> Ley de Ohm</span>
+      <span class="chip"><b>🔌</b> Serie &amp; Paralelo</span>
+      <span class="chip"><b>📏</b> Multímetro</span>
+      <span class="chip"><b>☀️</b> Panel Solar</span>
+      <span class="chip"><b>💡</b> LEDs</span>
+      <span class="chip"><b>⚙️</b> Motor DC</span>
+      <span class="chip"><b>🔆</b> LDR</span>
+    </div>
+  </header>
+
+  <!-- STUDENT DATA -->
+  <div class="student-grid">
+    <div class="field"><label>Nombre completo</label><div class="field-line"></div></div>
+    <div class="field"><label>Curso y grupo</label><div class="field-line"></div></div>
+    <div class="field"><label>Fecha</label><div class="field-line"></div></div>
+    <div class="field"><label>Nota</label><div class="field-line"></div></div>
+  </div>
+
+  <!-- ========= INTRODUCCIÓN TEÓRICA ========= -->
+  <div class="section-header">
+    <span class="section-num">// 00</span>
+    <h2>Introducción Teórica</h2>
+  </div>
+
+  <div class="info-box yellow">
+    <strong>Magnitudes eléctricas fundamentales</strong>
+    <ul>
+      <li><b>Voltaje (V)</b> — Diferencia de potencial, en voltios (V). Es la "presión" que mueve la corriente.</li>
+      <li><b>Intensidad (I)</b> — Cantidad de corriente que fluye, en amperios (A).</li>
+      <li><b>Resistencia (R)</b> — Oposición al paso de la corriente, en ohmios (Ω).</li>
+      <li><b>Potencia (P)</b> — Energía consumida por unidad de tiempo, en vatios (W). P = V · I</li>
+    </ul>
+  </div>
+
+  <div class="formula" style="margin-top:20px;">
+    LEY DE OHM &nbsp;&nbsp; V = I × R &nbsp;&nbsp;|&nbsp;&nbsp; I = V / R &nbsp;&nbsp;|&nbsp;&nbsp; R = V / I
+  </div>
+
+  <div class="two-col" style="margin-top:20px;">
+    <div class="col-card">
+      <h4>Circuito en Serie</h4>
+      <p>La corriente (I) es igual en todos los componentes.<br>Los voltajes se suman: V = V₁ + V₂ + …<br>R = R₁ + R₂ + …</p>
+    </div>
+    <div class="col-card green">
+      <h4>Circuito en Paralelo</h4>
+      <p>El voltaje es igual en cada rama.<br>Las corrientes se suman: I = I₁ + I₂ + …<br>1/R = 1/R₁ + 1/R₂ + …</p>
+    </div>
+  </div>
+
+  <div class="info-box" style="margin-top:20px;">
+    <strong>El multímetro en Tinkercad</strong>
+    <ul>
+      <li><b>Voltímetro:</b> se conecta en PARALELO con el componente. Selector en V DC.</li>
+      <li><b>Amperímetro:</b> se conecta en SERIE. El circuito pasa <em>a través</em> del multímetro. Selector en A DC.</li>
+      <li><b>Ohmímetro:</b> circuito apagado, se mide directamente la resistencia.</li>
+    </ul>
+  </div>
+
+  <!-- COLOR CODE VISUAL TABLE -->
+  <div style="margin-top:20px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:20px 24px;">
+    <div style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent5);margin-bottom:14px;">
+      ▸ Código de colores de resistencias (4 bandas)
+    </div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:18px;">
+      Las resistencias llevan 4 bandas de color: las dos primeras son los dígitos, la tercera el multiplicador y la cuarta la tolerancia.
+    </div>
+
+    <!-- RESISTOR DIAGRAM -->
+    <div style="display:flex;align-items:center;justify-content:center;margin-bottom:10px;gap:0;">
+      <div style="width:60px;height:12px;background:linear-gradient(90deg,#555,#a0522d);border-radius:6px 0 0 6px;"></div>
+      <div style="width:160px;height:32px;background:#c8a96e;border-radius:4px;display:flex;align-items:center;justify-content:space-around;padding:0 16px;box-shadow:0 2px 8px rgba(0,0,0,.4);">
+        <div style="width:12px;height:32px;background:#f5a623;border-radius:1px;"></div>
+        <div style="width:12px;height:32px;background:#7c3aed;border-radius:1px;"></div>
+        <div style="width:12px;height:32px;background:#dc2626;border-radius:1px;"></div>
+        <div style="width:8px;"></div>
+        <div style="width:12px;height:32px;background:linear-gradient(135deg,#d4a017,#f5d060,#d4a017);border-radius:1px;"></div>
+      </div>
+      <div style="width:60px;height:12px;background:linear-gradient(90deg,#a0522d,#555);border-radius:0 6px 6px 0;"></div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:0;font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:20px;text-align:center;">
+      <span style="width:80px;">1.ª banda<br><span style="color:var(--accent)">1.er dígito</span></span>
+      <span style="width:80px;">2.ª banda<br><span style="color:var(--accent)">2.º dígito</span></span>
+      <span style="width:80px;">3.ª banda<br><span style="color:var(--accent)">multiplicador</span></span>
+      <span style="width:80px;">4.ª banda<br><span style="color:var(--accent)">tolerancia</span></span>
+    </div>
+
+    <!-- COLOR TABLE -->
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Color</th>
+            <th>Muestra</th>
+            <th>Dígito (bandas 1 y 2)</th>
+            <th>Multiplicador (banda 3)</th>
+            <th>Tolerancia (banda 4)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Negro</td><td><div style="width:32px;height:18px;background:#1a1a1a;border-radius:3px;border:1px solid #444;"></div></td><td>0</td><td>× 1</td><td>—</td></tr>
+          <tr><td>Marrón</td><td><div style="width:32px;height:18px;background:#7b3f00;border-radius:3px;"></div></td><td>1</td><td>× 10</td><td>±1%</td></tr>
+          <tr><td>Rojo</td><td><div style="width:32px;height:18px;background:#dc2626;border-radius:3px;"></div></td><td>2</td><td>× 100</td><td>±2%</td></tr>
+          <tr><td>Naranja</td><td><div style="width:32px;height:18px;background:#ea580c;border-radius:3px;"></div></td><td>3</td><td>× 1.000</td><td>—</td></tr>
+          <tr><td>Amarillo</td><td><div style="width:32px;height:18px;background:#f5a623;border-radius:3px;"></div></td><td>4</td><td>× 10.000</td><td>—</td></tr>
+          <tr><td>Verde</td><td><div style="width:32px;height:18px;background:#16a34a;border-radius:3px;"></div></td><td>5</td><td>× 100.000</td><td>±0,5%</td></tr>
+          <tr><td>Azul</td><td><div style="width:32px;height:18px;background:#2563eb;border-radius:3px;"></div></td><td>6</td><td>× 1.000.000</td><td>±0,25%</td></tr>
+          <tr><td>Violeta</td><td><div style="width:32px;height:18px;background:#7c3aed;border-radius:3px;"></div></td><td>7</td><td>—</td><td>±0,1%</td></tr>
+          <tr><td>Gris</td><td><div style="width:32px;height:18px;background:#6b7280;border-radius:3px;"></div></td><td>8</td><td>—</td><td>—</td></tr>
+          <tr><td>Blanco</td><td><div style="width:32px;height:18px;background:#f3f4f6;border-radius:3px;border:1px solid #555;"></div></td><td>9</td><td>—</td><td>—</td></tr>
+          <tr><td>Dorado</td><td><div style="width:32px;height:18px;background:linear-gradient(135deg,#d4a017,#f5d060,#d4a017);border-radius:3px;"></div></td><td>—</td><td>× 0,1</td><td><b style="color:var(--accent)">±5%</b></td></tr>
+          <tr><td>Plateado</td><td><div style="width:32px;height:18px;background:linear-gradient(135deg,#9ca3af,#e5e7eb,#9ca3af);border-radius:3px;"></div></td><td>—</td><td>× 0,01</td><td><b style="color:var(--accent)">±10%</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- EXAMPLE -->
+    <div style="margin-top:16px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:14px 18px;">
+      <div style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent5);margin-bottom:12px;">Ejemplo: leer una resistencia de 4700 Ω ±5%</div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;">
+        <div style="display:flex;align-items:center;gap:6px;"><div style="width:26px;height:20px;background:#f5a623;border-radius:3px;"></div><span>Amarillo = <b>4</b></span></div>
+        <span style="color:var(--muted);">+</span>
+        <div style="display:flex;align-items:center;gap:6px;"><div style="width:26px;height:20px;background:#7c3aed;border-radius:3px;"></div><span>Violeta = <b>7</b></span></div>
+        <span style="color:var(--muted);">×</span>
+        <div style="display:flex;align-items:center;gap:6px;"><div style="width:26px;height:20px;background:#dc2626;border-radius:3px;"></div><span>Rojo = <b>×100</b></span></div>
+        <span style="color:var(--muted);">tol.</span>
+        <div style="display:flex;align-items:center;gap:6px;"><div style="width:26px;height:20px;background:linear-gradient(135deg,#d4a017,#f5d060,#d4a017);border-radius:3px;"></div><span>Dorado = <b>±5%</b></span></div>
+        <span style="color:var(--muted);">→</span>
+        <span style="font-family:var(--mono);font-size:14px;color:var(--accent5);font-weight:700;">4·7 × 100 = 4700 Ω ±5%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========= ACTIVIDAD 1 ========= -->
+  <div class="activity">
+    <div class="activity-header">
+      <span class="act-num">Act. 01</span>
+      <h3>Identificación de Componentes</h3>
+    </div>
+    <div class="activity-body">
+      <p><b>Objetivo:</b> Identificar y conocer los símbolos de los componentes electrónicos disponibles en Tinkercad.</p>
+      <div class="info-box green">
+        <strong>Instrucciones</strong>
+        <ul>
+          <li>Abre Tinkercad (www.tinkercad.com) e inicia sesión.</li>
+          <li>Crea un nuevo circuito y coloca cada componente de la lista.</li>
+          <li>Anota el símbolo del esquema, la unidad de medida y la función de cada uno.</li>
+        </ul>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th>Componente</th><th>Símbolo esquema</th><th>Unidad de medida</th><th>Función principal</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Batería 9V</td><td class="td-input"></td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>LED rojo</td><td class="td-input"></td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>LED verde</td><td class="td-input"></td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>LED amarillo</td><td class="td-input"></td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>Resistencia</td><td class="td-input"></td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>Pulsador</td><td class="td-input"></td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>Motor DC</td><td class="td-input"></td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>LDR (fotorresist.)</td><td class="td-input"></td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>Multímetro</td><td class="td-input"></td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>Panel solar</td><td class="td-input"></td><td class="td-input"></td><td class="td-input"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="question">¿Para qué sirve la protoboard? ¿Cómo están conectados sus agujeros internamente?</div>
+      <div class="answer-box">
+        <div class="answer-label">Tu respuesta</div>
+        <div class="answer-lines"><div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========= ACTIVIDAD 2 ========= -->
+  <div class="activity">
+    <div class="activity-header">
+      <span class="act-num blue">Act. 02</span>
+      <h3>Mi Primer Circuito Serie</h3>
+    </div>
+    <div class="activity-body">
+      <p><b>Objetivo:</b> Construir un circuito serie con una batería, resistencia y LED, aplicando la Ley de Ohm.</p>
+      <div class="info-box red">
+        <strong>Enunciado del problema</strong>
+        <ul>
+          <li>Tienes una batería de 9 V y quieres encender un LED rojo (V₁ = 2 V, I = 20 mA).</li>
+          <li>Calcula la resistencia de protección necesaria y monta el circuito en Tinkercad.</li>
+          <li>Verifica los valores con el multímetro.</li>
+        </ul>
+      </div>
+      <p><b>Paso 1 — Cálculo previo:</b></p>
+      <div class="formula">V₁ = 9V − 2V = 7V &nbsp;&nbsp;|&nbsp;&nbsp; R = V₁ / I = 7V / 0,02A = 350 Ω → elegir 390 Ω</div>
+      <div class="question">¿Cuál será la corriente REAL con R = 390 Ω? Aplica la Ley de Ohm y muestra el cálculo.</div>
+      <div class="answer-box">
+        <div class="answer-label">Cálculo</div>
+        <div class="answer-lines"><div class="answer-line"></div><div class="answer-line"></div></div>
+      </div>
+      <p><b>Paso 2 — Esquema del circuito:</b></p>
+      <div class="draw-box" style="min-height:220px;">
+        <span class="draw-box-label">✏ Dibuja el esquema con símbolos (batería · resistencia · LED)</span>
+        <div class="draw-box-inner"><span class="draw-icon">⚡</span></div>
+      </div>
+      <p><b>Paso 3 — Simulación y mediciones en Tinkercad:</b></p>
+      <div class="steps">
+        <div class="step">Coloca la batería de 9V y conéctala a la resistencia de 390 Ω.</div>
+        <div class="step">Conecta el ánodo del LED (pin largo) tras la resistencia y el cátodo (pin corto) a GND.</div>
+        <div class="step">Inicia la simulación. ¿Se enciende el LED?</div>
+        <div class="step">Usa el multímetro para medir el voltaje en la batería, en la resistencia y en el LED.</div>
+      </div>
+      <div class="tbl-wrap" style="margin-top:12px;">
+        <table>
+          <thead><tr><th>Magnitud</th><th>Valor calculado</th><th>Valor medido (Tinkercad)</th></tr></thead>
+          <tbody>
+            <tr><td>Voltaje batería (V)</td><td class="td-input">9 V</td><td class="td-input"></td></tr>
+            <tr><td>Voltaje resistencia (V)</td><td class="td-input">≈ 7,8 V</td><td class="td-input"></td></tr>
+            <tr><td>Voltaje LED (V)</td><td class="td-input">≈ 2 V</td><td class="td-input"></td></tr>
+            <tr><td>Corriente del circuito (mA)</td><td class="td-input">≈ 17,9 mA</td><td class="td-input"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="question">¿Se cumple que V = V₁ + V₂? (siendo V₁ la tensión en la resistencia y V₂ la tensión en el LED) ¿A qué ley corresponde esta propiedad?</div>
+      <div class="answer-box">
+        <div class="answer-label">Conclusión</div>
+        <div class="answer-lines"><div class="answer-line"></div><div class="answer-line"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========= ACTIVIDAD 3 ========= -->
+  <div class="activity">
+    <div class="activity-header">
+      <span class="act-num green">Act. 03</span>
+      <h3>Circuito en Paralelo con 3 LEDs</h3>
+    </div>
+    <div class="activity-body">
+      <p><b>Objetivo:</b> Comparar el comportamiento de un circuito en paralelo con el circuito serie anterior.</p>
+      <div class="info-box yellow">
+        <strong>Enunciado del problema</strong>
+        <ul>
+          <li>Conecta los tres LEDs (rojo 2V, amarillo 2,1V, verde 2,2V) en PARALELO a la batería de 9V.</li>
+          <li>Cada LED necesita su propia resistencia de protección (I = 20 mA).</li>
+        </ul>
+      </div>
+      <p><b>Paso 1 — Cálculo de resistencias:</b></p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>LED</th><th>Cálculo R = (9V − V₁) / 0,02A</th><th>R elegida (valor normalizado)</th></tr></thead>
+          <tbody>
+            <tr><td>Rojo (2,0 V)</td><td class="td-input">R = (9 − 2,0) / 0,02 =</td><td class="td-input"></td></tr>
+            <tr><td>Amarillo (2,1 V)</td><td class="td-input">R = (9 − 2,1) / 0,02 =</td><td class="td-input"></td></tr>
+            <tr><td>Verde (2,2 V)</td><td class="td-input">R = (9 − 2,2) / 0,02 =</td><td class="td-input"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><b>Paso 2 — Esquema:</b></p>
+      <div class="draw-box" style="min-height:240px;">
+        <span class="draw-box-label">✏ Dibuja el circuito en paralelo con los 3 LEDs y sus resistencias</span>
+        <div class="draw-box-inner"><span class="draw-icon">💡</span></div>
+      </div>
+      <div class="steps">
+        <div class="step">Monta el circuito en Tinkercad con los 3 LEDs en paralelo.</div>
+        <div class="step">Mide con el multímetro el voltaje en cada LED.</div>
+        <div class="step">Desconecta uno de los LEDs. ¿Qué ocurre con los demás?</div>
+      </div>
+      <div class="question">En serie, al quitar un LED se apagaban todos. ¿Y en paralelo? ¿Por qué hay diferencia?</div>
+      <div class="answer-box">
+        <div class="answer-label">Comparación serie vs paralelo</div>
+        <div class="answer-lines"><div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========= ACTIVIDAD 4 ========= -->
+  <div class="activity">
+    <div class="activity-header">
+      <span class="act-num">Act. 04</span>
+      <h3>La Ley de Ohm en Acción</h3>
+    </div>
+    <div class="activity-body">
+      <p><b>Objetivo:</b> Verificar experimentalmente la Ley de Ohm variando la resistencia y midiendo la corriente.</p>
+      <div class="info-box green">
+        <strong>Procedimiento</strong>
+        <ul>
+          <li>Circuito: batería 9V + resistencia variable + LED rojo (2V).</li>
+          <li>Cambia el valor de la resistencia y mide la corriente con el multímetro en cada caso.</li>
+          <li>La tensión en la resistencia es siempre V_R = 9V − 2V = 7V.</li>
+        </ul>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>R (Ω)</th><th>V_R (V)</th><th>I calculada (mA)</th><th>I medida Tinkercad (mA)</th><th>Error (%)</th></tr></thead>
+          <tbody>
+            <tr><td>100</td><td>7</td><td class="td-input"></td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>220</td><td>7</td><td class="td-input"></td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>470</td><td>7</td><td class="td-input"></td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>1000</td><td>7</td><td class="td-input"></td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>2200</td><td>7</td><td class="td-input"></td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>4700</td><td>7</td><td class="td-input"></td><td class="td-input"></td><td class="td-input"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="question">¿Qué relación observas entre la resistencia y la corriente? ¿Cómo lo explica la Ley de Ohm?</div>
+      <div class="answer-box">
+        <div class="answer-label">Análisis</div>
+        <div class="answer-lines"><div class="answer-line"></div><div class="answer-line"></div></div>
+      </div>
+      <p><b>Graficación:</b> Dibuja una gráfica de I (eje Y) frente a R (eje X) con los datos de la tabla.</p>
+      <div class="draw-box" style="min-height:220px;">
+        <span class="draw-box-label">✏ Gráfica I vs R — recuerda poner título, ejes y unidades</span>
+        <div class="draw-box-inner"><span class="draw-icon">📈</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========= ACTIVIDAD 5 ========= -->
+  <div class="activity">
+    <div class="activity-header">
+      <span class="act-num red">Act. 05</span>
+      <h3>El Pulsador: Circuito con Interruptor</h3>
+    </div>
+    <div class="activity-body">
+      <p><b>Objetivo:</b> Entender la función de un pulsador y la diferencia entre circuito abierto y cerrado.</p>
+      <div class="info-box red">
+        <strong>Enunciado del problema</strong>
+        <ul>
+          <li>Un sistema de alarma enciende un LED rojo cuando se pulsa un botón.</li>
+          <li>Al soltar el botón, el LED se apaga (pulsador normalmente abierto, N.A.).</li>
+          <li>Componentes: batería 9V + pulsador + resistencia 390 Ω + LED rojo.</li>
+        </ul>
+      </div>
+      <div class="two-col">
+        <div class="col-card">
+          <h4>Pulsador ABIERTO</h4>
+          <p>El circuito está abierto. No fluye corriente. El LED está apagado. V en el LED = 0 V.</p>
+        </div>
+        <div class="col-card yellow">
+          <h4>Pulsador CERRADO</h4>
+          <p>El circuito está cerrado. Fluye corriente. El LED se enciende. V en el LED ≈ 2 V.</p>
+        </div>
+      </div>
+      <div class="draw-box" style="min-height:200px;">
+        <span class="draw-box-label">✏ Dibuja el esquema del circuito con el pulsador</span>
+        <div class="draw-box-inner"><span class="draw-icon">🔘</span></div>
+      </div>
+      <div class="steps">
+        <div class="step">Monta el circuito en Tinkercad.</div>
+        <div class="step">Simula y comprueba que el LED solo se enciende al pulsar.</div>
+        <div class="step">Mide el voltaje en el LED en ambos estados con el multímetro.</div>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Estado del pulsador</th><th>V en el LED (V)</th><th>I en el circuito (mA)</th></tr></thead>
+          <tbody>
+            <tr><td>ABIERTO (sin pulsar)</td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>CERRADO (pulsando)</td><td class="td-input"></td><td class="td-input"></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========= ACTIVIDAD 6 ========= -->
+  <div class="activity">
+    <div class="activity-header">
+      <span class="act-num">Act. 06</span>
+      <h3>Semáforo con 3 LEDs</h3>
+    </div>
+    <div class="activity-body">
+      <p><b>Objetivo:</b> Diseñar y construir un semáforo sencillo integrando cálculo, montaje y verificación.</p>
+      <div class="info-box yellow">
+        <strong>Enunciado del problema</strong>
+        <ul>
+          <li>Construye un semáforo con los tres LEDs y tres pulsadores independientes.</li>
+          <li>P1 → LED rojo (STOP) · P2 → LED amarillo (PRECAUCIÓN) · P3 → LED verde (PASO).</li>
+          <li>Cada LED tiene su propia resistencia de protección correctamente calculada.</li>
+        </ul>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>LED</th><th>V_diodo</th><th>Cálculo R = (9V − V_diodo) / 0,02A</th><th>R elegida</th></tr></thead>
+          <tbody>
+            <tr><td>Rojo</td><td>2,0 V</td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>Amarillo</td><td>2,1 V</td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>Verde</td><td>2,2 V</td><td class="td-input"></td><td class="td-input"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="draw-box" style="min-height:260px;">
+        <span class="draw-box-label">✏ Dibuja el esquema completo del semáforo (3 pulsadores + 3 LEDs)</span>
+        <div class="draw-box-inner"><span class="draw-icon">🚦</span></div>
+      </div>
+      <div class="steps">
+        <div class="step">Monta el circuito en Tinkercad.</div>
+        <div class="step">Prueba que cada pulsador enciende solo su LED correspondiente.</div>
+        <div class="step">Captura o describe el circuito funcionando.</div>
+      </div>
+      <div class="question">¿Los LEDs del semáforo están en serie o en paralelo entre sí? Razona la respuesta.</div>
+      <div class="answer-box">
+        <div class="answer-label">Reflexión</div>
+        <div class="answer-lines"><div class="answer-line"></div><div class="answer-line"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========= ACTIVIDAD 7 ========= -->
+  <div class="activity">
+    <div class="activity-header">
+      <span class="act-num blue">Act. 07</span>
+      <h3>Motor Eléctrico y la Ley de Ohm</h3>
+    </div>
+    <div class="activity-body">
+      <p><b>Objetivo:</b> Observar cómo varía la velocidad de un motor según el voltaje aplicado.</p>
+      <div class="info-box purple">
+        <strong>Enunciado del problema</strong>
+        <ul>
+          <li>El motor consume ≈ 100 mA (0,1 A) a plena carga.</li>
+          <li>Usando la batería de 9V y distintas resistencias en serie, reduciremos el voltaje en el motor.</li>
+          <li>Objetivo: encontrar la R para que el motor reciba aproximadamente 5V.</li>
+        </ul>
+      </div>
+      <div class="formula">V_R = 9V − 5V = 4V &nbsp;&nbsp;|&nbsp;&nbsp; R = 4V / 0,1A = 40 Ω → elegir 47 Ω</div>
+      <div class="question">¿Cuál será el voltaje real en el motor con R = 47 Ω? Muestra el cálculo completo.</div>
+      <div class="answer-box">
+        <div class="answer-label">Cálculo</div>
+        <div class="answer-lines"><div class="answer-line"></div><div class="answer-line"></div></div>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>R en serie (Ω)</th><th>V calculado motor (V)</th><th>V medido motor (V)</th><th>Velocidad observada</th></tr></thead>
+          <tbody>
+            <tr><td>0 (sin R)</td><td class="td-input"></td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>10</td><td class="td-input"></td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>47</td><td class="td-input"></td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>100</td><td class="td-input"></td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>220</td><td class="td-input"></td><td class="td-input"></td><td class="td-input"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="draw-box" style="min-height:190px;">
+        <span class="draw-box-label">✏ Dibuja el circuito: batería · resistencia · motor</span>
+        <div class="draw-box-inner"><span class="draw-icon">⚙️</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========= ACTIVIDAD 8 ========= -->
+  <div class="activity">
+    <div class="activity-header">
+      <span class="act-num green">Act. 08</span>
+      <h3>Panel Solar como Fuente de Energía</h3>
+    </div>
+    <div class="activity-body">
+      <p><b>Objetivo:</b> Sustituir la batería por el panel solar y analizar su comportamiento como fuente variable.</p>
+      <div class="two-col">
+        <div class="col-card">
+          <h4>Batería 9V</h4>
+          <p>Fuente de tensión constante. No depende de factores externos. Siempre entrega el voltaje nominal.</p>
+        </div>
+        <div class="col-card green">
+          <h4>Panel Solar</h4>
+          <p>Fuente de tensión variable. Depende de la luz solar recibida. El voltaje cambia con la iluminación.</p>
+        </div>
+      </div>
+      <div class="info-box green">
+        <strong>Procedimiento</strong>
+        <ul>
+          <li>Conecta el panel solar a un LED verde con una resistencia de 220 Ω.</li>
+          <li>En Tinkercad puedes ajustar el porcentaje de luz del panel solar.</li>
+          <li>Mide el voltaje de salida del panel para cada nivel de luz.</li>
+        </ul>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Intensidad de luz (%)</th><th>Voltaje panel (V)</th><th>LED encendido (Sí/No)</th></tr></thead>
+          <tbody>
+            <tr><td>0 %</td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>25 %</td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>50 %</td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>75 %</td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>100 %</td><td class="td-input"></td><td class="td-input"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="question">¿Desde qué porcentaje de luz el LED empieza a encenderse? ¿Por qué?</div>
+      <div class="answer-box">
+        <div class="answer-label">Respuesta y explicación</div>
+        <div class="answer-lines"><div class="answer-line"></div><div class="answer-line"></div></div>
+      </div>
+      <div class="question" style="border-color:rgba(63,185,80,.3);background:rgba(63,185,80,.08);">¿Qué ventajas medioambientales tiene el panel solar frente a las baterías?</div>
+      <div class="answer-box">
+        <div class="answer-label">Reflexión medioambiental</div>
+        <div class="answer-lines"><div class="answer-line"></div><div class="answer-line"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========= ACTIVIDAD 9 ========= -->
+  <div class="activity">
+    <div class="activity-header">
+      <span class="act-num purple">Act. 09</span>
+      <h3>La LDR: Detector de Luz</h3>
+    </div>
+    <div class="activity-body">
+      <p><b>Objetivo:</b> Entender la fotorresistencia (LDR) y usarla para automatizar el encendido de un LED.</p>
+      <div class="info-box purple">
+        <strong>Información sobre la LDR</strong>
+        <ul>
+          <li>LDR = Light Dependent Resistor (resistencia dependiente de la luz).</li>
+          <li>En oscuridad → resistencia MUY ALTA → poca corriente.</li>
+          <li>Con luz intensa → resistencia BAJA → más corriente.</li>
+          <li>Aplicaciones: farolas automáticas, alarmas solares, pantallas adaptativas.</li>
+        </ul>
+      </div>
+      <p>Construye un circuito donde el LED amarillo se encienda con luz intensa.<br>
+         <b>Componentes:</b> batería 9V + LDR + resistencia 1 kΩ + LED amarillo + resistencia 220 Ω.</p>
+      <div class="draw-box" style="min-height:220px;">
+        <span class="draw-box-label">✏ Dibuja el circuito con la LDR, resistencias y LED</span>
+        <div class="draw-box-inner"><span class="draw-icon">🔆</span></div>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Nivel de luz</th><th>R_LDR estimada</th><th>V en el LED (V)</th><th>LED encendido?</th></tr></thead>
+          <tbody>
+            <tr><td>Oscuridad total</td><td class="td-input"></td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>Poca luz</td><td class="td-input"></td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>Luz normal</td><td class="td-input"></td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>Luz intensa</td><td class="td-input"></td><td class="td-input"></td><td class="td-input"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="question">¿Podrías invertir el funcionamiento para que el LED se encendiera en la OSCURIDAD? Explica cómo modificarías el circuito.</div>
+      <div class="answer-box">
+        <div class="answer-label">Propuesta de modificación</div>
+        <div class="answer-lines"><div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========= ACTIVIDAD 10 ========= -->
+  <div class="activity">
+    <div class="activity-header">
+      <span class="act-num red">Act. 10</span>
+      <h3>Proyecto Final: Diseño Libre</h3>
+    </div>
+    <div class="activity-body">
+      <p><b>Objetivo:</b> Integrar todos los conocimientos adquiridos para diseñar y construir un circuito original.</p>
+      <div class="info-box">
+        <strong>Consigna del proyecto</strong>
+        <ul>
+          <li>Diseña un circuito útil o creativo usando AL MENOS 4 de estos componentes:</li>
+          <li>Panel solar o batería 9V · al menos 2 LEDs de distinto color · un pulsador · resistencia calculada · motor eléctrico · LDR.</li>
+          <li>Debes: calcular resistencias, dibujar el esquema, montarlo en Tinkercad y medirlo con el multímetro.</li>
+        </ul>
+      </div>
+
+      <p><b>Fase 1 — Descripción del proyecto:</b></p>
+      <div class="answer-box">
+        <div class="answer-label">Nombre de tu circuito</div>
+        <div class="answer-lines"><div class="answer-line"></div></div>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">¿Para qué sirve? ¿Qué hace?</div>
+        <div class="answer-lines"><div class="answer-line"></div><div class="answer-line"></div></div>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">Componentes que utilizarás</div>
+        <div class="answer-lines"><div class="answer-line"></div><div class="answer-line"></div></div>
+      </div>
+
+      <p><b>Fase 2 — Cálculos previos:</b></p>
+      <div class="answer-box">
+        <div class="answer-label">Cálculos de resistencias (muestra fórmula y resultado)</div>
+        <div class="answer-lines">
+          <div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+        </div>
+      </div>
+
+      <p><b>Fase 3 — Esquema del circuito:</b></p>
+      <div class="draw-box" style="min-height:280px;">
+        <span class="draw-box-label">✏ Dibuja el esquema completo con todos los símbolos</span>
+        <div class="draw-box-inner"><span class="draw-icon">🛠️</span></div>
+      </div>
+
+      <p><b>Fase 4 — Mediciones en Tinkercad:</b></p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Magnitud medida</th><th>Valor esperado (calculado)</th><th>Valor medido (Tinkercad)</th></tr></thead>
+          <tbody>
+            <tr><td>Medición 1:</td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>Medición 2:</td><td class="td-input"></td><td class="td-input"></td></tr>
+            <tr><td>Medición 3:</td><td class="td-input"></td><td class="td-input"></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><b>Fase 5 — Reflexión final:</b></p>
+      <div class="answer-box">
+        <div class="answer-label">¿Qué es lo que más te ha costado de este proyecto?</div>
+        <div class="answer-lines"><div class="answer-line"></div><div class="answer-line"></div></div>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">¿Qué cambiarías o mejorarías en tu diseño?</div>
+        <div class="answer-lines"><div class="answer-line"></div><div class="answer-line"></div></div>
+      </div>
+      <div class="answer-box">
+        <div class="answer-label">¿Cómo se relaciona tu circuito con algún aparato de la vida real?</div>
+        <div class="answer-lines"><div class="answer-line"></div><div class="answer-line"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========= RÚBRICA ========= -->
+  <div class="section-header">
+    <span class="section-num">// 11</span>
+    <h2>Rúbrica de Evaluación</h2>
+  </div>
+
+  <div class="rubric-grid">
+    <div class="rubric-row rubric-head">
+      <div class="rubric-cell">Criterio</div>
+      <div class="rubric-cell">Excelente (4)</div>
+      <div class="rubric-cell">Bien (3)</div>
+      <div class="rubric-cell">Suficiente (2)</div>
+      <div class="rubric-cell">Insuficiente (1)</div>
+    </div>
+    <div class="rubric-row">
+      <div class="rubric-cell"><b>Cálculos y Ley de Ohm</b></div>
+      <div class="rubric-cell score-4">Todos los cálculos son correctos y bien razonados.</div>
+      <div class="rubric-cell score-3">La mayoría correctos, algún error menor.</div>
+      <div class="rubric-cell score-2">Algunos correctos con errores conceptuales.</div>
+      <div class="rubric-cell score-1">No realiza o no entiende los cálculos.</div>
+    </div>
+    <div class="rubric-row">
+      <div class="rubric-cell"><b>Esquemas de circuito</b></div>
+      <div class="rubric-cell score-4">Esquemas completos con todos los símbolos correctos.</div>
+      <div class="rubric-cell score-3">Pequeños errores en símbolos o conexiones.</div>
+      <div class="rubric-cell score-2">Esquemas incompletos o con varios errores.</div>
+      <div class="rubric-cell score-1">No dibuja o son incomprensibles.</div>
+    </div>
+    <div class="rubric-row">
+      <div class="rubric-cell"><b>Uso del multímetro</b></div>
+      <div class="rubric-cell score-4">Usa el multímetro correctamente para todas las medidas.</div>
+      <div class="rubric-cell score-3">Lo usa bien en la mayoría de casos.</div>
+      <div class="rubric-cell score-2">Algún error en la conexión o lectura.</div>
+      <div class="rubric-cell score-1">No sabe usar el multímetro.</div>
+    </div>
+    <div class="rubric-row">
+      <div class="rubric-cell"><b>Simulación en Tinkercad</b></div>
+      <div class="rubric-cell score-4">Circuito funciona perfectamente y bien organizado.</div>
+      <div class="rubric-cell score-3">Funciona con pequeños fallos de orden.</div>
+      <div class="rubric-cell score-2">Funciona parcialmente.</div>
+      <div class="rubric-cell score-1">No funciona o no lo intenta.</div>
+    </div>
+    <div class="rubric-row">
+      <div class="rubric-cell"><b>Conclusiones</b></div>
+      <div class="rubric-cell score-4">Conclusiones profundas relacionando teoría y práctica.</div>
+      <div class="rubric-cell score-3">Buenas conclusiones con algún detalle mejorable.</div>
+      <div class="rubric-cell score-2">Conclusiones básicas y superficiales.</div>
+      <div class="rubric-cell score-1">Sin conclusiones o no pertinentes.</div>
+    </div>
+  </div>
+
+  <p style="text-align:center; color:var(--muted); font-family:var(--mono); font-size:11px; margin-top:60px; letter-spacing:.08em;">
+    TECNOLOGÍA — 2.º E.S.O. · PRÁCTICAS CON TINKERCAD
+  </p>
+</div>
+
+<button class="print-btn" onclick="window.print()">🖨 Imprimir / PDF</button>
+</body>
+</html>
