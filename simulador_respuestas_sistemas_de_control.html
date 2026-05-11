@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador de Respuesta al Escalón</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:     #080c12;
+  --panel:  #0c1420;
+  --border: #1a3a5f;
+  --grid:   #0d1e30;
+  --cyan:   #00e5ff;
+  --orange: #ff6b35;
+  --muted:  #4a7a9b;
+  --text:   #c8d6e5;
+  --green:  #2ecc71;
+  --red:    #e74c3c;
+  --yellow: #f39c12;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Share Tech Mono', monospace;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 14px 40px;
+  gap: 16px;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px,
+    rgba(0,0,0,0.025) 2px, rgba(0,0,0,0.025) 4px);
+  pointer-events: none; z-index: 999;
+}
+
+h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(0.9rem, 2.8vw, 1.3rem);
+  font-weight: 700;
+  color: var(--cyan);
+  letter-spacing: 0.1em;
+  text-align: center;
+}
+h1 em { color: var(--orange); font-style: normal; }
+
+/* TF display */
+.tf-display {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: clamp(0.85rem, 2vw, 1rem);
+  flex-wrap: wrap;
+  justify-content: center;
+  min-height: 60px;
+}
+
+.tf-eq { color: var(--muted); white-space: nowrap; }
+
+.tf-fraction {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.tf-num { color: var(--cyan); padding-bottom: 4px; border-bottom: 2px solid #2a6a9a; white-space: nowrap; }
+.tf-den { color: var(--orange); white-space: nowrap; }
+
+/* Main */
+.main { width: 100%; max-width: 920px; display: flex; flex-direction: column; gap: 14px; }
+
+/* Card */
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.card-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.68rem;
+  color: var(--muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+/* Inputs */
+.poly-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media(max-width: 500px){ .poly-row { grid-template-columns: 1fr; } }
+
+.poly-group { display: flex; flex-direction: column; gap: 6px; }
+
+.poly-label {
+  font-size: 0.75rem;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.poly-label .tag {
+  font-size: 0.68rem;
+  background: #0a1a2e;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 7px;
+  color: var(--muted);
+}
+
+.poly-input {
+  background: #060e18;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.9rem;
+  padding: 8px 10px;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.poly-input:focus { border-color: var(--cyan); box-shadow: 0 0 0 2px rgba(0,229,255,0.12); }
+.poly-input.error { border-color: var(--red) !important; }
+
+.poly-hint { font-size: 0.68rem; color: #304a60; }
+
+/* Presets */
+.presets-row {
+  display: flex; align-items: center; gap: 7px; flex-wrap: wrap; margin-top: 10px;
+}
+
+.presets-label { font-size: 0.72rem; color: var(--muted); white-space: nowrap; }
+
+.preset-btn {
+  background: #0a1a2e;
+  border: 1px solid var(--border);
+  color: #6a9ac4;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.7rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.preset-btn:hover { background: #162840; border-color: var(--cyan); color: var(--cyan); }
+
+/* Slider */
+.controls-row {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 12px;
+}
+
+.slider-label-k {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.78rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.k-value {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.1rem;
+  color: var(--cyan);
+  min-width: 52px;
+  text-align: right;
+}
+
+input[type=range] {
+  -webkit-appearance: none;
+  flex: 1;
+  height: 5px;
+  background: linear-gradient(90deg,
+    #1e5080 0%, #1e5080 var(--pct,50%),
+    #0a1a2e var(--pct,50%), #0a1a2e 100%);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+  min-width: 80px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 8px rgba(0,229,255,0.5);
+  cursor: pointer;
+  transition: box-shadow 0.15s;
+}
+input[type=range]::-webkit-slider-thumb:hover { box-shadow: 0 0 16px rgba(0,229,255,0.8); }
+
+/* K number input */
+.k-input {
+  -moz-appearance: textfield;
+  background: #060e18;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--cyan);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  padding: 4px 8px;
+  width: 80px;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.k-input:focus { border-color: var(--cyan); box-shadow: 0 0 0 2px rgba(0,229,255,0.12); }
+.k-input::-webkit-inner-spin-button,
+.k-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+/* Screen */
+.screen {
+  background: #04090f;
+  border: 2px solid #183a60;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: inset 0 0 40px rgba(0,180,255,0.04),
+              0 0 20px rgba(0,229,255,0.05);
+}
+.screen canvas { display: block; width: 100% !important; }
+
+/* Time range */
+.trange { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.trange-label { color: var(--muted); font-size: 0.75rem; }
+
+.tbtn {
+  background: #0a1a2e;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.72rem;
+  padding: 3px 9px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tbtn:hover, .tbtn.active {
+  background: #1a4a7a; border-color: var(--cyan); color: var(--cyan);
+}
+
+/* Info bar */
+.info-bar {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding-top: 10px;
+  border-top: 1px solid var(--grid);
+  font-size: 0.76rem;
+  align-items: center;
+}
+
+.badge { display: flex; align-items: center; gap: 6px; }
+
+.dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+.dot.stable   { background: var(--green);  box-shadow: 0 0 6px rgba(46,204,113,0.7); }
+.dot.unstable { background: var(--red);    box-shadow: 0 0 6px rgba(231,76,60,0.7); }
+.dot.marginal { background: var(--yellow); box-shadow: 0 0 6px rgba(243,156,18,0.7); }
+.dot.neutral  { background: var(--muted); }
+
+.metric { color: var(--muted); }
+.metric span { color: var(--text); }
+
+/* Error */
+.error-msg {
+  color: var(--red);
+  font-size: 0.73rem;
+  min-height: 16px;
+  margin-top: 5px;
+}
+
+/* Poles layout */
+.poles-layout {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.poles-table-wrap {
+  flex: 1;
+  min-width: 240px;
+  overflow-x: auto;
+}
+
+.poles-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+}
+
+.poles-table th {
+  color: var(--muted);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.poles-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--grid);
+  font-family: 'Share Tech Mono', monospace;
+  white-space: nowrap;
+}
+
+.poles-table tr:last-child td { border-bottom: none; }
+
+.poles-table .td-idx   { color: var(--muted); font-size: 0.72rem; }
+.poles-table .td-real  { color: #00e5ff; }
+.poles-table .td-imag  { color: #a0c8e0; }
+.poles-table .td-mod   { color: #7fa8c9; }
+
+.pole-tag {
+  font-size: 0.66rem;
+  padding: 2px 7px;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+.pole-tag.stable   { background:#0a2e1a; color:var(--green);  border:1px solid #1a5a30; }
+.pole-tag.unstable { background:#2e0a0a; color:var(--red);    border:1px solid #5a1a1a; }
+.pole-tag.marginal { background:#2e2000; color:var(--yellow); border:1px solid #5a4000; }
+.pole-tag.real     { font-style: normal; }
+.pole-tag.complex  { font-style: italic; }
+
+/* PZ map */
+.pzmap-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.pzmap-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.62rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+#pzmap {
+  background: #04090f;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  display: block;
+}
+
+.pzmap-legend {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 0.68rem;
+  color: var(--muted);
+  justify-content: center;
+}
+
+.lgnd-x { color: var(--red);   font-weight: bold; font-size: 1rem; line-height: 1; }
+.lgnd-o { color: var(--cyan);  font-size: 1rem; line-height: 1; }
+</style>
+</head>
+<body>
+
+<h1>Simulador — Respuesta al <em>Escalón</em></h1>
+
+<div class="tf-display">
+  <span class="tf-eq">G(s) =</span>
+  <div class="tf-fraction">
+    <div class="tf-num" id="tfNum">K · (s + 2)</div>
+    <div class="tf-den" id="tfDen">s³ + 3s² + 2s + 1</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- Config -->
+  <div class="card">
+    <div class="card-title">Función de Transferencia</div>
+
+    <div class="poly-row">
+      <div class="poly-group">
+        <label class="poly-label">Numerador <span class="tag">N(s)</span></label>
+        <input class="poly-input" id="numInput" type="text"
+               value="1, 2" placeholder="Ej: 1, 2" autocomplete="off" spellcheck="false">
+        <span class="poly-hint">Coeficientes de mayor a menor potencia, separados por comas</span>
+      </div>
+      <div class="poly-group">
+        <label class="poly-label">Denominador <span class="tag">D(s)</span></label>
+        <input class="poly-input" id="denInput" type="text"
+               value="1, 3, 2, 1" placeholder="Ej: 1, 3, 2, 1" autocomplete="off" spellcheck="false">
+        <span class="poly-hint">Coeficientes de mayor a menor potencia, separados por comas</span>
+      </div>
+    </div>
+
+    <div class="error-msg" id="errorMsg"></div>
+
+    <div class="presets-row">
+      <span class="presets-label">Ejemplos:</span>
+      <button class="preset-btn" data-num="1,2"     data-den="1,3,2,1">Original imagen</button>
+      <button class="preset-btn" data-num="1"       data-den="1,1">      1er orden</button>
+      <button class="preset-btn" data-num="1"       data-den="1,0.2,1">  2º subamortiguado</button>
+      <button class="preset-btn" data-num="1"       data-den="1,2,1">    2º sobreamortiguado</button>
+      <button class="preset-btn" data-num="1"       data-den="1,0,1">    Oscilador puro</button>
+      <button class="preset-btn" data-num="1"       data-den="1,1,0">    Con integrador</button>
+      <button class="preset-btn" data-num="1,1"     data-den="1,3,3,1">  Cero + 3 polos</button>
+      <button class="preset-btn" data-num="10"      data-den="1,6,11,6"> 3 polos reales</button>
+      <button class="preset-btn" data-num="1,3"     data-den="1,2,5,0">  Inestable</button>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:10px; margin-top:14px;">
+      <div class="controls-row">
+        <span class="slider-label-k">Ganancia  K =</span>
+        <input type="range" id="kSlider" min="0.01" max="20" step="0.01" value="1">
+        <input type="number" id="kInput" class="k-input" value="1" min="0.01" max="20" step="0.01">
+      </div>
+      <div style="display:flex; gap:20px; flex-wrap:wrap; align-items:center;">
+        <div class="trange">
+          <span class="trange-label">T máx:</span>
+          <button class="tbtn active" data-t="10">10 s</button>
+          <button class="tbtn" data-t="20">20 s</button>
+          <button class="tbtn" data-t="40">40 s</button>
+          <button class="tbtn" data-t="80">80 s</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart -->
+  <div class="card">
+    <div class="card-title">Respuesta Temporal</div>
+    <div class="screen">
+      <canvas id="chart" height="300"></canvas>
+    </div>
+    <div class="info-bar" style="margin-top:12px;">
+      <div class="badge">
+        <div class="dot neutral" id="stabilityDot"></div>
+        <span id="stabilityText" style="color:var(--muted); font-size:0.78rem;">—</span>
+      </div>
+      <div class="metric">Orden: <span id="orderVal">—</span></div>
+      <div class="metric">Estado estacionario: <span id="ssVal">—</span></div>
+      <div class="metric">Pico: <span id="peakVal">—</span></div>
+      <div class="metric">t<sub>pico</sub>: <span id="tpeakVal">—</span></div>
+    </div>
+  </div>
+
+  <!-- Poles card -->
+  <div class="card">
+    <div class="card-title">Polos del Sistema (denominador)</div>
+    <div class="poles-layout">
+      <div class="poles-table-wrap">
+        <table class="poles-table" id="polesTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Parte real  σ</th>
+              <th>Parte imag.  jω</th>
+              <th>Módulo  |p|</th>
+              <th>Tipo</th>
+            </tr>
+          </thead>
+          <tbody id="polesBody">
+            <tr><td colspan="5" style="text-align:center;color:var(--muted)">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pzmap-wrap">
+        <div class="pzmap-title">Mapa Polos–Ceros</div>
+        <canvas id="pzmap" width="270" height="270"></canvas>
+        <div class="pzmap-legend">
+          <span><span class="lgnd-x">×</span> Polo</span>
+          <span><span class="lgnd-o">○</span> Cero</span>
+          <span style="color:#3a6080;font-size:0.65rem">eje Im = frontera estabilidad</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── Polynomial utilities ─────────────────────────────────────────
+
+const SUP = ['⁰','¹','²','³','⁴','⁵','⁶','⁷','⁸','⁹'];
+
+function toSup(n) {
+  return String(n).split('').map(d => SUP[+d] || d).join('');
+}
+
+function fmtN(v) {
+  const s = parseFloat(v.toPrecision(5));
+  return s % 1 === 0 ? String(s) : String(s);
+}
+
+function polyStr(coeffs) {
+  const n = coeffs.length - 1;
+  if (n < 0) return '0';
+  let terms = [];
+  coeffs.forEach((c, i) => {
+    const pow = n - i;
+    if (Math.abs(c) < 1e-12) return;
+    const absC = Math.abs(c);
+    let coefPart;
+    if (pow === 0)       coefPart = fmtN(absC);
+    else if (absC === 1) coefPart = '';
+    else                 coefPart = fmtN(absC);
+    const varPart = pow === 0 ? '' : pow === 1 ? 's' : 's' + toSup(pow);
+    terms.push({ sign: c < 0 ? '−' : '+', str: (coefPart + varPart) || '1' });
+  });
+  if (!terms.length) return '0';
+  let s = (terms[0].sign === '−' ? '−' : '') + terms[0].str;
+  for (let i = 1; i < terms.length; i++) s += ` ${terms[i].sign} ${terms[i].str}`;
+  return s;
+}
+
+function parseCoeffs(str) {
+  const parts = str.split(',').map(s => s.trim()).filter(Boolean);
+  if (!parts.length) return null;
+  const nums = parts.map(Number);
+  if (nums.some(isNaN)) return null;
+  return nums;
+}
+
+// ── Transfer function → State Space (controllable canonical form) ──
+
+function tfToSS(numIn, denIn) {
+  let num = [...numIn], den = [...denIn];
+  const n = den.length - 1;
+  if (n < 1) return null;
+  if (num.length > den.length) return null;
+
+  const d0 = den[0];
+  if (Math.abs(d0) < 1e-14) return null;
+  den = den.map(v => v / d0);
+  num = num.map(v => v / d0);
+
+  while (num.length < n + 1) num = [0, ...num];
+
+  const D = num[0];
+  num = num.map((v, i) => v - D * den[i]);
+
+  const bCoeffs = num.slice(1); // length n
+
+  // A: companion matrix
+  const A = Array.from({ length: n }, (_, i) => {
+    const row = new Array(n).fill(0);
+    if (i < n - 1) { row[i + 1] = 1; }
+    else { for (let j = 0; j < n; j++) row[j] = -den[n - j]; }
+    return row;
+  });
+
+  const B = new Array(n).fill(0);
+  B[n - 1] = 1;
+
+  const C = Array.from({ length: n }, (_, i) => bCoeffs[n - 1 - i]);
+
+  return { A, B, C, D, n };
+}
+
+// ── RK4 ─────────────────────────────────────────────────────────
+
+function matVec(A, x) {
+  return A.map(row => row.reduce((s, v, j) => s + v * x[j], 0));
+}
+
+function rk4Step(x, A, B, u, dt) {
+  const f = xv => matVec(A, xv).map((v, i) => v + B[i] * u);
+  const k1 = f(x);
+  const k2 = f(x.map((v, i) => v + 0.5 * dt * k1[i]));
+  const k3 = f(x.map((v, i) => v + 0.5 * dt * k2[i]));
+  const k4 = f(x.map((v, i) => v + dt  * k3[i]));
+  return x.map((v, i) => v + (dt / 6) * (k1[i] + 2*k2[i] + 2*k3[i] + k4[i]));
+}
+
+function simulate(ss, K, tMax) {
+  const { A, B, C, D, n } = ss;
+  const STEPS = 2000;
+  const dt = tMax / STEPS;
+  let x = new Array(n).fill(0);
+  const t = [], y = [];
+  const CLAMP = 1e5;
+
+  for (let i = 0; i <= STEPS; i++) {
+    const u = 1;
+    const raw = C.reduce((s, c, j) => s + c * x[j], 0) + D * u;
+    const out = K * raw;
+    t.push(i * dt);
+    y.push(out);
+    if (!isFinite(out) || Math.abs(out) > CLAMP) {
+      const fill = out > 0 ? CLAMP : -CLAMP;
+      for (let j = i + 1; j <= STEPS; j++) { t.push(j * dt); y.push(fill); }
+      return { t, y, diverged: true };
+    }
+    x = rk4Step(x, A, B, u, dt);
+  }
+  return { t, y, diverged: false };
+}
+
+// Stability determined analytically from pole locations (single source of truth)
+function stabilityFromPoles(poles) {
+  const EPS = 1e-6;
+  const maxRe = Math.max(...poles.map(p => p.re));
+  if (maxRe >  EPS) return 'inestable';
+  if (maxRe > -EPS) return 'marginal';
+  return 'estable';
+}
+
+// ── Chart ────────────────────────────────────────────────────────
+
+const ctx = document.getElementById('chart').getContext('2d');
+const chart = new Chart(ctx, {
+  type: 'line',
+  data: {
+    datasets: [
+      {
+        label: 'y(t) — respuesta',
+        data: [],
+        borderColor: '#00e5ff',
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0.08,
+        fill: false,
+        parsing: false,
+      },
+      {
+        label: 'u(t) — escalón',
+        data: [],
+        borderColor: 'rgba(255,107,53,0.5)',
+        borderWidth: 1.5,
+        borderDash: [6, 5],
+        pointRadius: 0,
+        tension: 0,
+        fill: false,
+        parsing: false,
+      }
+    ]
+  },
+  options: {
+    animation: { duration: 120 },
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: {
+        labels: {
+          color: '#7fa8c9',
+          font: { family: 'Share Tech Mono', size: 11 },
+          boxWidth: 22,
+        }
+      },
+      tooltip: {
+        backgroundColor: '#0c1420',
+        borderColor: '#1e3a5f',
+        borderWidth: 1,
+        titleColor: '#00e5ff',
+        bodyColor: '#c8d6e5',
+        titleFont: { family: 'Share Tech Mono', size: 11 },
+        bodyFont:  { family: 'Share Tech Mono', size: 11 },
+        callbacks: {
+          title: items => `t = ${items[0].parsed.x.toFixed(3)} s`,
+          label: item  => ` ${item.dataset.label}: ${item.parsed.y.toFixed(5)}`
+        }
+      }
+    },
+    scales: {
+      x: {
+        type: 'linear',
+        title: { display: true, text: 'Tiempo (s)', color: '#4a7a9b',
+                 font: { family: 'Share Tech Mono', size: 11 } },
+        ticks: { color: '#4a7a9b', font: { family: 'Share Tech Mono', size: 10 }, maxTicksLimit: 10 },
+        grid: { color: '#0d1e30' },
+        border: { color: '#1e3a5f' }
+      },
+      y: {
+        title: { display: true, text: 'Amplitud', color: '#4a7a9b',
+                 font: { family: 'Share Tech Mono', size: 11 } },
+        ticks: { color: '#4a7a9b', font: { family: 'Share Tech Mono', size: 10 }, maxTicksLimit: 8 },
+        grid: { color: '#0d1e30' },
+        border: { color: '#1e3a5f' }
+      }
+    }
+  }
+});
+
+// ── Root finding: Durand-Kerner (Weierstrass) method ────────────
+
+function cadd(a, b) { return { re: a.re + b.re, im: a.im + b.im }; }
+function csub(a, b) { return { re: a.re - b.re, im: a.im - b.im }; }
+function cmul(a, b) { return { re: a.re*b.re - a.im*b.im, im: a.re*b.im + a.im*b.re }; }
+function cdiv(a, b) {
+  const d = b.re*b.re + b.im*b.im;
+  if (d < 1e-30) return { re: 0, im: 0 };
+  return { re: (a.re*b.re + a.im*b.im)/d, im: (a.im*b.re - a.re*b.im)/d };
+}
+function cabs(a) { return Math.sqrt(a.re*a.re + a.im*a.im); }
+
+function evalPoly(p, z) {
+  // Horner
+  let r = { re: p[0], im: 0 };
+  for (let i = 1; i < p.length; i++) {
+    r = cadd(cmul(r, z), { re: p[i], im: 0 });
+  }
+  return r;
+}
+
+function findRoots(coeffs) {
+  const n = coeffs.length - 1;
+  if (n <= 0) return [];
+
+  // Normalize
+  const a0 = coeffs[0];
+  const p  = coeffs.map(c => c / a0);
+
+  if (n === 1) return [{ re: -p[1], im: 0 }];
+
+  if (n === 2) {
+    const disc = p[1]*p[1] - 4*p[2];
+    if (disc >= 0) {
+      return [
+        { re: (-p[1] + Math.sqrt(disc)) / 2, im: 0 },
+        { re: (-p[1] - Math.sqrt(disc)) / 2, im: 0 },
+      ];
+    } else {
+      const imag = Math.sqrt(-disc) / 2;
+      return [
+        { re: -p[1]/2, im:  imag },
+        { re: -p[1]/2, im: -imag },
+      ];
+    }
+  }
+
+  // Initial radius estimate
+  const r = Math.max(1, Math.pow(Math.abs(p[n]), 1/n));
+
+  // Initial guesses on a circle, slightly perturbed
+  let roots = Array.from({ length: n }, (_, k) => {
+    const angle = (2*Math.PI*k/n) + 0.4;
+    return { re: r * Math.cos(angle), im: r * Math.sin(angle) };
+  });
+
+  for (let iter = 0; iter < 2000; iter++) {
+    let maxChange = 0;
+    const next = roots.map((zk, k) => {
+      const pz = evalPoly(p, zk);
+      let denom = { re: 1, im: 0 };
+      for (let j = 0; j < n; j++) {
+        if (j !== k) denom = cmul(denom, csub(zk, roots[j]));
+      }
+      const delta = cdiv(pz, denom);
+      maxChange = Math.max(maxChange, cabs(delta));
+      return csub(zk, delta);
+    });
+    roots = next;
+    if (maxChange < 1e-12) break;
+  }
+
+  // Clean near-zero imaginaries (real roots)
+  return roots.map(r => ({
+    re: r.re,
+    im: Math.abs(r.im) < 1e-7 * Math.max(1, Math.abs(r.re)) ? 0 : r.im
+  }));
+}
+
+// Sort roots: real first (by re desc), then complex pairs
+function sortRoots(roots) {
+  return [...roots].sort((a, b) => {
+    const aReal = Math.abs(a.im) < 1e-6;
+    const bReal = Math.abs(b.im) < 1e-6;
+    if (aReal && !bReal) return -1;
+    if (!aReal && bReal) return  1;
+    return b.re - a.re;
+  });
+}
+
+// ── Render poles table ────────────────────────────────────────────
+
+function renderPolesTable(roots) {
+  const tbody = document.getElementById('polesBody');
+  const sorted = sortRoots(roots);
+  tbody.innerHTML = sorted.map((r, i) => {
+    const sigma = r.re;
+    const omega = r.im;
+    const mod   = cabs(r);
+    const isReal    = Math.abs(omega) < 1e-6;
+    const isStable  = sigma < -1e-6;
+    const isUnstable= sigma >  1e-6;
+    const isMarginal= !isStable && !isUnstable;
+
+    const stabClass = isStable ? 'stable' : isUnstable ? 'unstable' : 'marginal';
+    const typeLabel = isReal
+      ? (isMarginal ? 'Real / marginalmente estable' : isStable ? 'Real estable' : 'Real inestable')
+      : (isMarginal ? 'Complejo / marg.' : isStable ? 'Complejo estable' : 'Complejo inestable');
+    const typeShort = isReal ? 'Real' : 'Complejo';
+    const typeClass = isReal ? 'real' : 'complex';
+
+    const sigStr = sigma.toFixed(5);
+    const omgStr = omega === 0 ? '0' : (omega > 0 ? '+' : '') + omega.toFixed(5);
+    const modStr = mod.toFixed(5);
+
+    return `<tr>
+      <td class="td-idx">${i+1}</td>
+      <td class="td-real">${sigStr}</td>
+      <td class="td-imag">${omgStr} j</td>
+      <td class="td-mod">${modStr}</td>
+      <td><span class="pole-tag ${stabClass} ${typeClass}" title="${typeLabel}">${typeShort} / ${stabClass}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Draw Pole-Zero map ────────────────────────────────────────────
+
+function drawPZMap(poles, zeros) {
+  const canvas = document.getElementById('pzmap');
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H / 2;
+  const ctx2 = canvas.getContext('2d');
+  ctx2.clearRect(0, 0, W, H);
+
+  // Determine scale from poles + zeros
+  const allPts = [...poles, ...zeros];
+  let maxR = 2;
+  allPts.forEach(p => {
+    maxR = Math.max(maxR, Math.abs(p.re) * 1.4, Math.abs(p.im) * 1.4);
+  });
+  const pad = 30;
+  const scale = (W/2 - pad) / maxR;
+
+  function toCanvas(re, im) {
+    return { x: cx + re * scale, y: cy - im * scale };
+  }
+
+  // Background grid
+  ctx2.strokeStyle = '#0d1e30';
+  ctx2.lineWidth = 1;
+  const step = Math.pow(10, Math.floor(Math.log10(maxR)));
+  for (let v = -maxR; v <= maxR; v += step) {
+    const gx = toCanvas(v, 0).x;
+    const gy = toCanvas(0, v).y;
+    ctx2.beginPath(); ctx2.moveTo(gx, 0); ctx2.lineTo(gx, H); ctx2.stroke();
+    ctx2.beginPath(); ctx2.moveTo(0, gy); ctx2.lineTo(W, gy); ctx2.stroke();
+  }
+
+  // Unstable region (RHP) shading
+  ctx2.fillStyle = 'rgba(231,76,60,0.06)';
+  ctx2.fillRect(cx, 0, W - cx, H);
+
+  // Imaginary axis (stability boundary)
+  ctx2.strokeStyle = '#2a5a3a';
+  ctx2.lineWidth = 1.5;
+  ctx2.setLineDash([4, 4]);
+  ctx2.beginPath(); ctx2.moveTo(cx, 0); ctx2.lineTo(cx, H); ctx2.stroke();
+  ctx2.setLineDash([]);
+
+  // Axes
+  ctx2.strokeStyle = '#1e4a6a';
+  ctx2.lineWidth = 1.5;
+  ctx2.beginPath(); ctx2.moveTo(pad/2, cy); ctx2.lineTo(W - pad/2, cy); ctx2.stroke();
+  ctx2.beginPath(); ctx2.moveTo(cx, pad/2); ctx2.lineTo(cx, H - pad/2); ctx2.stroke();
+
+  // Axis labels
+  ctx2.fillStyle = '#3a6080';
+  ctx2.font = '10px Share Tech Mono';
+  ctx2.textAlign = 'center';
+  ctx2.fillText('σ', W - pad/2 + 10, cy + 4);
+  ctx2.fillText('jω', cx, pad/2 - 6);
+
+  // Tick labels
+  ctx2.font = '9px Share Tech Mono';
+  ctx2.fillStyle = '#2a5070';
+  for (let v = -Math.floor(maxR / step) * step; v <= maxR; v += step) {
+    if (Math.abs(v) < step * 0.1) continue;
+    const { x } = toCanvas(v, 0);
+    const { y } = toCanvas(0, v);
+    ctx2.textAlign = 'center';
+    ctx2.fillText(parseFloat(v.toPrecision(2)), x, cy + 12);
+    ctx2.textAlign = 'right';
+    ctx2.fillText(parseFloat(v.toPrecision(2)), cx - 4, y + 3);
+  }
+
+  // Draw zeros ○
+  zeros.forEach(z => {
+    const { x, y } = toCanvas(z.re, z.im);
+    ctx2.strokeStyle = '#00e5ff';
+    ctx2.lineWidth = 2;
+    ctx2.beginPath();
+    ctx2.arc(x, y, 6, 0, 2 * Math.PI);
+    ctx2.stroke();
+  });
+
+  // Draw poles ×
+  poles.forEach(p => {
+    const { x, y } = toCanvas(p.re, p.im);
+    const color = p.re < -1e-6 ? '#2ecc71' : p.re > 1e-6 ? '#e74c3c' : '#f39c12';
+    const s = 6;
+    ctx2.strokeStyle = color;
+    ctx2.lineWidth = 2.5;
+    ctx2.beginPath();
+    ctx2.moveTo(x - s, y - s); ctx2.lineTo(x + s, y + s);
+    ctx2.moveTo(x + s, y - s); ctx2.lineTo(x - s, y + s);
+    ctx2.stroke();
+
+    // Glow
+    ctx2.shadowColor = color;
+    ctx2.shadowBlur = 8;
+    ctx2.beginPath();
+    ctx2.moveTo(x - s, y - s); ctx2.lineTo(x + s, y + s);
+    ctx2.stroke();
+    ctx2.shadowBlur = 0;
+  });
+}
+
+
+
+let tMax = 10;
+
+function setSliderPct(el) {
+  const pct = ((el.value - el.min) / (el.max - el.min)) * 100;
+  el.style.setProperty('--pct', pct + '%');
+}
+
+function update() {
+  const K      = parseFloat(document.getElementById('kInput').value) || 1;
+  const errEl  = document.getElementById('errorMsg');
+
+  // Sync slider (clamp to its range)
+  const slider = document.getElementById('kSlider');
+  const clamped = Math.min(Math.max(K, parseFloat(slider.min)), parseFloat(slider.max));
+  slider.value = clamped;
+  setSliderPct(slider);
+
+  const num = parseCoeffs(document.getElementById('numInput').value);
+  const den = parseCoeffs(document.getElementById('denInput').value);
+
+  document.getElementById('numInput').classList.toggle('error', !num);
+  document.getElementById('denInput').classList.toggle('error', !den);
+
+  if (!num || !den) {
+    errEl.textContent = '⚠ Coeficientes inválidos — usa números separados por comas.'; return;
+  }
+  if (den.length < 2) {
+    errEl.textContent = '⚠ El denominador debe tener al menos orden 1.'; return;
+  }
+  if (num.length > den.length) {
+    errEl.textContent = '⚠ Función de transferencia no propia (grado num > grado den).'; return;
+  }
+  if (Math.abs(den[0]) < 1e-14) {
+    errEl.textContent = '⚠ El coeficiente líder del denominador no puede ser cero.'; return;
+  }
+
+  errEl.textContent = '';
+
+  // Display
+  document.getElementById('tfNum').textContent = `K · (${polyStr(num)})`;
+  document.getElementById('tfDen').textContent = polyStr(den);
+
+  const ss = tfToSS(num, den);
+  if (!ss) { errEl.textContent = '⚠ No se pudo construir el espacio de estados.'; return; }
+
+  document.getElementById('orderVal').textContent = ss.n;
+
+  // Poles & zeros — compute FIRST (used for stability badge)
+  const poles = findRoots(den);
+  const zeros = num.length > 1 || num[0] !== 0 ? findRoots(num) : [];
+  const stab  = stabilityFromPoles(poles);
+
+  const { t, y } = simulate(ss, K, tMax);
+
+  const yData    = t.map((tv, i) => ({ x: tv, y: y[i] }));
+  const stepData = t.map(tv       => ({ x: tv, y: tv <= 0 ? 0 : 1 }));
+
+  const colorMap = { estable: '#00e5ff', marginal: '#f39c12', inestable: '#e74c3c' };
+  const classMap = { estable: 'stable',  marginal: 'marginal', inestable: 'unstable' };
+
+  chart.data.datasets[0].data = yData;
+  chart.data.datasets[0].borderColor = colorMap[stab];
+  chart.data.datasets[1].data = stepData;
+  chart.update();
+
+  // Badge
+  const dot = document.getElementById('stabilityDot');
+  const txt = document.getElementById('stabilityText');
+  dot.className = `dot ${classMap[stab]}`;
+  txt.style.color = colorMap[stab];
+  txt.textContent = `Sistema ${stab}`;
+
+  // Metrics
+  const peak   = Math.max(...y.filter(isFinite));
+  const iPeak  = y.indexOf(peak);
+  const ssVal  = y[y.length - 1];
+
+  document.getElementById('ssVal').textContent    = isFinite(ssVal) ? ssVal.toFixed(5) : '∞';
+  document.getElementById('peakVal').textContent  = isFinite(peak)  ? peak.toFixed(5)  : '∞';
+  document.getElementById('tpeakVal').textContent = isFinite(t[iPeak]) ? t[iPeak].toFixed(3) + ' s' : '—';
+
+  renderPolesTable(poles);
+  drawPZMap(poles, zeros);
+}
+
+// ── Events ───────────────────────────────────────────────────────
+
+// Slider → number input
+document.getElementById('kSlider').addEventListener('input', () => {
+  document.getElementById('kInput').value = parseFloat(document.getElementById('kSlider').value).toFixed(2);
+  update();
+});
+// Number input → slider
+document.getElementById('kInput').addEventListener('input', update);
+document.getElementById('kInput').addEventListener('change', () => {
+  const v = parseFloat(document.getElementById('kInput').value);
+  if (!isNaN(v)) document.getElementById('kInput').value = v;
+  update();
+});
+document.getElementById('numInput').addEventListener('input', update);
+document.getElementById('denInput').addEventListener('input', update);
+
+document.querySelectorAll('.tbtn').forEach(btn =>
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tbtn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    tMax = parseFloat(btn.dataset.t);
+    update();
+  })
+);
+
+document.querySelectorAll('.preset-btn').forEach(btn =>
+  btn.addEventListener('click', () => {
+    document.getElementById('numInput').value = btn.dataset.num;
+    document.getElementById('denInput').value = btn.dataset.den;
+    update();
+  })
+);
+
+update();
+</script>
+</body>
+</html>
