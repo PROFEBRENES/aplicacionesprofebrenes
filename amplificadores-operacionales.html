@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amplificadores Operacionales — Guía Completa</title>
+<script>MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]}};</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --g9:#0f2d06;--g7:#19470b;--g5:#3a6f1a;--g3:#6aad3e;--g1:#dae6cf;--g0:#f0f5ec;
+  --cream:#faf9f5;--white:#fff;--gray1:#f4f4f2;--gray2:#e8e8e4;--gray5:#888880;
+  --text:#1a1a18;--muted:#5a5a56;--orange:#e07420;--red:#c0392b;
+  --rs:6px;--r:12px;--rl:20px;
+  --ss:0 1px 3px rgba(0,0,0,.08);--sh:0 4px 16px rgba(0,0,0,.10);--sl:0 8px 32px rgba(0,0,0,.13);
+  --sw:240px;--th:60px;
+  --fh:'Space Grotesk',sans-serif;--fb:'Nunito',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;font-size:16px;}
+body{font-family:var(--fb);background:var(--cream);color:var(--text);line-height:1.7;}
+
+/* PROGRESS */
+#pb{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--g3),var(--g5));width:0%;z-index:1000;transition:width .1s;}
+
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:0;right:0;height:var(--th);background:var(--g7);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.25);}
+.brand{font-family:var(--fh);font-size:1.05rem;font-weight:700;color:#fff;display:flex;align-items:center;gap:10px;text-decoration:none;}
+.badge{background:var(--g3);color:var(--g9);font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.05em;text-transform:uppercase;}
+.topmenu{display:flex;align-items:center;gap:4px;}
+.topmenu a{color:rgba(255,255,255,.75);text-decoration:none;font-size:.8rem;font-weight:500;padding:6px 11px;border-radius:var(--rs);transition:all .2s;white-space:nowrap;}
+.topmenu a:hover,.topmenu a.active{color:#fff;background:rgba(255,255,255,.15);}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;}
+.hamburger span{display:block;width:22px;height:2px;background:white;margin:5px 0;border-radius:2px;transition:all .3s;}
+
+/* LAYOUT */
+.layout{display:flex;margin-top:var(--th);min-height:calc(100vh - var(--th));}
+
+/* SIDEBAR */
+.sidebar{width:var(--sw);flex-shrink:0;position:sticky;top:var(--th);height:calc(100vh - var(--th));overflow-y:auto;background:var(--white);border-right:1px solid var(--gray2);padding:20px 0 40px;}
+.sidebar::-webkit-scrollbar{width:4px;}
+.sidebar::-webkit-scrollbar-thumb{background:var(--g1);border-radius:4px;}
+.slabel{font-size:.63rem;font-weight:700;color:var(--gray5);text-transform:uppercase;letter-spacing:.1em;padding:10px 20px 4px;margin-top:6px;}
+.slink{display:flex;align-items:center;gap:10px;padding:9px 20px;color:var(--muted);text-decoration:none;font-size:.84rem;font-weight:500;border-left:3px solid transparent;transition:all .2s;}
+.slink:hover,.slink.active{color:var(--g7);background:var(--g0);border-left-color:var(--g5);}
+.ssublink{display:flex;align-items:center;gap:10px;padding:7px 20px 7px 40px;color:var(--muted);text-decoration:none;font-size:.79rem;font-weight:500;border-left:3px solid transparent;transition:all .2s;}
+.ssublink:hover,.ssublink.active{color:var(--g5);background:var(--g0);border-left-color:var(--g3);}
+
+/* MAIN */
+.main{flex:1;min-width:0;padding:40px 48px;max-width:880px;}
+
+/* SECTIONS */
+.sec{margin-bottom:72px;scroll-margin-top:calc(var(--th) + 20px);}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--g9) 0%,var(--g7) 55%,var(--g5) 100%);border-radius:var(--rl);padding:44px 40px;color:white;margin-bottom:48px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-40px;right:-40px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.04);}
+.hero::after{content:'';position:absolute;bottom:-50px;right:60px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.03);}
+.hero h1{font-family:var(--fh);font-size:2.1rem;font-weight:700;line-height:1.2;margin-bottom:14px;}
+.hero p{font-size:1rem;opacity:.85;max-width:520px;}
+.htags{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;}
+.htag{background:rgba(255,255,255,.15);color:white;font-size:.76rem;font-weight:600;padding:4px 13px;border-radius:20px;border:1px solid rgba(255,255,255,.2);}
+
+/* HEADINGS */
+.stitle{font-family:var(--fh);font-size:1.6rem;font-weight:700;color:var(--g7);margin-bottom:6px;display:flex;align-items:center;gap:12px;}
+.ssub{color:var(--muted);font-size:.92rem;margin-bottom:22px;padding-bottom:14px;border-bottom:2px solid var(--g1);}
+.h3{font-family:var(--fh);font-size:1.1rem;font-weight:600;color:var(--g5);margin:28px 0 12px;display:flex;align-items:center;gap:8px;}
+
+/* CARDS */
+.card{background:var(--white);border-radius:var(--r);padding:24px;box-shadow:var(--ss);border:1px solid var(--gray2);margin-bottom:20px;}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin:16px 0;}
+.citem{background:var(--g0);border-radius:var(--rs);padding:15px;border-left:4px solid var(--g3);}
+.citem h4{font-family:var(--fh);font-size:.83rem;font-weight:600;color:var(--g7);margin-bottom:5px;}
+.citem p{font-size:.8rem;color:var(--muted);}
+
+/* IMAGES */
+.imgbox{border-radius:var(--r);overflow:hidden;border:2px solid var(--g1);box-shadow:var(--sh);margin:18px 0;background:white;text-align:center;}
+.imgbox img{width:100%;max-width:100%;height:auto;display:block;object-fit:contain;}
+.imgbox.circuit img{max-height:300px;object-fit:contain;}
+.imgcap{padding:9px 16px;background:var(--g0);font-size:.78rem;color:var(--muted);font-style:italic;border-top:1px solid var(--g1);text-align:center;}
+
+/* SPLIT */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;margin:18px 0;}
+.chip-layout{display:grid;grid-template-columns:1fr 1.6fr;gap:28px;align-items:center;margin:18px 0;}
+
+/* FORMULAS */
+.fbox{background:var(--white);border-left:5px solid var(--g7);box-shadow:var(--sh);margin:18px 0;padding:18px 22px;text-align:center;font-size:1.05em;border-radius:var(--r);overflow-x:auto;}
+.flabel{font-family:var(--fh);font-size:.72rem;color:var(--g5);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px;}
+
+/* CALLOUTS */
+.note{background:#d9ead3;border-left:5px solid var(--g5);padding:14px 18px;border-radius:var(--rs);color:#3a5a2a;margin:14px 0;font-size:.88rem;}
+.note strong{color:var(--g7);}
+.warn{background:#fff3cd;border-left:5px solid var(--orange);padding:14px 18px;border-radius:var(--rs);color:#704010;margin:14px 0;font-size:.88rem;}
+.hl{background:var(--g0);border-radius:var(--r);padding:18px 22px;border:1px solid var(--g1);margin:14px 0;}
+
+/* TABLE */
+.twrap{overflow-x:auto;margin:18px 0;}
+table{width:100%;border-collapse:collapse;font-size:.86rem;}
+th{background:var(--g7);color:white;padding:11px 15px;font-family:var(--fh);font-weight:600;text-align:left;}
+td{padding:10px 15px;border-bottom:1px solid var(--gray2);color:var(--muted);}
+tr:nth-child(even) td{background:var(--g0);}
+tr:last-child td{border-bottom:none;}
+
+/* LISTS */
+ul,ol{padding-left:20px;color:var(--muted);}
+li{margin:7px 0;}
+li strong{color:var(--text);}
+p{color:var(--muted);margin:10px 0;}
+
+/* STEPS */
+.steps{margin:14px 0;}
+.step{display:flex;gap:14px;margin-bottom:14px;}
+.snum{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:var(--g5);color:white;font-family:var(--fh);font-weight:700;font-size:.82rem;display:flex;align-items:center;justify-content:center;}
+.scont{background:var(--gray1);border-radius:var(--rs);padding:13px 16px;flex:1;border-left:3px solid var(--g3);}
+.scont h4{font-family:var(--fh);font-size:.87rem;font-weight:600;color:var(--g7);margin-bottom:5px;}
+.scont p,.scont ul{margin:0;font-size:.85rem;}
+
+/* CONFIG TABS */
+.ctabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;}
+.ctab{padding:7px 17px;border-radius:20px;border:2px solid var(--g1);background:white;color:var(--muted);font-size:.8rem;font-weight:600;font-family:var(--fh);cursor:pointer;transition:all .2s;}
+.ctab:hover{border-color:var(--g3);color:var(--g5);}
+.ctab.active{background:var(--g7);border-color:var(--g7);color:white;}
+.cpanel{display:none;}
+.cpanel.active{display:block;}
+
+/* CALCULATOR */
+.calcform{background:var(--white);border-radius:var(--r);padding:26px;border:2px solid var(--g1);box-shadow:var(--sh);}
+.crow{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:18px;}
+.igrp{display:flex;flex-direction:column;gap:5px;}
+.igrp label{font-size:.8rem;font-weight:600;color:var(--g7);font-family:var(--fh);}
+.igrp input,.igrp select{padding:9px 13px;border:2px solid var(--g1);border-radius:var(--rs);font-size:.93rem;font-family:var(--fb);color:var(--text);background:var(--white);outline:none;transition:border-color .2s;}
+.igrp input:focus,.igrp select:focus{border-color:var(--g3);}
+.cbtn{width:100%;padding:12px;background:var(--g7);color:white;border:none;border-radius:var(--rs);font-size:.95rem;font-weight:600;font-family:var(--fh);cursor:pointer;transition:background .2s;}
+.cbtn:hover{background:var(--g5);}
+.cres{margin-top:18px;background:var(--g0);border-radius:var(--rs);padding:18px;border:2px solid var(--g1);display:none;}
+.cres.show{display:block;}
+.rval{font-family:var(--fh);font-size:1.9rem;font-weight:700;color:var(--g7);}
+.rlbl{font-size:.79rem;color:var(--muted);margin-top:3px;}
+.rwarn{margin-top:9px;padding:9px 13px;background:#fff3cd;border-radius:var(--rs);color:#704010;font-size:.81rem;display:none;}
+.rwarn.show{display:block;}
+
+/* ANIMATIONS */
+.animbox{background:var(--white);border-radius:var(--r);border:2px solid var(--g1);box-shadow:var(--sh);overflow:hidden;margin:18px 0;}
+.animhdr{background:var(--g7);color:white;padding:11px 18px;display:flex;align-items:center;justify-content:space-between;}
+.animttl{font-family:var(--fh);font-size:.88rem;font-weight:600;}
+.animbtn{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:white;padding:5px 15px;border-radius:20px;font-size:.76rem;font-weight:600;cursor:pointer;transition:background .2s;}
+.animbtn:hover{background:rgba(255,255,255,.35);}
+.animbody{padding:22px;}
+
+/* LOOP CARDS */
+.loopcmp{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:18px 0;}
+.loopc{border-radius:var(--r);overflow:hidden;border:2px solid var(--gray2);box-shadow:var(--ss);}
+.loopchdr{padding:13px 17px;font-family:var(--fh);font-size:.88rem;font-weight:700;}
+.loopchdr.open{background:#ffeaa7;color:#6b4c00;}
+.loopchdr.closed{background:var(--g1);color:var(--g7);}
+.loopcbody{padding:14px 17px;background:white;}
+.loopcbody p{font-size:.81rem;margin:5px 0;}
+
+/* MOBILE OVERLAY */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90;}
+.overlay.show{display:block;}
+
+/* SCROLL FADE */
+.fi{opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .5s ease;}
+.fi.vis{opacity:1;transform:translateY(0);}
+
+/* FOOTER */
+footer{background:var(--g9);color:rgba(255,255,255,.6);text-align:center;padding:22px;font-size:.8rem;margin-top:40px;}
+footer strong{color:var(--g3);}
+
+/* RESPONSIVE */
+@media(max-width:1024px){.main{padding:28px 28px;}.split{grid-template-columns:1fr;}.chip-layout{grid-template-columns:1fr;}}
+@media(max-width:768px){
+  .topmenu{display:none;}.hamburger{display:block;}
+  .sidebar{position:fixed;left:-100%;top:var(--th);height:calc(100vh - var(--th));z-index:95;transition:left .3s ease;width:260px;box-shadow:var(--sl);}
+  .sidebar.open{left:0;}
+  .main{padding:18px 14px;}.hero{padding:28px 20px;}.hero h1{font-size:1.6rem;}
+  .crow{grid-template-columns:1fr;}.loopcmp{grid-template-columns:1fr;}
+  .cgrid{grid-template-columns:1fr 1fr;}
+  .stitle{font-size:1.25rem;}
+}
+@media(max-width:480px){.cgrid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div id="pb"></div>
+
+<nav class="topbar">
+  <a href="#" class="brand">⚡ Op-Amp Guide <span class="badge">Electrónica</span></a>
+  <div class="topmenu">
+    <a href="#que-es">¿Qué es?</a>
+    <a href="#ideal">Modelo Ideal</a>
+    <a href="#reglas">Reglas de Oro</a>
+    <a href="#lazo">Lazo</a>
+    <a href="#config">Configuraciones</a>
+    <a href="#saturacion">Saturación</a>
+    <a href="#calc">Calculadora</a>
+  </div>
+  <button class="hamburger" onclick="toggleMenu()" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="overlay" id="overlay" onclick="closeMenu()"></div>
+
+<div class="layout">
+<aside class="sidebar" id="sidebar">
+  <span class="slabel">Fundamentos</span>
+  <a class="slink" href="#que-es"><span>🔌</span> ¿Qué es un Op-Amp?</a>
+  <a class="slink" href="#simbolo"><span>🔺</span> Símbolo y Pines</a>
+  <a class="slink" href="#ideal"><span>⭐</span> Modelo Ideal</a>
+  <span class="slabel">Análisis</span>
+  <a class="slink" href="#reglas"><span>🥇</span> Reglas de Oro</a>
+  <a class="slink" href="#lazo"><span>🔄</span> Lazo Abierto / Cerrado</a>
+  <span class="slabel">Configuraciones</span>
+  <a class="ssublink" href="#inversor">▸ Amplificador Inversor</a>
+  <a class="ssublink" href="#noinversor">▸ Amplificador No Inversor</a>
+  <a class="ssublink" href="#buffer">▸ Seguidor (Buffer)</a>
+  <a class="ssublink" href="#sumador">▸ Sumador</a>
+  <a class="ssublink" href="#diferencial">▸ Diferencial</a>
+  <span class="slabel">Conceptos Avanzados</span>
+  <a class="slink" href="#saturacion"><span>⚠️</span> Saturación</a>
+  <a class="slink" href="#resistencias"><span>🔧</span> Nomenclatura R</a>
+  <span class="slabel">Práctica</span>
+  <a class="slink" href="#metodo"><span>📋</span> Método de Resolución</a>
+  <a class="slink" href="#ejemplos"><span>💡</span> Ejemplos Resueltos</a>
+  <a class="slink" href="#calc"><span>🧮</span> Calculadora</a>
+</aside>
+
+<main class="main">
+
+<!-- HERO -->
+<div class="hero fi">
+  <h1>Amplificadores Operacionales</h1>
+  <p>Guía completa para comprender el análisis, diseño y resolución de circuitos con op-amps, desde el modelo ideal hasta casos prácticos.</p>
+  <div class="htags">
+    <span class="htag">Electrónica Analógica</span>
+    <span class="htag">Circuitos Lineales</span>
+    <span class="htag">Realimentación Negativa</span>
+    <span class="htag">Op-Amp Ideal</span>
+  </div>
+</div>
+
+<!-- ─── 1. QUÉ ES ─── -->
+<section class="sec fi" id="que-es">
+  <h2 class="stitle">🔌 ¿Qué es un Amplificador Operacional?</h2>
+  <p class="ssub">El bloque fundamental de los circuitos analógicos</p>
+  <div class="chip-layout">
+    <div class="imgbox">
+      <img src="https://i.ytimg.com/vi/KAcpecu9B1Y/maxresdefault.jpg" alt="Chip LM741" loading="lazy">
+      <div class="imgcap">Fig. 1 — Chip LM741, uno de los op-amps más clásicos</div>
+    </div>
+    <div>
+      <p>Un <strong>amplificador operacional</strong> (Op-Amp o AO) es un dispositivo electrónico integrado que amplifica la diferencia de voltaje entre sus dos entradas. Es uno de los componentes más versátiles y utilizados en electrónica analógica.</p>
+      <div class="cgrid" style="margin-top:14px;">
+        <div class="citem"><h4>Dos Entradas</h4><p>Inversora (−) y no inversora (+)</p></div>
+        <div class="citem"><h4>Una Salida</h4><p>Proporcional a la diferencia de entradas</p></div>
+        <div class="citem"><h4>Alimentación</h4><p>Dual (±V) o simple</p></div>
+        <div class="citem"><h4>Ganancia A<sub>OL</sub></h4><p>Muy alta: ≈ 10⁵ – 10⁶</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 2. SÍMBOLO ─── -->
+<section class="sec fi" id="simbolo">
+  <h2 class="stitle">🔺 Símbolo y Pines</h2>
+  <p class="ssub">Representación esquemática del amplificador operacional</p>
+  <div class="split">
+    <div class="imgbox circuit">
+      <img src="https://www.monografias.com/docs114/amplificadores-operacionales-powerpoint/Diapositiva5.png" alt="Símbolo op-amp" loading="lazy">
+      <div class="imgcap">Fig. 2 — Símbolo esquemático del op-amp con sus pines</div>
+    </div>
+    <div>
+      <div class="fbox">
+        <div class="flabel">Ecuación Fundamental</div>
+        \[ V_{out} = A_{OL} \cdot (V_+ - V_-) \]
+      </div>
+      <ul>
+        <li><strong>V₊</strong> — Entrada no inversora (+)</li>
+        <li><strong>V₋</strong> — Entrada inversora (−)</li>
+        <li><strong>A<sub>OL</sub></strong> — Ganancia en lazo abierto</li>
+        <li><strong>V<sub>out</sub></strong> — Tensión de salida</li>
+        <li><strong>+Vcc / −Vcc</strong> — Tensiones de alimentación</li>
+      </ul>
+      <div class="note" style="margin-top:14px;"><strong>Clave:</strong> La salida amplifica la <em>diferencia</em> entre las dos entradas, no cada una por separado.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 3. MODELO IDEAL ─── -->
+<section class="sec fi" id="ideal">
+  <h2 class="stitle">⭐ El Amplificador Ideal</h2>
+  <p class="ssub">Simplificaciones que usamos en el análisis de circuitos</p>
+  <p>En el análisis de circuitos asumimos que el op-amp es <strong>ideal</strong>. Esto simplifica los cálculos y es una excelente aproximación en la mayoría de aplicaciones prácticas con realimentación negativa.</p>
+  <div class="cgrid">
+    <div class="citem"><h4>Ganancia infinita</h4><p>\(A_{OL} \to \infty\)</p></div>
+    <div class="citem"><h4>Impedancia entrada ∞</h4><p>\(Z_{in} \to \infty\), por tanto \(I_+ = I_- = 0\)</p></div>
+    <div class="citem"><h4>Impedancia salida 0</h4><p>\(Z_{out} = 0\,\Omega\)</p></div>
+    <div class="citem"><h4>Ancho de banda ∞</h4><p>Responde a cualquier frecuencia</p></div>
+    <div class="citem"><h4>CMRR infinito</h4><p>Rechaza señales de modo común</p></div>
+    <div class="citem"><h4>Offset = 0</h4><p>Sin errores de voltaje interno</p></div>
+  </div>
+  <div class="twrap" style="margin-top:20px;">
+    <table>
+      <thead><tr><th>Parámetro</th><th>Modelo Ideal</th><th>Op-Amp Real (LM741)</th></tr></thead>
+      <tbody>
+        <tr><td>Ganancia A<sub>OL</sub></td><td>∞</td><td>≈ 10⁵ – 3×10⁵</td></tr>
+        <tr><td>Impedancia de entrada</td><td>∞</td><td>≈ 1 MΩ</td></tr>
+        <tr><td>Impedancia de salida</td><td>0 Ω</td><td>≈ 75 Ω</td></tr>
+        <tr><td>Ancho de banda</td><td>∞</td><td>≈ 1 MHz</td></tr>
+        <tr><td>Corriente de entrada</td><td>0 A</td><td>≈ 80 nA</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note"><strong>¿Cuándo usar el modelo real?</strong> Solo en aplicaciones de muy alta frecuencia, ultra-baja corriente, precisión extrema o análisis de estabilidad. En el 95% de los casos de aula, el ideal es suficiente.</div>
+</section>
+
+<!-- ─── 4. REGLAS DE ORO ─── -->
+<section class="sec fi" id="reglas">
+  <h2 class="stitle">🥇 Reglas de Oro</h2>
+  <p class="ssub">Las dos herramientas fundamentales para resolver cualquier circuito con op-amp con realimentación negativa</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+    <div style="background:var(--g7);border-radius:var(--r);padding:22px;color:white;">
+      <div style="font-family:var(--fh);font-size:.95rem;font-weight:700;margin-bottom:8px;">🥇 REGLA 1 — Cortocircuito Virtual</div>
+      <div style="font-size:1.5rem;font-weight:700;margin:10px 0;">\(V_+ = V_-\)</div>
+      <p style="font-size:.83rem;opacity:.88;margin:0;">Los voltajes en ambas entradas son iguales. <strong>No</strong> están conectadas físicamente. Es el resultado de la autorregulación por realimentación negativa.</p>
+    </div>
+    <div style="background:var(--g5);border-radius:var(--r);padding:22px;color:white;">
+      <div style="font-family:var(--fh);font-size:.95rem;font-weight:700;margin-bottom:8px;">🥈 REGLA 2 — Corriente Cero</div>
+      <div style="font-size:1.5rem;font-weight:700;margin:10px 0;">\(I_+ = I_- = 0\,\text{A}\)</div>
+      <p style="font-size:.83rem;opacity:.88;margin:0;">No circula corriente hacia ninguna de las entradas del op-amp, debido a su impedancia de entrada infinita.</p>
+    </div>
+  </div>
+
+  <!-- Virtual Short Animation -->
+  <div class="animbox">
+    <div class="animhdr">
+      <span class="animttl">🎬 Animación — ¿Cómo se establece el cortocircuito virtual?</span>
+      <button class="animbtn" onclick="runVS()">▶ Iniciar</button>
+    </div>
+    <div class="animbody" style="padding:16px;">
+      <canvas id="vsC" width="760" height="310" style="width:100%;border-radius:6px;"></canvas>
+      <div id="vsMsg" style="text-align:center;color:var(--muted);font-size:.82rem;margin-top:8px;min-height:20px;"></div>
+    </div>
+  </div>
+
+  <div class="warn"><strong>⚠️ Condición necesaria:</strong> Las reglas de oro solo son válidas cuando existe <strong>realimentación negativa</strong>. Sin ella, el op-amp satura de inmediato.</div>
+</section>
+
+<!-- ─── 5. LAZO ABIERTO / CERRADO ─── -->
+<section class="sec fi" id="lazo">
+  <h2 class="stitle">🔄 Lazo Abierto vs Lazo Cerrado</h2>
+  <p class="ssub">La realimentación negativa transforma el op-amp en un amplificador útil y estable</p>
+  <div class="loopcmp">
+    <div class="loopc">
+      <div class="loopchdr open">🔴 Lazo Abierto — Sin realimentación</div>
+      <div class="loopcbody">
+        <div class="fbox" style="margin:10px 0;font-size:.95em;">\[ V_{out} = A_{OL}(V_+ - V_-) \]</div>
+        <ul style="font-size:.82rem;">
+          <li>Ganancia \(A_{OL} \approx 10^5\)</li>
+          <li>Mínima diferencia → saturación</li>
+          <li>Salida recortada a los raíles</li>
+          <li>Uso principal: <strong>comparadores</strong></li>
+        </ul>
+      </div>
+    </div>
+    <div class="loopc">
+      <div class="loopchdr closed">🟢 Lazo Cerrado — Con realimentación negativa</div>
+      <div class="loopcbody">
+        <div class="fbox" style="margin:10px 0;font-size:.95em;">\[ A_{CL} = -\frac{R_f}{R_1} \text{ (inversor)} \]</div>
+        <ul style="font-size:.82rem;">
+          <li>Ganancia determinada por R<sub>f</sub>/R<sub>1</sub></li>
+          <li>Estable, predecible y controlada</li>
+          <li>Señal de salida limpia</li>
+          <li>Uso: <strong>amplificadores lineales</strong></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loop Waveform Animation -->
+  <div class="animbox">
+    <div class="animhdr">
+      <span class="animttl">🎬 Visualización — Señal en lazo abierto vs cerrado</span>
+      <button class="animbtn" onclick="runLoop()">▶ Animar</button>
+    </div>
+    <div class="animbody" style="padding:16px;">
+      <canvas id="loopC" width="760" height="240" style="width:100%;border-radius:6px;"></canvas>
+    </div>
+  </div>
+
+  <div class="hl"><strong>Idea clave:</strong> En lazo cerrado, la ganancia ya no depende del valor interno \(A_{OL}\) del chip (que varía con temperatura y fabricante). Pasa a depender únicamente de las resistencias externas, que podemos controlar con precisión.</div>
+</section>
+
+<!-- ─── 6. CONFIGURACIONES ─── -->
+<section class="sec fi" id="config">
+  <h2 class="stitle">⚙️ Configuraciones Básicas</h2>
+  <p class="ssub">Los cinco circuitos fundamentales que debes dominar</p>
+  <div class="ctabs">
+    <button class="ctab active" onclick="showC('inv',this)">🔻 Inversor</button>
+    <button class="ctab" onclick="showC('noinv',this)">🔺 No Inversor</button>
+    <button class="ctab" onclick="showC('buf',this)">⟶ Buffer</button>
+    <button class="ctab" onclick="showC('sum',this)">➕ Sumador</button>
+    <button class="ctab" onclick="showC('dif',this)">➖ Diferencial</button>
+  </div>
+
+  <!-- INVERSOR -->
+  <div class="cpanel active" id="p-inv">
+    <div id="inversor" style="scroll-margin-top:calc(var(--th) + 20px);">
+    <h3 class="h3">🔻 Amplificador Inversor</h3>
+    <div class="split">
+      <div class="imgbox circuit">
+        <img src="https://i.ytimg.com/vi/uR3Ungy4yZ4/maxresdefault.jpg" alt="Amplificador inversor" loading="lazy">
+        <div class="imgcap">Fig. 3 — Circuito del amplificador inversor</div>
+      </div>
+      <div>
+        <div class="fbox"><div class="flabel">Ganancia</div>\[ A_v = -\frac{R_f}{R_1} \]</div>
+        <div class="fbox"><div class="flabel">Tensión de salida</div>\[ V_{out} = -\frac{R_f}{R_1} \cdot V_{in} \]</div>
+        <ul>
+          <li><strong>R₁</strong> conectada entre V<sub>in</sub> y la entrada (−)</li>
+          <li><strong>Rf</strong> entre la salida y la entrada (−)</li>
+          <li>Entrada (+) a tierra → V₊ = 0V</li>
+          <li>Salida <strong>invertida 180°</strong> respecto a la entrada</li>
+          <li>Ganancia siempre <strong>negativa</strong></li>
+        </ul>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <!-- NO INVERSOR -->
+  <div class="cpanel" id="p-noinv">
+    <div id="noinversor" style="scroll-margin-top:calc(var(--th) + 20px);">
+    <h3 class="h3">🔺 Amplificador No Inversor</h3>
+    <div class="split">
+      <div class="imgbox circuit">
+        <img src="https://hetpro-store.com/TUTORIALES/wp-content/uploads/2018/11/Amplificador-No-Inversor-Diagrama-General.jpg" alt="Amplificador no inversor" loading="lazy">
+        <div class="imgcap">Fig. 4 — Circuito del amplificador no inversor</div>
+      </div>
+      <div>
+        <div class="fbox"><div class="flabel">Ganancia</div>\[ A_v = 1 + \frac{R_f}{R_1} \]</div>
+        <div class="fbox"><div class="flabel">Tensión de salida</div>\[ V_{out} = \left(1 + \frac{R_f}{R_1}\right) \cdot V_{in} \]</div>
+        <ul>
+          <li><strong>V<sub>in</sub></strong> aplicado directamente a la entrada (+)</li>
+          <li><strong>R₁</strong> entre la entrada (−) y tierra</li>
+          <li><strong>Rf</strong> entre la salida y la entrada (−)</li>
+          <li>Salida <strong>en fase</strong> con la entrada</li>
+          <li>Ganancia siempre <strong>≥ 1</strong></li>
+        </ul>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <!-- BUFFER -->
+  <div class="cpanel" id="p-buf">
+    <div id="buffer" style="scroll-margin-top:calc(var(--th) + 20px);">
+    <h3 class="h3">⟶ Seguidor de Tensión (Buffer)</h3>
+    <div class="split">
+      <div class="imgbox circuit">
+        <img src="https://i.ytimg.com/vi/H8qi0IdW42M/hqdefault.jpg" alt="Seguidor de tensión" loading="lazy">
+        <div class="imgcap">Fig. 5 — Circuito del seguidor de tensión</div>
+      </div>
+      <div>
+        <div class="fbox"><div class="flabel">Ganancia</div>\[ A_v = 1 \]</div>
+        <div class="fbox"><div class="flabel">Tensión de salida</div>\[ V_{out} = V_{in} \]</div>
+        <ul>
+          <li>La salida se conecta <strong>directamente</strong> a la entrada (−)</li>
+          <li>Caso especial del no inversor: R₁ = ∞, Rf = 0</li>
+          <li>No amplifica la señal — ganancia = 1</li>
+          <li><strong>Uso:</strong> aislamiento y adaptación de impedancias</li>
+          <li>Alta \(Z_{in}\), baja \(Z_{out}\) → protege la fuente de señal</li>
+        </ul>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <!-- SUMADOR -->
+  <div class="cpanel" id="p-sum">
+    <div id="sumador" style="scroll-margin-top:calc(var(--th) + 20px);">
+    <h3 class="h3">➕ Amplificador Sumador</h3>
+    <div class="split">
+      <div class="imgbox circuit">
+        <img src="https://microchipotle.com/wp-content/uploads/2023/01/Amplificadores-operacionales_6.png" alt="Sumador" loading="lazy">
+        <div class="imgcap">Fig. 6 — Circuito del amplificador sumador inversor</div>
+      </div>
+      <div>
+        <div class="fbox"><div class="flabel">Tensión de salida</div>\[ V_{out} = -R_f\!\left(\frac{V_1}{R_1} + \frac{V_2}{R_2} + \frac{V_3}{R_3}\right) \]</div>
+        <ul>
+          <li>Cada entrada tiene su propia resistencia</li>
+          <li>Todas conectadas a la entrada inversora (−)</li>
+          <li><strong>Rf</strong> única de realimentación común</li>
+          <li>Suma ponderada e invertida de las entradas</li>
+        </ul>
+        <div class="note">Si R₁ = R₂ = R₃ = R: \(V_{out} = -\frac{R_f}{R}(V_1 + V_2 + V_3)\)</div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <!-- DIFERENCIAL -->
+  <div class="cpanel" id="p-dif">
+    <div id="diferencial" style="scroll-margin-top:calc(var(--th) + 20px);">
+    <h3 class="h3">➖ Amplificador Diferencial (Restador)</h3>
+    <div class="split">
+      <div class="imgbox circuit">
+        <img src="https://www.monografias.com/trabajos102/electronica-analogica-conceptos-generales-amplificacion/img9.png" alt="Diferencial" loading="lazy">
+        <div class="imgcap">Fig. 7 — Circuito del amplificador diferencial</div>
+      </div>
+      <div>
+        <div class="fbox"><div class="flabel">Tensión de salida (R₁=R₂=R₃=Rf)</div>\[ V_{out} = \frac{R_f}{R_1}(V_2 - V_1) \]</div>
+        <ul>
+          <li>Amplifica la <strong>diferencia</strong> entre dos señales</li>
+          <li>Rechaza el <strong>ruido de modo común</strong></li>
+          <li>Esencial en instrumentación y sensores</li>
+          <li>Para balance: \(\frac{R_f}{R_1} = \frac{R_2}{R_3}\)</li>
+        </ul>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <!-- RESUMEN -->
+  <div class="twrap" style="margin-top:30px;">
+    <table>
+      <thead><tr><th>Configuración</th><th>Ganancia A<sub>v</sub></th><th>Fase salida</th><th>Uso típico</th></tr></thead>
+      <tbody>
+        <tr><td>Inversor</td><td>\(-R_f/R_1\)</td><td>Invertida 180°</td><td>Amplificar e invertir señal</td></tr>
+        <tr><td>No inversor</td><td>\(1 + R_f/R_1\)</td><td>En fase</td><td>Amplificar sin invertir</td></tr>
+        <tr><td>Buffer</td><td>1</td><td>En fase</td><td>Adaptar impedancias</td></tr>
+        <tr><td>Sumador</td><td>Variable</td><td>Invertida</td><td>Mezclar señales</td></tr>
+        <tr><td>Diferencial</td><td>\(R_f/R_1\)</td><td>Variable</td><td>Eliminar ruido común</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ─── 7. SATURACIÓN ─── -->
+<section class="sec fi" id="saturacion">
+  <h2 class="stitle">⚠️ Saturación</h2>
+  <p class="ssub">El límite físico de voltaje de salida — cuando el op-amp no puede seguir amplificando</p>
+  <p>La saturación ocurre cuando el amplificador intenta producir un voltaje de salida que excede los límites de alimentación. La salida se <strong>recorta</strong> y pierde su forma original.</p>
+  <div class="split">
+    <div class="imgbox">
+      <img src="https://tontechnika.com/wp-content/uploads/2022/07/1_ap0pgXgg2oCrr5yaYeMzsA.webp" alt="Clipping saturación" loading="lazy">
+      <div class="imgcap">Fig. 8 — Efecto de recorte (clipping) por saturación</div>
+    </div>
+    <div>
+      <div class="fbox"><div class="flabel">Límite físico de salida</div>\[ V_{out}^{min} \leq V_{out} \leq V_{out}^{max} \]</div>
+      <p>Con alimentación ±15V, la salida típicamente se limita a <strong>±13V</strong> (≈ 1–2V menos que la alimentación por caídas internas).</p>
+      <div class="warn" style="margin-top:12px;"><strong>Ejemplo:</strong> Ganancia = −10, V<sub>in</sub> = +2V<br>Salida esperada: −20V → Salida real: ≈ <strong>−13V</strong> (saturado)</div>
+    </div>
+  </div>
+  <h3 class="h3">🛡️ ¿Cómo evitar la saturación?</h3>
+  <div class="hl">
+    <strong>Regla de diseño:</strong> Verificar antes de diseñar que:
+    <div class="fbox" style="margin:12px 0;">\[ \left|\frac{R_f}{R_1} \cdot V_{in}^{max}\right| < 0{,}9 \times V_{alimentación} \]</div>
+  </div>
+  <div class="cgrid">
+    <div class="citem"><h4>Reducir ganancia</h4><p>Disminuir Rf o aumentar R₁</p></div>
+    <div class="citem"><h4>Atenuar entrada</h4><p>Usar divisor de tensión antes del op-amp</p></div>
+    <div class="citem"><h4>Aumentar alimentación</h4><p>Usar ±18V en lugar de ±15V</p></div>
+    <div class="citem"><h4>Saturación útil</h4><p>Comparadores, osciladores, detectores de cruce por cero</p></div>
+  </div>
+</section>
+
+<!-- ─── 8. NOMENCLATURA ─── -->
+<section class="sec fi" id="resistencias">
+  <h2 class="stitle">🔧 Nomenclatura de Resistencias</h2>
+  <p class="ssub">Convenciones de nombrado que encontrarás en libros y circuitos</p>
+  <div class="twrap">
+    <table>
+      <thead><tr><th>Símbolo</th><th>Nombre</th><th>Conexión habitual</th><th>Función</th></tr></thead>
+      <tbody>
+        <tr><td><strong>R<sub>f</sub></strong></td><td>Realimentación (Feedback)</td><td>Salida → Entrada (−)</td><td>Controla la ganancia, proporciona realimentación negativa</td></tr>
+        <tr><td><strong>R<sub>1</sub></strong></td><td>Resistencia de entrada</td><td>V<sub>in</sub> → Entrada (−)</td><td>Determina impedancia de entrada y ganancia</td></tr>
+        <tr><td><strong>R<sub>2</sub>, R<sub>3</sub>…</strong></td><td>Entradas adicionales</td><td>Otras fuentes → Entrada (−)</td><td>Entradas extra en sumadores o divisores en diferenciales</td></tr>
+        <tr><td><strong>R<sub>in</sub></strong></td><td>Alternativo a R₁</td><td>V<sub>in</sub> → Entrada (−)</td><td>Notación anglosajona equivalente a R₁</td></tr>
+        <tr><td><strong>R<sub>g</sub></strong></td><td>Resistencia a tierra</td><td>Entrada (−) → GND</td><td>Define ganancia en configuración no inversora</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">La relación \(R_f / R_1\) (o \(R_f / R_{in}\)) es la que determina la ganancia en todas las configuraciones básicas.</div>
+</section>
+
+<!-- ─── 9. MÉTODO ─── -->
+<section class="sec fi" id="metodo">
+  <h2 class="stitle">📋 Método de Resolución</h2>
+  <p class="ssub">5 pasos para resolver cualquier problema con op-amp ideal</p>
+  <div class="steps">
+    <div class="step"><div class="snum">1</div><div class="scont"><h4>Identificar la configuración</h4><p>¿Inversor, no inversor, sumador, diferencial, buffer? Localizar dónde está la realimentación y dónde entra la señal.</p></div></div>
+    <div class="step"><div class="snum">2</div><div class="scont"><h4>Aplicar Regla de Oro 1 — Cortocircuito virtual</h4><p>\(V_+ = V_-\). Si V₊ = 0V (a tierra), entonces V₋ = 0V también. Esto te da el voltaje en el nodo inversor de inmediato.</p></div></div>
+    <div class="step"><div class="snum">3</div><div class="scont"><h4>Aplicar Regla de Oro 2 — Corriente cero</h4><p>\(I_+ = I_- = 0\). La corriente que entra por R₁ debe salir completamente por Rf (no entra al op-amp).</p></div></div>
+    <div class="step"><div class="snum">4</div><div class="scont"><h4>Calcular corrientes con Ley de Ohm</h4><p>\(I = \frac{V}{R}\). Corriente en R₁: \(I = \frac{V_{in} - V_-}{R_1}\). Esa misma corriente genera caída en Rf.</p></div></div>
+    <div class="step"><div class="snum">5</div><div class="scont"><h4>Obtener V<sub>out</sub> y verificar saturación</h4><p>\(V_{out} = V_- - I \cdot R_f\). Comprobar que \(|V_{out}| < 0{,}9 \times V_{cc}\). Si no, la salida real está limitada al raíl.</p></div></div>
+  </div>
+</section>
+
+<!-- ─── 10. EJEMPLOS ─── -->
+<section class="sec fi" id="ejemplos">
+  <h2 class="stitle">💡 Ejemplos Resueltos</h2>
+  <p class="ssub">Aplicación del método paso a paso</p>
+
+  <!-- Ejemplo 1 -->
+  <div class="card">
+    <h3 style="font-family:var(--fh);color:var(--g7);margin-bottom:14px;">Ejemplo 1 — Inversor ideal · V<sub>in</sub>=2V, R₁=10kΩ, Rf=50kΩ, ±15V</h3>
+    <div class="steps">
+      <div class="step"><div class="snum">1</div><div class="scont"><h4>Cortocircuito virtual</h4><p>V₊ = 0V (a tierra) → V₋ = 0V</p></div></div>
+      <div class="step"><div class="snum">2</div><div class="scont"><h4>Corriente por R₁</h4><p>\(I = \frac{2\text{V} - 0}{10\text{k}\Omega} = 0{,}2\text{ mA}\)</p></div></div>
+      <div class="step"><div class="snum">3</div><div class="scont"><h4>Toda la corriente pasa por Rf (I₋ = 0)</h4><p>\(I_{Rf} = 0{,}2\text{ mA}\)</p></div></div>
+      <div class="step"><div class="snum">4</div><div class="scont"><h4>Calcular V<sub>out</sub></h4><p>\(V_{out} = 0 - 0{,}2\text{ mA} \times 50\text{k}\Omega = -10\text{V}\)</p></div></div>
+      <div class="step"><div class="snum">5</div><div class="scont"><h4>Comprobar saturación</h4><p>|−10V| = 10V &lt; 0,9 × 15V = 13,5V → ✅ Sin saturación</p></div></div>
+    </div>
+    <div class="fbox"><div class="flabel">Resultado</div>\[ V_{out} = -\frac{R_f}{R_1} \cdot V_{in} = -\frac{50k}{10k} \times 2\text{V} = -10\text{V}\quad✅ \]</div>
+  </div>
+
+  <!-- Ejemplo 2 -->
+  <div class="card">
+    <h3 style="font-family:var(--fh);color:var(--g7);margin-bottom:14px;">Ejemplo 2 — No inversor · V<sub>in</sub>=0,5V, R₁=10kΩ, Rf=33kΩ, ±12V</h3>
+    <div class="fbox">\[ A_v = 1 + \frac{33\text{k}}{10\text{k}} = 1 + 3{,}3 = 4{,}3 \]</div>
+    <div class="fbox">\[ V_{out} = 4{,}3 \times 0{,}5\text{V} = 2{,}15\text{V}\quad✅ \]</div>
+    <div class="note">2,15V está dentro del rango ±12V → <strong>sin saturación</strong></div>
+  </div>
+
+  <!-- Ejemplo 3 — saturación -->
+  <div class="card">
+    <h3 style="font-family:var(--fh);color:var(--g7);margin-bottom:14px;">Ejemplo 3 — Saturación · V<sub>in</sub>=5V, R₁=10kΩ, Rf=50kΩ, ±15V</h3>
+    <div class="fbox">\[ V_{out}^{ideal} = -\frac{50k}{10k} \times 5\text{V} = -25\text{V} \]</div>
+    <div class="warn"><strong>−25V excede el raíl de −15V</strong> → El amplificador se <strong>satura</strong>. La salida real será ≈ <strong>−13V o −14V</strong>, no −25V. La señal queda recortada.</div>
+    <div class="note"><strong>Solución:</strong> Reducir Rf a 20kΩ → V<sub>out</sub> = −10V (dentro del rango lineal)</div>
+  </div>
+
+  <!-- Ejemplo 4 — ganancia finita -->
+  <div class="card">
+    <h3 style="font-family:var(--fh);color:var(--g7);margin-bottom:14px;">Ejemplo 4 — Ganancia finita A<sub>OL</sub>=100 (op-amp real)</h3>
+    <p>Con A<sub>OL</sub> finita, el cortocircuito virtual no es perfecto (V₋ ≠ 0). La fórmula exacta para el inversor es:</p>
+    <div class="fbox">\[ V_{out} = -\frac{R_f \cdot V_{in} \cdot A_{OL}}{R_1(1 + A_{OL}) + R_f} \]</div>
+    <div class="fbox">\[ V_{out} = -\frac{50k \times 2\text{V} \times 100}{10k \times 101 + 50k} = -\frac{10{,}000k}{1{,}060k} \approx -9{,}43\text{V} \]</div>
+    <div class="twrap">
+      <table>
+        <thead><tr><th>Parámetro</th><th>Ideal (A→∞)</th><th>Real (A=100)</th><th>Error</th></tr></thead>
+        <tbody>
+          <tr><td>V<sub>out</sub></td><td>−10V</td><td>−9,43V</td><td>5,7%</td></tr>
+          <tr><td>V₋</td><td>0V</td><td>94,3 mV</td><td>≠ 0V</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><strong>Conclusión:</strong> A mayor A<sub>OL</sub>, más se acerca al comportamiento ideal. Los op-amps modernos con A<sub>OL</sub> ≈ 10⁵ dan errores despreciables (&lt; 0,001%).</div>
+  </div>
+</section>
+
+<!-- ─── 11. CALCULADORA ─── -->
+<section class="sec fi" id="calc">
+  <h2 class="stitle">🧮 Calculadora Interactiva</h2>
+  <p class="ssub">Calcula ganancia, tensión de salida y verifica saturación</p>
+  <div class="calcform">
+    <div class="igrp" style="margin-bottom:16px;">
+      <label>Configuración</label>
+      <select id="cConf" onchange="updLbl()">
+        <option value="inv">Amplificador Inversor</option>
+        <option value="ninv">Amplificador No Inversor</option>
+      </select>
+    </div>
+    <div class="crow">
+      <div class="igrp"><label id="lR1">R₁ — resistencia de entrada [kΩ]</label><input type="number" id="cR1" value="10" min=".001" step=".1"></div>
+      <div class="igrp"><label>Rf — resistencia de realimentación [kΩ]</label><input type="number" id="cRf" value="50" min=".001" step=".1"></div>
+    </div>
+    <div class="crow">
+      <div class="igrp"><label>Voltaje de entrada V<sub>in</sub> [V]</label><input type="number" id="cVin" value="2" step=".1"></div>
+      <div class="igrp"><label>Voltaje de alimentación ±V [V]</label><input type="number" id="cVcc" value="15" min="1" step="1"></div>
+    </div>
+    <button class="cbtn" onclick="calc()">⚡ Calcular</button>
+    <div class="cres" id="cRes">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:10px;">
+        <div><div class="rval" id="rGain">—</div><div class="rlbl">Ganancia A<sub>v</sub></div></div>
+        <div><div class="rval" id="rVout">—</div><div class="rlbl">V<sub>out</sub> teórico</div></div>
+        <div><div class="rval" id="rReal">—</div><div class="rlbl">V<sub>out</sub> real</div></div>
+      </div>
+      <div id="rWarn" class="rwarn"></div>
+    </div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<footer>
+  <p>⚡ <strong>Amplificadores Operacionales</strong> — Material didáctico de electrónica analógica</p>
+  <p style="margin-top:5px;font-size:.74rem;">Guía completa: op-amp ideal · configuraciones · análisis de circuitos · saturación</p>
+</footer>
+
+<script>
+/* ── PROGRESS BAR ── */
+window.addEventListener('scroll',()=>{
+  const d=document.documentElement;
+  document.getElementById('pb').style.width=(d.scrollTop/(d.scrollHeight-d.clientHeight)*100)+'%';
+});
+
+/* ── MOBILE MENU ── */
+function toggleMenu(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('show');}
+function closeMenu(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
+
+/* ── ACTIVE SIDEBAR ── */
+const allSecs=[...document.querySelectorAll('.sec')];
+const allLinks=[...document.querySelectorAll('.slink,.ssublink')];
+window.addEventListener('scroll',()=>{
+  let cur='';
+  allSecs.forEach(s=>{if(s.getBoundingClientRect().top<130)cur=s.id;});
+  allLinks.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur);});
+},{ passive:true });
+
+/* ── FADE IN ── */
+const fiObs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis');}),{threshold:.08});
+document.querySelectorAll('.fi').forEach(el=>fiObs.observe(el));
+
+/* ── CONFIG TABS ── */
+function showC(id,btn){
+  document.querySelectorAll('.cpanel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ctab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('p-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ── CALCULATOR ── */
+function updLbl(){document.getElementById('lR1').textContent=document.getElementById('cConf').value==='inv'?'R₁ — resistencia de entrada [kΩ]':'R₁ — resistencia a tierra [kΩ]';}
+function calc(){
+  const conf=document.getElementById('cConf').value;
+  const R1=parseFloat(document.getElementById('cR1').value);
+  const Rf=parseFloat(document.getElementById('cRf').value);
+  const Vin=parseFloat(document.getElementById('cVin').value);
+  const Vcc=parseFloat(document.getElementById('cVcc').value);
+  if(!R1||!Rf||isNaN(Vin)||!Vcc)return;
+  const gain=conf==='inv'?-(Rf/R1):1+(Rf/R1);
+  const Vth=gain*Vin;
+  const lim=Vcc*.9;
+  const sat=Math.abs(Vth)>lim;
+  const Vreal=sat?(Vth>0?lim:-lim):Vth;
+  document.getElementById('rGain').textContent=gain.toFixed(2);
+  document.getElementById('rVout').textContent=Vth.toFixed(2)+'V';
+  document.getElementById('rReal').textContent=Vreal.toFixed(2)+'V';
+  document.getElementById('rReal').style.color=sat?'var(--red)':'var(--g7)';
+  const w=document.getElementById('rWarn');
+  w.textContent=sat?`⚠️ SATURACIÓN: el valor teórico (${Vth.toFixed(2)}V) supera el límite de ±${lim.toFixed(1)}V. La salida real se recorta a ${Vreal.toFixed(2)}V.`:`✅ Sin saturación — la salida está dentro del rango lineal.`;
+  w.classList.add('show');
+  document.getElementById('cRes').classList.add('show');
+}
+
+/* ── VIRTUAL SHORT ANIMATION ── */
+let vsId=null;
+function runVS(){
+  const cv=document.getElementById('vsC');
+  const cx=cv.getContext('2d');
+  const W=cv.width,H=cv.height;
+  if(vsId)cancelAnimationFrame(vsId);
+  let t=0;
+  function draw(){
+    cx.clearRect(0,0,W,H);
+    cx.fillStyle='#fafaf8';cx.fillRect(0,0,W,H);
+    const prog=Math.min(t/160,1);
+    const eas=1-Math.pow(1-prog,3);
+
+    // Op-amp triangle
+    const ox=360,oy=155;
+    cx.fillStyle='#dae6cf';cx.strokeStyle='#19470b';cx.lineWidth=2.5;
+    cx.beginPath();cx.moveTo(ox,oy-65);cx.lineTo(ox,oy+65);cx.lineTo(ox+110,oy);cx.closePath();
+    cx.fill();cx.stroke();
+    cx.fillStyle='#19470b';cx.font='bold 18px Nunito,sans-serif';
+    cx.fillText('−',ox+12,oy-22);cx.fillText('+',ox+12,oy+30);
+
+    // Output
+    cx.strokeStyle='#3a6f1a';cx.lineWidth=2.5;
+    cx.beginPath();cx.moveTo(ox+110,oy);cx.lineTo(ox+190,oy);cx.stroke();
+    cx.fillStyle='#3a6f1a';cx.font='bold 13px Nunito';cx.fillText('Vout',ox+195,oy+5);
+
+    // V+ ground
+    const vpY=oy+38;
+    cx.strokeStyle='#3a6f1a';cx.lineWidth=2.5;
+    cx.beginPath();cx.moveTo(ox-130,vpY);cx.lineTo(ox,vpY);cx.stroke();
+    cx.beginPath();cx.moveTo(ox-130,vpY);cx.lineTo(ox-130,vpY+22);cx.stroke();
+    cx.beginPath();cx.moveTo(ox-148,vpY+22);cx.lineTo(ox-112,vpY+22);cx.stroke();
+    cx.beginPath();cx.moveTo(ox-142,vpY+30);cx.lineTo(ox-118,vpY+30);cx.stroke();
+    cx.beginPath();cx.moveTo(ox-136,vpY+38);cx.lineTo(ox-124,vpY+38);cx.stroke();
+    cx.fillStyle='#3a6f1a';cx.font='12px Nunito';cx.fillText('V₊ = 0V',ox-178,vpY-5);
+
+    // V- input line + R1
+    const vmY=oy-38;
+    cx.strokeStyle='#3a6f1a';cx.lineWidth=2.5;
+    cx.beginPath();cx.moveTo(ox-190,vmY);cx.lineTo(ox-130,vmY);cx.stroke();
+    cx.fillStyle='#19470b';cx.font='bold 13px Nunito';cx.fillText('Vin',ox-220,vmY+5);
+    // R1 box
+    cx.fillStyle='white';cx.strokeStyle='#19470b';cx.lineWidth=1.5;
+    cx.fillRect(ox-130,vmY-10,60,22);cx.strokeRect(ox-130,vmY-10,60,22);
+    cx.fillStyle='#19470b';cx.font='13px Nunito';cx.fillText('R₁',ox-108,vmY+6);
+    // Line R1 to op-amp
+    cx.strokeStyle='#3a6f1a';cx.lineWidth=2.5;
+    cx.beginPath();cx.moveTo(ox-70,vmY);cx.lineTo(ox,vmY);cx.stroke();
+
+    // Feedback (Rf) — animated
+    const fa=0.25+0.75*eas;
+    cx.strokeStyle=`rgba(180,30,100,${fa})`;cx.lineWidth=2.5;cx.setLineDash([7,5]);
+    cx.beginPath();cx.moveTo(ox+170,oy);cx.lineTo(ox+170,oy-95);cx.lineTo(ox-100,oy-95);cx.lineTo(ox-100,vmY-10);cx.stroke();
+    cx.setLineDash([]);
+    // Rf box
+    cx.fillStyle='white';cx.strokeStyle=`rgba(180,30,100,${fa})`;cx.lineWidth=1.5;
+    cx.fillRect(ox+30,oy-108,60,22);cx.strokeRect(ox+30,oy-108,60,22);
+    cx.fillStyle=`rgba(180,30,100,${fa})`;cx.font='13px Nunito';cx.fillText('Rf',ox+50,oy-91);
+    cx.font='bold 11px Nunito';
+    if(eas>0.15)cx.fillText('← realimentación negativa',ox-80,oy-100);
+
+    // V- voltage bar (converges to 0)
+    const vmV=2*(1-eas);
+    const bx=26,by=55,bh=190,bw=22;
+    cx.fillStyle='#e8e8e4';cx.fillRect(bx,by,bw,bh);
+    cx.fillStyle=vmV>0.05?'#e07420':'#3a6f1a';
+    const fh=(vmV/2)*bh;
+    cx.fillRect(bx,by+bh-fh,bw,fh);
+    cx.strokeStyle='#aaa';cx.lineWidth=1;cx.strokeRect(bx,by,bw,bh);
+    cx.fillStyle='#444';cx.font='bold 12px Nunito';cx.textAlign='center';
+    cx.fillText('V₋',bx+bw/2,by-8);
+    cx.fillText(vmV.toFixed(3)+'V',bx+bw/2,by+bh+16);
+    cx.textAlign='left';
+
+    // Status
+    let msg='';
+    if(prog<.08)msg='Estado inicial: V₋ está lejos de V₊ = 0V';
+    else if(prog<.5)msg='La realimentación actúa: V₋ se acerca a V₊...';
+    else if(prog<.92)msg='V₋ converge rápidamente hacia 0V...';
+    else msg='✅ Equilibrio alcanzado: V₋ ≈ V₊ = 0V — Cortocircuito virtual establecido';
+    const el=document.getElementById('vsMsg');
+    el.textContent=msg;
+    el.style.color=prog>=.92?'#3a6f1a':'#5a5a56';
+
+    t++;
+    if(t<=195)vsId=requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+/* ── LOOP ANIMATION ── */
+let loopId=null,loopRun=false;
+function runLoop(){
+  const cv=document.getElementById('loopC');
+  const cx=cv.getContext('2d');
+  const W=cv.width,H=cv.height;
+  if(loopId){cancelAnimationFrame(loopId);loopId=null;loopRun=false;return;}
+  loopRun=true;
+  let t=0;
+  function draw(){
+    cx.clearRect(0,0,W,H);
+    cx.fillStyle='#fafaf8';cx.fillRect(0,0,W,H);
+    const f=0.038,a=36;
+    const hw=W/2;
+
+    // LEFT — open loop
+    cx.fillStyle='#fffbef';cx.fillRect(4,4,hw-8,H-8);
+    cx.strokeStyle='#d4a020';cx.lineWidth=1.5;cx.strokeRect(4,4,hw-8,H-8);
+    cx.fillStyle='#7a5800';cx.font='bold 12px Nunito,sans-serif';cx.textAlign='center';
+    cx.fillText('🔴 LAZO ABIERTO',hw/2,24);
+    cx.fillStyle='#999';cx.font='11px Nunito';
+    cx.fillText('Entrada',hw/2,46);
+
+    cx.strokeStyle='#3a6f1a';cx.lineWidth=1.8;cx.beginPath();
+    for(let x=14;x<hw-14;x++){const y=72+a*.36*Math.sin(f*(x+t*2)*Math.PI);x===14?cx.moveTo(x,y):cx.lineTo(x,y);}
+    cx.stroke();
+
+    cx.fillStyle='#888';cx.font='18px sans-serif';cx.fillText('↓',hw/2,105);
+    cx.font='10px Nunito';cx.fillText('×100,000 →',hw/2,120);
+    cx.fillText('Salida recortada',hw/2,138);
+
+    const cl=36;
+    cx.strokeStyle='#c0392b';cx.lineWidth=2;cx.beginPath();
+    for(let x=14;x<hw-14;x++){
+      const raw=a*2.1*Math.sin(f*(x+t*2)*Math.PI);
+      const y=170+Math.max(-cl,Math.min(cl,raw));
+      x===14?cx.moveTo(x,y):cx.lineTo(x,y);
+    }
+    cx.stroke();
+    cx.strokeStyle='rgba(192,57,43,.3)';cx.lineWidth=1;cx.setLineDash([4,4]);
+    cx.beginPath();cx.moveTo(14,170-cl);cx.lineTo(hw-14,170-cl);cx.stroke();
+    cx.beginPath();cx.moveTo(14,170+cl);cx.lineTo(hw-14,170+cl);cx.stroke();
+    cx.setLineDash([]);
+    cx.fillStyle='#c0392b';cx.font='9px Nunito';
+    cx.fillText('+Vsat',hw-60,163);cx.fillText('−Vsat',hw-60,182);
+
+    // RIGHT — closed loop
+    cx.fillStyle='#f3faf0';cx.fillRect(hw+4,4,W-hw-8,H-8);
+    cx.strokeStyle='#3a6f1a';cx.lineWidth=1.5;cx.strokeRect(hw+4,4,W-hw-8,H-8);
+    cx.fillStyle='#19470b';cx.font='bold 12px Nunito';cx.textAlign='center';
+    cx.fillText('🟢 LAZO CERRADO',hw+W/4,24); // hmm, center of right half
+    cx.fillStyle='#999';cx.font='11px Nunito';
+    cx.fillText('Entrada',hw+(W-hw)/2,46);
+
+    cx.strokeStyle='#3a6f1a';cx.lineWidth=1.8;cx.beginPath();
+    for(let x=14;x<(W-hw)-14;x++){const y=72+a*.36*Math.sin(f*(x+t*2)*Math.PI);x===14?cx.moveTo(hw+x,y):cx.lineTo(hw+x,y);}
+    cx.stroke();
+
+    cx.fillStyle='#888';cx.font='18px sans-serif';cx.fillText('↓',hw+(W-hw)/2,105);
+    cx.font='10px Nunito';cx.fillText('Av = Rf/R₁ = 5×',hw+(W-hw)/2,120);
+    cx.fillText('Salida limpia',hw+(W-hw)/2,138);
+
+    cx.strokeStyle='#3a6f1a';cx.lineWidth=2;cx.beginPath();
+    for(let x=14;x<(W-hw)-14;x++){
+      const y=170+a*.85*Math.sin(f*(x+t*2)*Math.PI+Math.PI);
+      x===14?cx.moveTo(hw+x,y):cx.lineTo(hw+x,y);
+    }
+    cx.stroke();
+
+    cx.textAlign='left';
+    t++;
+    if(loopRun)loopId=requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+/* ── AUTO-START ANIMATIONS ON SCROLL ── */
+const autoObs=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting){
+      if(e.target.id==='reglas')runVS();
+      if(e.target.id==='lazo'&&!loopRun)runLoop();
+    }else{
+      if(e.target.id==='lazo'&&loopRun){cancelAnimationFrame(loopId);loopId=null;loopRun=false;}
+    }
+  });
+},{threshold:.3});
+const rs=document.getElementById('reglas');
+const ls=document.getElementById('lazo');
+if(rs)autoObs.observe(rs);
+if(ls)autoObs.observe(ls);
+</script>
+</body>
+</html>
