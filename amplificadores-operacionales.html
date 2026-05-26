@@ -21,11 +21,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;font-size:16px;}
 body{font-family:var(--fb);background:var(--cream);color:var(--text);line-height:1.7;}
-
-/* PROGRESS */
 #pb{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--g3),var(--g5));width:0%;z-index:1000;transition:width .1s;}
-
-/* TOPBAR */
 .topbar{position:fixed;top:0;left:0;right:0;height:var(--th);background:var(--g7);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.25);}
 .brand{font-family:var(--fh);font-size:1.05rem;font-weight:700;color:#fff;display:flex;align-items:center;gap:10px;text-decoration:none;}
 .badge{background:var(--g3);color:var(--g9);font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.05em;text-transform:uppercase;}
@@ -34,11 +30,7 @@ body{font-family:var(--fb);background:var(--cream);color:var(--text);line-height
 .topmenu a:hover,.topmenu a.active{color:#fff;background:rgba(255,255,255,.15);}
 .hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;}
 .hamburger span{display:block;width:22px;height:2px;background:white;margin:5px 0;border-radius:2px;transition:all .3s;}
-
-/* LAYOUT */
 .layout{display:flex;margin-top:var(--th);min-height:calc(100vh - var(--th));}
-
-/* SIDEBAR */
 .sidebar{width:var(--sw);flex-shrink:0;position:sticky;top:var(--th);height:calc(100vh - var(--th));overflow-y:auto;background:var(--white);border-right:1px solid var(--gray2);padding:20px 0 40px;}
 .sidebar::-webkit-scrollbar{width:4px;}
 .sidebar::-webkit-scrollbar-thumb{background:var(--g1);border-radius:4px;}
@@ -47,14 +39,8 @@ body{font-family:var(--fb);background:var(--cream);color:var(--text);line-height
 .slink:hover,.slink.active{color:var(--g7);background:var(--g0);border-left-color:var(--g5);}
 .ssublink{display:flex;align-items:center;gap:10px;padding:7px 20px 7px 40px;color:var(--muted);text-decoration:none;font-size:.79rem;font-weight:500;border-left:3px solid transparent;transition:all .2s;}
 .ssublink:hover,.ssublink.active{color:var(--g5);background:var(--g0);border-left-color:var(--g3);}
-
-/* MAIN */
 .main{flex:1;min-width:0;padding:40px 48px;max-width:880px;}
-
-/* SECTIONS */
 .sec{margin-bottom:72px;scroll-margin-top:calc(var(--th) + 20px);}
-
-/* HERO */
 .hero{background:linear-gradient(135deg,var(--g9) 0%,var(--g7) 55%,var(--g5) 100%);border-radius:var(--rl);padding:44px 40px;color:white;margin-bottom:48px;position:relative;overflow:hidden;}
 .hero::before{content:'';position:absolute;top:-40px;right:-40px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.04);}
 .hero::after{content:'';position:absolute;bottom:-50px;right:60px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.03);}
@@ -62,70 +48,48 @@ body{font-family:var(--fb);background:var(--cream);color:var(--text);line-height
 .hero p{font-size:1rem;opacity:.85;max-width:520px;}
 .htags{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;}
 .htag{background:rgba(255,255,255,.15);color:white;font-size:.76rem;font-weight:600;padding:4px 13px;border-radius:20px;border:1px solid rgba(255,255,255,.2);}
-
-/* HEADINGS */
 .stitle{font-family:var(--fh);font-size:1.6rem;font-weight:700;color:var(--g7);margin-bottom:6px;display:flex;align-items:center;gap:12px;}
 .ssub{color:var(--muted);font-size:.92rem;margin-bottom:22px;padding-bottom:14px;border-bottom:2px solid var(--g1);}
 .h3{font-family:var(--fh);font-size:1.1rem;font-weight:600;color:var(--g5);margin:28px 0 12px;display:flex;align-items:center;gap:8px;}
-
-/* CARDS */
 .card{background:var(--white);border-radius:var(--r);padding:24px;box-shadow:var(--ss);border:1px solid var(--gray2);margin-bottom:20px;}
 .cgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin:16px 0;}
 .citem{background:var(--g0);border-radius:var(--rs);padding:15px;border-left:4px solid var(--g3);}
 .citem h4{font-family:var(--fh);font-size:.83rem;font-weight:600;color:var(--g7);margin-bottom:5px;}
 .citem p{font-size:.8rem;color:var(--muted);}
-
-/* IMAGES */
 .imgbox{border-radius:var(--r);overflow:hidden;border:2px solid var(--g1);box-shadow:var(--sh);margin:18px 0;background:white;text-align:center;}
 .imgbox img{width:100%;max-width:100%;height:auto;display:block;object-fit:contain;}
 .imgbox.circuit img{max-height:300px;object-fit:contain;}
 .imgcap{padding:9px 16px;background:var(--g0);font-size:.78rem;color:var(--muted);font-style:italic;border-top:1px solid var(--g1);text-align:center;}
-
-/* SPLIT */
 .split{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;margin:18px 0;}
 .chip-layout{display:grid;grid-template-columns:1fr 1.6fr;gap:28px;align-items:center;margin:18px 0;}
-
-/* FORMULAS */
 .fbox{background:var(--white);border-left:5px solid var(--g7);box-shadow:var(--sh);margin:18px 0;padding:18px 22px;text-align:center;font-size:1.05em;border-radius:var(--r);overflow-x:auto;}
 .flabel{font-family:var(--fh);font-size:.72rem;color:var(--g5);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px;}
-
-/* CALLOUTS */
-.note{background:#d9ead3;border-left:5px solid var(--g5);padding:14px 18px;border-radius:var(--rs);color:#3a5a2a;margin:14px 0;font-size:.88rem;}
+.note{background:#d9ead3;border-left:5px solid var(--g5);padding:14px 18px;border-radius:var(--rs);color:#2a4a1a;margin:14px 0;font-size:.88rem;}
 .note strong{color:var(--g7);}
 .warn{background:#fff3cd;border-left:5px solid var(--orange);padding:14px 18px;border-radius:var(--rs);color:#704010;margin:14px 0;font-size:.88rem;}
 .hl{background:var(--g0);border-radius:var(--r);padding:18px 22px;border:1px solid var(--g1);margin:14px 0;}
-
-/* TABLE */
 .twrap{overflow-x:auto;margin:18px 0;}
 table{width:100%;border-collapse:collapse;font-size:.86rem;}
 th{background:var(--g7);color:white;padding:11px 15px;font-family:var(--fh);font-weight:600;text-align:left;}
 td{padding:10px 15px;border-bottom:1px solid var(--gray2);color:var(--muted);}
 tr:nth-child(even) td{background:var(--g0);}
 tr:last-child td{border-bottom:none;}
-
-/* LISTS */
 ul,ol{padding-left:20px;color:var(--muted);}
 li{margin:7px 0;}
 li strong{color:var(--text);}
 p{color:var(--muted);margin:10px 0;}
-
-/* STEPS */
 .steps{margin:14px 0;}
 .step{display:flex;gap:14px;margin-bottom:14px;}
 .snum{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:var(--g5);color:white;font-family:var(--fh);font-weight:700;font-size:.82rem;display:flex;align-items:center;justify-content:center;}
 .scont{background:var(--gray1);border-radius:var(--rs);padding:13px 16px;flex:1;border-left:3px solid var(--g3);}
 .scont h4{font-family:var(--fh);font-size:.87rem;font-weight:600;color:var(--g7);margin-bottom:5px;}
 .scont p,.scont ul{margin:0;font-size:.85rem;}
-
-/* CONFIG TABS */
 .ctabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;}
 .ctab{padding:7px 17px;border-radius:20px;border:2px solid var(--g1);background:white;color:var(--muted);font-size:.8rem;font-weight:600;font-family:var(--fh);cursor:pointer;transition:all .2s;}
 .ctab:hover{border-color:var(--g3);color:var(--g5);}
 .ctab.active{background:var(--g7);border-color:var(--g7);color:white;}
 .cpanel{display:none;}
 .cpanel.active{display:block;}
-
-/* CALCULATOR */
 .calcform{background:var(--white);border-radius:var(--r);padding:26px;border:2px solid var(--g1);box-shadow:var(--sh);}
 .crow{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:18px;}
 .igrp{display:flex;flex-direction:column;gap:5px;}
@@ -140,16 +104,11 @@ p{color:var(--muted);margin:10px 0;}
 .rlbl{font-size:.79rem;color:var(--muted);margin-top:3px;}
 .rwarn{margin-top:9px;padding:9px 13px;background:#fff3cd;border-radius:var(--rs);color:#704010;font-size:.81rem;display:none;}
 .rwarn.show{display:block;}
-
-/* ANIMATIONS */
 .animbox{background:var(--white);border-radius:var(--r);border:2px solid var(--g1);box-shadow:var(--sh);overflow:hidden;margin:18px 0;}
-.animhdr{background:var(--g7);color:white;padding:11px 18px;display:flex;align-items:center;justify-content:space-between;}
+.animhdr{background:var(--g7);color:white;padding:11px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
 .animttl{font-family:var(--fh);font-size:.88rem;font-weight:600;}
 .animbtn{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:white;padding:5px 15px;border-radius:20px;font-size:.76rem;font-weight:600;cursor:pointer;transition:background .2s;}
 .animbtn:hover{background:rgba(255,255,255,.35);}
-.animbody{padding:22px;}
-
-/* LOOP CARDS */
 .loopcmp{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:18px 0;}
 .loopc{border-radius:var(--r);overflow:hidden;border:2px solid var(--gray2);box-shadow:var(--ss);}
 .loopchdr{padding:13px 17px;font-family:var(--fh);font-size:.88rem;font-weight:700;}
@@ -157,29 +116,137 @@ p{color:var(--muted);margin:10px 0;}
 .loopchdr.closed{background:var(--g1);color:var(--g7);}
 .loopcbody{padding:14px 17px;background:white;}
 .loopcbody p{font-size:.81rem;margin:5px 0;}
-
-/* MOBILE OVERLAY */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90;}
 .overlay.show{display:block;}
-
-/* SCROLL FADE */
 .fi{opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .5s ease;}
 .fi.vis{opacity:1;transform:translateY(0);}
-
-/* FOOTER */
 footer{background:var(--g9);color:rgba(255,255,255,.6);text-align:center;padding:22px;font-size:.8rem;margin-top:40px;}
 footer strong{color:var(--g3);}
 
-/* RESPONSIVE */
-@media(max-width:1024px){.main{padding:28px 28px;}.split{grid-template-columns:1fr;}.chip-layout{grid-template-columns:1fr;}}
+/* ═══════════════════════════════════════════════
+   REGLAS DE ORO — fondo blanco, borde verde, texto oscuro
+   ═══════════════════════════════════════════════ */
+.regla-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.regla-card{
+  background:var(--white);
+  border-radius:var(--r);
+  padding:22px 24px;
+  border:2px solid var(--g3);
+  border-left:6px solid var(--g7);
+  box-shadow:0 2px 12px rgba(58,111,26,.10);
+}
+.regla-card .rtitle{
+  font-family:var(--fh);font-size:.92rem;font-weight:700;
+  color:var(--g9);margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+.regla-card .rformula{
+  font-size:1.45rem;font-weight:700;color:var(--g7);
+  background:var(--g0);border-radius:var(--rs);
+  padding:8px 14px;display:inline-block;margin:6px 0 12px;
+  border:1px solid var(--g1);
+}
+.regla-card p{font-size:.85rem;color:var(--text);margin:0;line-height:1.65;}
+.regla-card p strong{color:var(--g7);}
+
+/* ═══════════════════════════════════════════════
+   CAJA ACLARACIÓN V+/V-
+   ═══════════════════════════════════════════════ */
+.clarify-box{
+  background:white;border:2px dashed var(--g3);
+  border-radius:var(--r);padding:16px 20px;margin:16px 0;
+}
+.clarify-box .ctitle{
+  font-family:var(--fh);font-weight:700;color:var(--g7);
+  font-size:.9rem;margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+.clarify-box .cex{
+  display:flex;gap:10px;margin:8px 0;
+  font-size:.84rem;align-items:flex-start;
+}
+.cex-badge{
+  flex-shrink:0;padding:2px 9px;border-radius:20px;
+  font-family:var(--fh);font-size:.71rem;font-weight:700;
+  margin-top:2px;
+}
+.cex-badge.b1{background:#ffeaa7;color:#7a5800;}
+.cex-badge.b2{background:var(--g1);color:var(--g7);}
+.clarify-box .cex p{margin:0;color:var(--text);}
+.clarify-box .cex strong{color:var(--g7);}
+
+/* ═══════════════════════════════════════════════
+   ANIMACIÓN CORTOCIRCUITO — SECUENCIA 3 PASOS
+   ═══════════════════════════════════════════════ */
+.vs-circuit-area{
+  background:#f8faf6;border-radius:var(--rs);
+  border:1px solid var(--g1);padding:6px;margin-bottom:12px;
+}
+.vs-hint{
+  font-size:.81rem;color:var(--text);
+  background:#fff8e1;border-left:4px solid var(--orange);
+  border-radius:var(--rs);padding:10px 14px;margin-bottom:12px;
+}
+.vs-hint strong{color:#704010;}
+.vs-steps-wrap{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px;
+}
+.vs-iter{
+  border-radius:var(--rs);border:2px solid var(--gray2);
+  overflow:hidden;opacity:.32;transition:opacity .4s,border-color .4s,box-shadow .4s;
+}
+.vs-iter.active{opacity:1;border-color:var(--g5);box-shadow:0 2px 12px rgba(58,111,26,.18);}
+.vs-iter.done{opacity:.72;border-color:var(--g3);}
+.vs-iter-hdr{
+  padding:7px 10px;font-family:var(--fh);font-size:.77rem;font-weight:700;
+  background:var(--g1);color:var(--g7);
+}
+.vs-iter.active .vs-iter-hdr{background:var(--g7);color:white;}
+.vs-iter.done .vs-iter-hdr{background:var(--g3);color:var(--g9);}
+.vs-iter-body{padding:10px;background:white;}
+.vs-row{font-size:.75rem;color:var(--muted);margin:4px 0;display:flex;justify-content:space-between;gap:6px;}
+.vs-row span:last-child{font-weight:700;color:var(--text);font-family:var(--fh);}
+.vs-row.hl span:last-child{color:var(--g7);}
+.vs-row.ok span:last-child{color:var(--g5);}
+.vs-row.err span:last-child{color:var(--red);}
+.vs-bar-wrap{height:6px;background:var(--gray2);border-radius:3px;margin:5px 0;overflow:hidden;}
+.vs-bar{height:6px;border-radius:3px;transition:width .75s ease;}
+.vs-bar.berr{background:#c0392b;}
+.vs-bar.bok{background:var(--g5);}
+.vs-msg{
+  text-align:center;font-size:.83rem;color:var(--muted);
+  min-height:22px;padding:6px 10px;border-radius:var(--rs);
+  background:var(--gray1);transition:color .3s,background .3s;margin-bottom:10px;
+}
+.vs-msg.ok{color:#1a4a0a;background:#d9ead3;font-weight:600;}
+.vs-btn-row{display:flex;gap:8px;justify-content:center;}
+.vs-btn{
+  padding:7px 22px;border-radius:20px;border:none;
+  font-family:var(--fh);font-size:.8rem;font-weight:600;
+  cursor:pointer;transition:all .2s;
+}
+.vs-btn.primary{background:var(--g7);color:white;}
+.vs-btn.primary:hover{background:var(--g5);}
+.vs-btn.primary:disabled{opacity:.4;cursor:default;}
+.vs-btn.secondary{background:var(--gray1);color:var(--muted);border:1px solid var(--gray2);}
+.vs-btn.secondary:hover{color:var(--g7);border-color:var(--g3);}
+
+/* Nota interna en paso Método */
+.method-note{
+  margin-top:7px;padding:9px 12px;background:white;
+  border-radius:var(--rs);border-left:3px solid var(--g3);font-size:.82rem;color:var(--text);
+}
+.method-note strong{color:var(--g7);}
+
+@media(max-width:1024px){.main{padding:28px;}.split{grid-template-columns:1fr;}.chip-layout{grid-template-columns:1fr;}}
 @media(max-width:768px){
   .topmenu{display:none;}.hamburger{display:block;}
   .sidebar{position:fixed;left:-100%;top:var(--th);height:calc(100vh - var(--th));z-index:95;transition:left .3s ease;width:260px;box-shadow:var(--sl);}
   .sidebar.open{left:0;}
   .main{padding:18px 14px;}.hero{padding:28px 20px;}.hero h1{font-size:1.6rem;}
   .crow{grid-template-columns:1fr;}.loopcmp{grid-template-columns:1fr;}
-  .cgrid{grid-template-columns:1fr 1fr;}
-  .stitle{font-size:1.25rem;}
+  .cgrid{grid-template-columns:1fr 1fr;}.stitle{font-size:1.25rem;}
+  .regla-grid{grid-template-columns:1fr;}.vs-steps-wrap{grid-template-columns:1fr;}
 }
 @media(max-width:480px){.cgrid{grid-template-columns:1fr;}}
 </style>
@@ -202,7 +269,6 @@ footer strong{color:var(--g3);}
     <span></span><span></span><span></span>
   </button>
 </nav>
-
 <div class="overlay" id="overlay" onclick="closeMenu()"></div>
 
 <div class="layout">
@@ -243,7 +309,7 @@ footer strong{color:var(--g3);}
   </div>
 </div>
 
-<!-- ─── 1. QUÉ ES ─── -->
+<!-- 1. QUÉ ES -->
 <section class="sec fi" id="que-es">
   <h2 class="stitle">🔌 ¿Qué es un Amplificador Operacional?</h2>
   <p class="ssub">El bloque fundamental de los circuitos analógicos</p>
@@ -264,7 +330,7 @@ footer strong{color:var(--g3);}
   </div>
 </section>
 
-<!-- ─── 2. SÍMBOLO ─── -->
+<!-- 2. SÍMBOLO -->
 <section class="sec fi" id="simbolo">
   <h2 class="stitle">🔺 Símbolo y Pines</h2>
   <p class="ssub">Representación esquemática del amplificador operacional</p>
@@ -290,7 +356,7 @@ footer strong{color:var(--g3);}
   </div>
 </section>
 
-<!-- ─── 3. MODELO IDEAL ─── -->
+<!-- 3. MODELO IDEAL -->
 <section class="sec fi" id="ideal">
   <h2 class="stitle">⭐ El Amplificador Ideal</h2>
   <p class="ssub">Simplificaciones que usamos en el análisis de circuitos</p>
@@ -318,39 +384,126 @@ footer strong{color:var(--g3);}
   <div class="note"><strong>¿Cuándo usar el modelo real?</strong> Solo en aplicaciones de muy alta frecuencia, ultra-baja corriente, precisión extrema o análisis de estabilidad. En el 95% de los casos de aula, el ideal es suficiente.</div>
 </section>
 
-<!-- ─── 4. REGLAS DE ORO ─── -->
+<!-- 4. REGLAS DE ORO -->
 <section class="sec fi" id="reglas">
   <h2 class="stitle">🥇 Reglas de Oro</h2>
   <p class="ssub">Las dos herramientas fundamentales para resolver cualquier circuito con op-amp con realimentación negativa</p>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
-    <div style="background:var(--g7);border-radius:var(--r);padding:22px;color:white;">
-      <div style="font-family:var(--fh);font-size:.95rem;font-weight:700;margin-bottom:8px;">🥇 REGLA 1 — Cortocircuito Virtual</div>
-      <div style="font-size:1.5rem;font-weight:700;margin:10px 0;">\(V_+ = V_-\)</div>
-      <p style="font-size:.83rem;opacity:.88;margin:0;">Los voltajes en ambas entradas son iguales. <strong>No</strong> están conectadas físicamente. Es el resultado de la autorregulación por realimentación negativa.</p>
+
+  <!-- Tarjetas rediseñadas: fondo blanco, borde verde, texto oscuro -->
+  <div class="regla-grid">
+    <div class="regla-card">
+      <div class="rtitle">🥇 REGLA 1 — Cortocircuito Virtual</div>
+      <div class="rformula">\(V_+ = V_-\)</div>
+      <p>Los voltajes en ambas entradas son <strong>iguales</strong>. <strong>No</strong> están conectadas físicamente — es el resultado de la autorregulación por realimentación negativa.</p>
     </div>
-    <div style="background:var(--g5);border-radius:var(--r);padding:22px;color:white;">
-      <div style="font-family:var(--fh);font-size:.95rem;font-weight:700;margin-bottom:8px;">🥈 REGLA 2 — Corriente Cero</div>
-      <div style="font-size:1.5rem;font-weight:700;margin:10px 0;">\(I_+ = I_- = 0\,\text{A}\)</div>
-      <p style="font-size:.83rem;opacity:.88;margin:0;">No circula corriente hacia ninguna de las entradas del op-amp, debido a su impedancia de entrada infinita.</p>
+    <div class="regla-card">
+      <div class="rtitle">🥈 REGLA 2 — Corriente Cero</div>
+      <div class="rformula">\(I_+ = I_- = 0\,\text{A}\)</div>
+      <p>No circula corriente hacia ninguna de las entradas del op-amp, debido a su <strong>impedancia de entrada infinita</strong>.</p>
     </div>
   </div>
 
-  <!-- Virtual Short Animation -->
+  <!-- ACLARACIÓN: V+ = V- no significa cero -->
+  <div class="clarify-box">
+    <div class="ctitle">⚠️ Importante: V₊ = V₋ no significa que ambas valgan cero</div>
+    <p style="font-size:.84rem;color:var(--text);margin-bottom:10px;">
+      La Regla 1 dice únicamente que los dos voltajes se <strong>igualan entre sí</strong>. El valor al que convergen depende de cómo esté conectada V₊ en el circuito concreto — puede ser 0V, +2V, −5V o cualquier otra tensión de referencia:
+    </p>
+    <div class="cex">
+      <span class="cex-badge b1">Caso A</span>
+      <p>V₊ conectada a <strong>tierra (0V)</strong> → la realimentación fuerza V₋ = 0V. Se denomina <strong>masa virtual</strong>. Es el caso del inversor clásico, pero es una consecuencia del diseño, no de la regla.</p>
+    </div>
+    <div class="cex">
+      <span class="cex-badge b2">Caso B</span>
+      <p>V₊ fijada a <strong>+2V</strong> (por ejemplo mediante un divisor de tensión en la entrada no inversora) → la realimentación fuerza V₋ = +2V. <strong>No aparece ningún cero</strong>, pero la regla se cumple igualmente.</p>
+    </div>
+  </div>
+
+  <!-- ANIMACIÓN SECUENCIA 3 ITERACIONES -->
   <div class="animbox">
     <div class="animhdr">
-      <span class="animttl">🎬 Animación — ¿Cómo se establece el cortocircuito virtual?</span>
-      <button class="animbtn" onclick="runVS()">▶ Iniciar</button>
+      <span class="animttl">🎬 Secuencia — ¿Cómo converge el cortocircuito virtual?</span>
+      <div style="display:flex;gap:8px;">
+        <button class="animbtn" id="vsNextBtn" onclick="vsNext()">▶ Siguiente iteración</button>
+        <button class="animbtn" onclick="vsReset()" style="background:rgba(255,255,255,.12);">↺ Reiniciar</button>
+      </div>
     </div>
     <div class="animbody" style="padding:16px;">
-      <canvas id="vsC" width="760" height="310" style="width:100%;border-radius:6px;"></canvas>
-      <div id="vsMsg" style="text-align:center;color:var(--muted);font-size:.82rem;margin-top:8px;min-height:20px;"></div>
+
+      <!-- Diagrama esquemático fijo (canvas) -->
+      <div class="vs-circuit-area">
+        <canvas id="vsCircuit" width="700" height="130" style="width:100%;border-radius:4px;display:block;"></canvas>
+      </div>
+
+      <!-- Nota aclaratoria dentro de la animación -->
+      <div class="vs-hint">
+        <strong>Ejemplo concreto:</strong> V₊ = 0V (a tierra), R₁ = 10 kΩ, Rf = 50 kΩ, A<sub>OL</sub> = 10⁵, Vin = 2V.
+        La realimentación negativa ajusta Vout iteración a iteración hasta que V₋ alcanza V₊ = 0V.
+        <strong>Si V₊ fuera +3V, el equilibrio llegaría a V₋ = +3V</strong> — el principio es el mismo.
+      </div>
+
+      <!-- 3 tarjetas de iteración -->
+      <div class="vs-steps-wrap">
+        <div class="vs-iter" id="iter1">
+          <div class="vs-iter-hdr">Iteración 1 — Arranque</div>
+          <div class="vs-iter-body">
+            <div class="vs-row"><span>V₊ (referencia fija)</span><span>0 V</span></div>
+            <div class="vs-row err"><span>V₋ inicial (error)</span><span>≈ +1.7 V</span></div>
+            <div class="vs-row hl"><span>Diferencia V₊−V₋</span><span>−1.7 V</span></div>
+            <div style="font-size:.7rem;color:var(--muted);margin:2px 0;">Error (grande):</div>
+            <div class="vs-bar-wrap"><div class="vs-bar berr" id="b1e" style="width:0%"></div></div>
+            <div class="vs-row"><span>Vout = A·dif</span><span>→ satura a −13.5V</span></div>
+            <div class="vs-row"><span>V₋ nueva via Rf</span><span>−13.5·(10/60)</span></div>
+            <div class="vs-row hl"><span>→ V₋ corregida</span><span>−2.25 V</span></div>
+            <div style="font-size:.7rem;color:var(--muted);margin:2px 0;">Corrección aplicada:</div>
+            <div class="vs-bar-wrap"><div class="vs-bar bok" id="b1c" style="width:0%"></div></div>
+          </div>
+        </div>
+        <div class="vs-iter" id="iter2">
+          <div class="vs-iter-hdr">Iteración 2 — Convergencia</div>
+          <div class="vs-iter-body">
+            <div class="vs-row"><span>V₊ (referencia fija)</span><span>0 V</span></div>
+            <div class="vs-row err"><span>V₋ ahora</span><span>−2.25 V</span></div>
+            <div class="vs-row hl"><span>Diferencia V₊−V₋</span><span>+2.25 V</span></div>
+            <div style="font-size:.7rem;color:var(--muted);margin:2px 0;">Error (menor):</div>
+            <div class="vs-bar-wrap"><div class="vs-bar berr" id="b2e" style="width:0%"></div></div>
+            <div class="vs-row"><span>Vout = A·dif</span><span>→ +10 V (lineal)</span></div>
+            <div class="vs-row"><span>V₋ nueva via Rf</span><span>+10·(10/60)</span></div>
+            <div class="vs-row hl"><span>→ V₋ corregida</span><span>≈ +1.67 V → …</span></div>
+            <div style="font-size:.7rem;color:var(--muted);margin:2px 0;">Corrección aplicada:</div>
+            <div class="vs-bar-wrap"><div class="vs-bar bok" id="b2c" style="width:0%"></div></div>
+          </div>
+        </div>
+        <div class="vs-iter" id="iter3">
+          <div class="vs-iter-hdr">Iteración 3 — Equilibrio ✅</div>
+          <div class="vs-iter-body">
+            <div class="vs-row"><span>V₊ (referencia fija)</span><span>0 V</span></div>
+            <div class="vs-row ok"><span>V₋ estabilizada</span><span>≈ 0 V</span></div>
+            <div class="vs-row ok"><span>Diferencia V₊−V₋</span><span>≈ 0 V ✅</span></div>
+            <div style="font-size:.7rem;color:var(--muted);margin:2px 0;">Error residual (mínimo):</div>
+            <div class="vs-bar-wrap"><div class="vs-bar berr" id="b3e" style="width:0%"></div></div>
+            <div class="vs-row ok"><span>Vout estable</span><span>= −10 V</span></div>
+            <div class="vs-row"><span>V₋ via Rf</span><span>−10·(10/60) ≈ 0</span></div>
+            <div class="vs-row ok"><span>→ V₋ = V₊</span><span style="color:var(--g7)">0 V ✅</span></div>
+            <div style="font-size:.7rem;color:var(--muted);margin:2px 0;">Sistema en equilibrio:</div>
+            <div class="vs-bar-wrap"><div class="vs-bar bok" id="b3c" style="width:0%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="vsMsg" class="vs-msg">Pulsa "Siguiente iteración" para ver el proceso paso a paso</div>
+
+      <div class="vs-btn-row">
+        <button class="vs-btn primary" id="vsBtnMain" onclick="vsNext()">▶ Siguiente iteración</button>
+        <button class="vs-btn secondary" onclick="vsReset()">↺ Reiniciar</button>
+      </div>
     </div>
   </div>
 
   <div class="warn"><strong>⚠️ Condición necesaria:</strong> Las reglas de oro solo son válidas cuando existe <strong>realimentación negativa</strong>. Sin ella, el op-amp satura de inmediato.</div>
 </section>
 
-<!-- ─── 5. LAZO ABIERTO / CERRADO ─── -->
+<!-- 5. LAZO -->
 <section class="sec fi" id="lazo">
   <h2 class="stitle">🔄 Lazo Abierto vs Lazo Cerrado</h2>
   <p class="ssub">La realimentación negativa transforma el op-amp en un amplificador útil y estable</p>
@@ -380,8 +533,6 @@ footer strong{color:var(--g3);}
       </div>
     </div>
   </div>
-
-  <!-- Loop Waveform Animation -->
   <div class="animbox">
     <div class="animhdr">
       <span class="animttl">🎬 Visualización — Señal en lazo abierto vs cerrado</span>
@@ -391,11 +542,10 @@ footer strong{color:var(--g3);}
       <canvas id="loopC" width="760" height="240" style="width:100%;border-radius:6px;"></canvas>
     </div>
   </div>
-
   <div class="hl"><strong>Idea clave:</strong> En lazo cerrado, la ganancia ya no depende del valor interno \(A_{OL}\) del chip (que varía con temperatura y fabricante). Pasa a depender únicamente de las resistencias externas, que podemos controlar con precisión.</div>
 </section>
 
-<!-- ─── 6. CONFIGURACIONES ─── -->
+<!-- 6. CONFIGURACIONES -->
 <section class="sec fi" id="config">
   <h2 class="stitle">⚙️ Configuraciones Básicas</h2>
   <p class="ssub">Los cinco circuitos fundamentales que debes dominar</p>
@@ -407,7 +557,6 @@ footer strong{color:var(--g3);}
     <button class="ctab" onclick="showC('dif',this)">➖ Diferencial</button>
   </div>
 
-  <!-- INVERSOR -->
   <div class="cpanel active" id="p-inv">
     <div id="inversor" style="scroll-margin-top:calc(var(--th) + 20px);">
     <h3 class="h3">🔻 Amplificador Inversor</h3>
@@ -422,16 +571,18 @@ footer strong{color:var(--g3);}
         <ul>
           <li><strong>R₁</strong> conectada entre V<sub>in</sub> y la entrada (−)</li>
           <li><strong>Rf</strong> entre la salida y la entrada (−)</li>
-          <li>Entrada (+) a tierra → V₊ = 0V</li>
+          <li>En la versión clásica, V₊ se conecta a tierra → V₊ = 0V → por Regla 1, V₋ = 0V (<em>masa virtual</em>)</li>
           <li>Salida <strong>invertida 180°</strong> respecto a la entrada</li>
           <li>Ganancia siempre <strong>negativa</strong></li>
         </ul>
+        <div class="note" style="font-size:.81rem;margin-top:8px;">
+          <strong>Nota:</strong> V₊ no tiene por qué ir siempre a tierra. Si se conectara a otra tensión de referencia, V₋ seguiría ese valor por la Regla 1 y el punto de operación cambiaría, aunque la ganancia −Rf/R₁ se mantendría.
+        </div>
       </div>
     </div>
     </div>
   </div>
 
-  <!-- NO INVERSOR -->
   <div class="cpanel" id="p-noinv">
     <div id="noinversor" style="scroll-margin-top:calc(var(--th) + 20px);">
     <h3 class="h3">🔺 Amplificador No Inversor</h3>
@@ -455,7 +606,6 @@ footer strong{color:var(--g3);}
     </div>
   </div>
 
-  <!-- BUFFER -->
   <div class="cpanel" id="p-buf">
     <div id="buffer" style="scroll-margin-top:calc(var(--th) + 20px);">
     <h3 class="h3">⟶ Seguidor de Tensión (Buffer)</h3>
@@ -479,7 +629,6 @@ footer strong{color:var(--g3);}
     </div>
   </div>
 
-  <!-- SUMADOR -->
   <div class="cpanel" id="p-sum">
     <div id="sumador" style="scroll-margin-top:calc(var(--th) + 20px);">
     <h3 class="h3">➕ Amplificador Sumador</h3>
@@ -502,7 +651,6 @@ footer strong{color:var(--g3);}
     </div>
   </div>
 
-  <!-- DIFERENCIAL -->
   <div class="cpanel" id="p-dif">
     <div id="diferencial" style="scroll-margin-top:calc(var(--th) + 20px);">
     <h3 class="h3">➖ Amplificador Diferencial (Restador)</h3>
@@ -524,7 +672,6 @@ footer strong{color:var(--g3);}
     </div>
   </div>
 
-  <!-- RESUMEN -->
   <div class="twrap" style="margin-top:30px;">
     <table>
       <thead><tr><th>Configuración</th><th>Ganancia A<sub>v</sub></th><th>Fase salida</th><th>Uso típico</th></tr></thead>
@@ -539,7 +686,7 @@ footer strong{color:var(--g3);}
   </div>
 </section>
 
-<!-- ─── 7. SATURACIÓN ─── -->
+<!-- 7. SATURACIÓN -->
 <section class="sec fi" id="saturacion">
   <h2 class="stitle">⚠️ Saturación</h2>
   <p class="ssub">El límite físico de voltaje de salida — cuando el op-amp no puede seguir amplificando</p>
@@ -568,7 +715,7 @@ footer strong{color:var(--g3);}
   </div>
 </section>
 
-<!-- ─── 8. NOMENCLATURA ─── -->
+<!-- 8. NOMENCLATURA -->
 <section class="sec fi" id="resistencias">
   <h2 class="stitle">🔧 Nomenclatura de Resistencias</h2>
   <p class="ssub">Convenciones de nombrado que encontrarás en libros y circuitos</p>
@@ -587,59 +734,86 @@ footer strong{color:var(--g3);}
   <div class="note">La relación \(R_f / R_1\) (o \(R_f / R_{in}\)) es la que determina la ganancia en todas las configuraciones básicas.</div>
 </section>
 
-<!-- ─── 9. MÉTODO ─── -->
+<!-- 9. MÉTODO -->
 <section class="sec fi" id="metodo">
   <h2 class="stitle">📋 Método de Resolución</h2>
   <p class="ssub">5 pasos para resolver cualquier problema con op-amp ideal</p>
   <div class="steps">
-    <div class="step"><div class="snum">1</div><div class="scont"><h4>Identificar la configuración</h4><p>¿Inversor, no inversor, sumador, diferencial, buffer? Localizar dónde está la realimentación y dónde entra la señal.</p></div></div>
-    <div class="step"><div class="snum">2</div><div class="scont"><h4>Aplicar Regla de Oro 1 — Cortocircuito virtual</h4><p>\(V_+ = V_-\). Si V₊ = 0V (a tierra), entonces V₋ = 0V también. Esto te da el voltaje en el nodo inversor de inmediato.</p></div></div>
-    <div class="step"><div class="snum">3</div><div class="scont"><h4>Aplicar Regla de Oro 2 — Corriente cero</h4><p>\(I_+ = I_- = 0\). La corriente que entra por R₁ debe salir completamente por Rf (no entra al op-amp).</p></div></div>
-    <div class="step"><div class="snum">4</div><div class="scont"><h4>Calcular corrientes con Ley de Ohm</h4><p>\(I = \frac{V}{R}\). Corriente en R₁: \(I = \frac{V_{in} - V_-}{R_1}\). Esa misma corriente genera caída en Rf.</p></div></div>
-    <div class="step"><div class="snum">5</div><div class="scont"><h4>Obtener V<sub>out</sub> y verificar saturación</h4><p>\(V_{out} = V_- - I \cdot R_f\). Comprobar que \(|V_{out}| < 0{,}9 \times V_{cc}\). Si no, la salida real está limitada al raíl.</p></div></div>
+    <div class="step">
+      <div class="snum">1</div>
+      <div class="scont">
+        <h4>Identificar la configuración</h4>
+        <p>¿Inversor, no inversor, sumador, diferencial, buffer? Localizar dónde está la realimentación y dónde entra la señal.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">2</div>
+      <div class="scont">
+        <h4>Aplicar Regla de Oro 1 — Cortocircuito virtual</h4>
+        <p>Determina primero qué voltaje tiene <strong>V₊</strong> según el circuito. Luego aplica ese mismo valor a V₋: <strong>V₋ = V₊</strong>.</p>
+        <div class="method-note">
+          <strong>⚠️ No confundir:</strong> el resultado es V₊ = V₋, <em>no necesariamente cero</em>. El cero (masa virtual) aparece únicamente cuando V₊ está conectado a tierra — como ocurre en el inversor clásico. Si V₊ estuviera fijada a +5V mediante un divisor, entonces V₋ = +5V.
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">3</div>
+      <div class="scont">
+        <h4>Aplicar Regla de Oro 2 — Corriente cero</h4>
+        <p>\(I_+ = I_- = 0\). La corriente que entra por R₁ debe salir completamente por Rf (no entra al op-amp).</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">4</div>
+      <div class="scont">
+        <h4>Calcular corrientes con Ley de Ohm</h4>
+        <p>\(I = \frac{V}{R}\). Corriente en R₁: \(I = \frac{V_{in} - V_-}{R_1}\). Esa misma corriente genera caída en Rf.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="snum">5</div>
+      <div class="scont">
+        <h4>Obtener V<sub>out</sub> y verificar saturación</h4>
+        <p>\(V_{out} = V_- - I \cdot R_f\). Comprobar que \(|V_{out}| < 0{,}9 \times V_{cc}\). Si no, la salida real está limitada al raíl.</p>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- ─── 10. EJEMPLOS ─── -->
+<!-- 10. EJEMPLOS -->
 <section class="sec fi" id="ejemplos">
   <h2 class="stitle">💡 Ejemplos Resueltos</h2>
   <p class="ssub">Aplicación del método paso a paso</p>
 
-  <!-- Ejemplo 1 -->
   <div class="card">
     <h3 style="font-family:var(--fh);color:var(--g7);margin-bottom:14px;">Ejemplo 1 — Inversor ideal · V<sub>in</sub>=2V, R₁=10kΩ, Rf=50kΩ, ±15V</h3>
     <div class="steps">
-      <div class="step"><div class="snum">1</div><div class="scont"><h4>Cortocircuito virtual</h4><p>V₊ = 0V (a tierra) → V₋ = 0V</p></div></div>
-      <div class="step"><div class="snum">2</div><div class="scont"><h4>Corriente por R₁</h4><p>\(I = \frac{2\text{V} - 0}{10\text{k}\Omega} = 0{,}2\text{ mA}\)</p></div></div>
-      <div class="step"><div class="snum">3</div><div class="scont"><h4>Toda la corriente pasa por Rf (I₋ = 0)</h4><p>\(I_{Rf} = 0{,}2\text{ mA}\)</p></div></div>
-      <div class="step"><div class="snum">4</div><div class="scont"><h4>Calcular V<sub>out</sub></h4><p>\(V_{out} = 0 - 0{,}2\text{ mA} \times 50\text{k}\Omega = -10\text{V}\)</p></div></div>
-      <div class="step"><div class="snum">5</div><div class="scont"><h4>Comprobar saturación</h4><p>|−10V| = 10V &lt; 0,9 × 15V = 13,5V → ✅ Sin saturación</p></div></div>
+      <div class="step"><div class="snum">1</div><div class="scont"><h4>Determinar V₊</h4><p>V₊ está conectada a tierra → V₊ = 0V</p></div></div>
+      <div class="step"><div class="snum">2</div><div class="scont"><h4>Cortocircuito virtual</h4><p>V₋ = V₊ = 0V (en este circuito concreto aparece la masa virtual porque V₊ = 0V)</p></div></div>
+      <div class="step"><div class="snum">3</div><div class="scont"><h4>Corriente por R₁</h4><p>\(I = \frac{2\text{V} - 0}{10\text{k}\Omega} = 0{,}2\text{ mA}\)</p></div></div>
+      <div class="step"><div class="snum">4</div><div class="scont"><h4>Toda la corriente pasa por Rf (I₋ = 0)</h4><p>\(I_{Rf} = 0{,}2\text{ mA}\)</p></div></div>
+      <div class="step"><div class="snum">5</div><div class="scont"><h4>V<sub>out</sub> y saturación</h4><p>\(V_{out} = 0 - 0{,}2\text{ mA} \times 50\text{k}\Omega = -10\text{V}\) → |−10V| &lt; 13,5V ✅</p></div></div>
     </div>
     <div class="fbox"><div class="flabel">Resultado</div>\[ V_{out} = -\frac{R_f}{R_1} \cdot V_{in} = -\frac{50k}{10k} \times 2\text{V} = -10\text{V}\quad✅ \]</div>
   </div>
 
-  <!-- Ejemplo 2 -->
   <div class="card">
     <h3 style="font-family:var(--fh);color:var(--g7);margin-bottom:14px;">Ejemplo 2 — No inversor · V<sub>in</sub>=0,5V, R₁=10kΩ, Rf=33kΩ, ±12V</h3>
-    <div class="fbox">\[ A_v = 1 + \frac{33\text{k}}{10\text{k}} = 1 + 3{,}3 = 4{,}3 \]</div>
-    <div class="fbox">\[ V_{out} = 4{,}3 \times 0{,}5\text{V} = 2{,}15\text{V}\quad✅ \]</div>
+    <div class="fbox">\[ A_v = 1 + \frac{33\text{k}}{10\text{k}} = 4{,}3 \qquad V_{out} = 4{,}3 \times 0{,}5\text{V} = 2{,}15\text{V}\quad✅ \]</div>
     <div class="note">2,15V está dentro del rango ±12V → <strong>sin saturación</strong></div>
   </div>
 
-  <!-- Ejemplo 3 — saturación -->
   <div class="card">
     <h3 style="font-family:var(--fh);color:var(--g7);margin-bottom:14px;">Ejemplo 3 — Saturación · V<sub>in</sub>=5V, R₁=10kΩ, Rf=50kΩ, ±15V</h3>
     <div class="fbox">\[ V_{out}^{ideal} = -\frac{50k}{10k} \times 5\text{V} = -25\text{V} \]</div>
-    <div class="warn"><strong>−25V excede el raíl de −15V</strong> → El amplificador se <strong>satura</strong>. La salida real será ≈ <strong>−13V o −14V</strong>, no −25V. La señal queda recortada.</div>
+    <div class="warn"><strong>−25V excede el raíl de −15V</strong> → El amplificador se <strong>satura</strong>. La salida real será ≈ <strong>−13V o −14V</strong>. La señal queda recortada.</div>
     <div class="note"><strong>Solución:</strong> Reducir Rf a 20kΩ → V<sub>out</sub> = −10V (dentro del rango lineal)</div>
   </div>
 
-  <!-- Ejemplo 4 — ganancia finita -->
   <div class="card">
     <h3 style="font-family:var(--fh);color:var(--g7);margin-bottom:14px;">Ejemplo 4 — Ganancia finita A<sub>OL</sub>=100 (op-amp real)</h3>
     <p>Con A<sub>OL</sub> finita, el cortocircuito virtual no es perfecto (V₋ ≠ 0). La fórmula exacta para el inversor es:</p>
-    <div class="fbox">\[ V_{out} = -\frac{R_f \cdot V_{in} \cdot A_{OL}}{R_1(1 + A_{OL}) + R_f} \]</div>
-    <div class="fbox">\[ V_{out} = -\frac{50k \times 2\text{V} \times 100}{10k \times 101 + 50k} = -\frac{10{,}000k}{1{,}060k} \approx -9{,}43\text{V} \]</div>
+    <div class="fbox">\[ V_{out} = -\frac{R_f \cdot V_{in} \cdot A_{OL}}{R_1(1 + A_{OL}) + R_f} \approx -9{,}43\text{V} \]</div>
     <div class="twrap">
       <table>
         <thead><tr><th>Parámetro</th><th>Ideal (A→∞)</th><th>Real (A=100)</th><th>Error</th></tr></thead>
@@ -653,7 +827,7 @@ footer strong{color:var(--g3);}
   </div>
 </section>
 
-<!-- ─── 11. CALCULADORA ─── -->
+<!-- 11. CALCULADORA -->
 <section class="sec fi" id="calc">
   <h2 class="stitle">🧮 Calculadora Interactiva</h2>
   <p class="ssub">Calcula ganancia, tensión de salida y verifica saturación</p>
@@ -701,8 +875,14 @@ window.addEventListener('scroll',()=>{
 });
 
 /* ── MOBILE MENU ── */
-function toggleMenu(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('show');}
-function closeMenu(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
+function toggleMenu(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+function closeMenu(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
 
 /* ── ACTIVE SIDEBAR ── */
 const allSecs=[...document.querySelectorAll('.sec')];
@@ -711,10 +891,12 @@ window.addEventListener('scroll',()=>{
   let cur='';
   allSecs.forEach(s=>{if(s.getBoundingClientRect().top<130)cur=s.id;});
   allLinks.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur);});
-},{ passive:true });
+},{passive:true});
 
 /* ── FADE IN ── */
-const fiObs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis');}),{threshold:.08});
+const fiObs=new IntersectionObserver(es=>es.forEach(e=>{
+  if(e.isIntersecting)e.target.classList.add('vis');
+}),{threshold:.08});
 document.querySelectorAll('.fi').forEach(el=>fiObs.observe(el));
 
 /* ── CONFIG TABS ── */
@@ -726,7 +908,12 @@ function showC(id,btn){
 }
 
 /* ── CALCULATOR ── */
-function updLbl(){document.getElementById('lR1').textContent=document.getElementById('cConf').value==='inv'?'R₁ — resistencia de entrada [kΩ]':'R₁ — resistencia a tierra [kΩ]';}
+function updLbl(){
+  document.getElementById('lR1').textContent=
+    document.getElementById('cConf').value==='inv'
+      ?'R₁ — resistencia de entrada [kΩ]'
+      :'R₁ — resistencia a tierra [kΩ]';
+}
 function calc(){
   const conf=document.getElementById('cConf').value;
   const R1=parseFloat(document.getElementById('cR1').value);
@@ -744,193 +931,224 @@ function calc(){
   document.getElementById('rReal').textContent=Vreal.toFixed(2)+'V';
   document.getElementById('rReal').style.color=sat?'var(--red)':'var(--g7)';
   const w=document.getElementById('rWarn');
-  w.textContent=sat?`⚠️ SATURACIÓN: el valor teórico (${Vth.toFixed(2)}V) supera el límite de ±${lim.toFixed(1)}V. La salida real se recorta a ${Vreal.toFixed(2)}V.`:`✅ Sin saturación — la salida está dentro del rango lineal.`;
+  w.textContent=sat
+    ?`⚠️ SATURACIÓN: el valor teórico (${Vth.toFixed(2)}V) supera el límite de ±${lim.toFixed(1)}V. La salida real se recorta a ${Vreal.toFixed(2)}V.`
+    :`✅ Sin saturación — la salida está dentro del rango lineal.`;
   w.classList.add('show');
   document.getElementById('cRes').classList.add('show');
 }
 
-/* ── VIRTUAL SHORT ANIMATION ── */
-let vsId=null;
-function runVS(){
-  const cv=document.getElementById('vsC');
+/* ══════════════════════════════════════════
+   DIAGRAMA CIRCUITO FIJO (canvas)
+   ══════════════════════════════════════════ */
+function drawCircuit(){
+  const cv=document.getElementById('vsCircuit');
+  if(!cv)return;
   const cx=cv.getContext('2d');
   const W=cv.width,H=cv.height;
-  if(vsId)cancelAnimationFrame(vsId);
-  let t=0;
-  function draw(){
-    cx.clearRect(0,0,W,H);
-    cx.fillStyle='#fafaf8';cx.fillRect(0,0,W,H);
-    const prog=Math.min(t/160,1);
-    const eas=1-Math.pow(1-prog,3);
+  cx.clearRect(0,0,W,H);
+  cx.fillStyle='#f8faf6';cx.fillRect(0,0,W,H);
 
-    // Op-amp triangle
-    const ox=360,oy=155;
-    cx.fillStyle='#dae6cf';cx.strokeStyle='#19470b';cx.lineWidth=2.5;
-    cx.beginPath();cx.moveTo(ox,oy-65);cx.lineTo(ox,oy+65);cx.lineTo(ox+110,oy);cx.closePath();
-    cx.fill();cx.stroke();
-    cx.fillStyle='#19470b';cx.font='bold 18px Nunito,sans-serif';
-    cx.fillText('−',ox+12,oy-22);cx.fillText('+',ox+12,oy+30);
+  const ox=360, oy=65;
 
-    // Output
-    cx.strokeStyle='#3a6f1a';cx.lineWidth=2.5;
-    cx.beginPath();cx.moveTo(ox+110,oy);cx.lineTo(ox+190,oy);cx.stroke();
-    cx.fillStyle='#3a6f1a';cx.font='bold 13px Nunito';cx.fillText('Vout',ox+195,oy+5);
+  /* Op-amp triangle */
+  cx.fillStyle='#dae6cf';cx.strokeStyle='#19470b';cx.lineWidth=2;
+  cx.beginPath();cx.moveTo(ox,oy-50);cx.lineTo(ox,oy+50);cx.lineTo(ox+90,oy);cx.closePath();
+  cx.fill();cx.stroke();
+  cx.fillStyle='#19470b';cx.font='bold 15px Nunito,sans-serif';
+  cx.fillText('−',ox+10,oy-14);
+  cx.fillText('+',ox+10,oy+22);
 
-    // V+ ground
-    const vpY=oy+38;
-    cx.strokeStyle='#3a6f1a';cx.lineWidth=2.5;
-    cx.beginPath();cx.moveTo(ox-130,vpY);cx.lineTo(ox,vpY);cx.stroke();
-    cx.beginPath();cx.moveTo(ox-130,vpY);cx.lineTo(ox-130,vpY+22);cx.stroke();
-    cx.beginPath();cx.moveTo(ox-148,vpY+22);cx.lineTo(ox-112,vpY+22);cx.stroke();
-    cx.beginPath();cx.moveTo(ox-142,vpY+30);cx.lineTo(ox-118,vpY+30);cx.stroke();
-    cx.beginPath();cx.moveTo(ox-136,vpY+38);cx.lineTo(ox-124,vpY+38);cx.stroke();
-    cx.fillStyle='#3a6f1a';cx.font='12px Nunito';cx.fillText('V₊ = 0V',ox-178,vpY-5);
+  /* Vout */
+  cx.strokeStyle='#3a6f1a';cx.lineWidth=2;
+  cx.beginPath();cx.moveTo(ox+90,oy);cx.lineTo(ox+170,oy);cx.stroke();
+  cx.fillStyle='#3a6f1a';cx.font='bold 11px Nunito';
+  cx.fillText('Vout',ox+174,oy+4);
 
-    // V- input line + R1
-    const vmY=oy-38;
-    cx.strokeStyle='#3a6f1a';cx.lineWidth=2.5;
-    cx.beginPath();cx.moveTo(ox-190,vmY);cx.lineTo(ox-130,vmY);cx.stroke();
-    cx.fillStyle='#19470b';cx.font='bold 13px Nunito';cx.fillText('Vin',ox-220,vmY+5);
-    // R1 box
-    cx.fillStyle='white';cx.strokeStyle='#19470b';cx.lineWidth=1.5;
-    cx.fillRect(ox-130,vmY-10,60,22);cx.strokeRect(ox-130,vmY-10,60,22);
-    cx.fillStyle='#19470b';cx.font='13px Nunito';cx.fillText('R₁',ox-108,vmY+6);
-    // Line R1 to op-amp
-    cx.strokeStyle='#3a6f1a';cx.lineWidth=2.5;
-    cx.beginPath();cx.moveTo(ox-70,vmY);cx.lineTo(ox,vmY);cx.stroke();
+  /* Feedback Rf (arco superior) */
+  cx.strokeStyle='#b41e64';cx.lineWidth=2;cx.setLineDash([6,4]);
+  cx.beginPath();
+  cx.moveTo(ox+152,oy);
+  cx.lineTo(ox+152,oy-55);
+  cx.lineTo(ox-75,oy-55);
+  cx.lineTo(ox-75,oy-14);
+  cx.stroke();
+  cx.setLineDash([]);
+  /* Rf label */
+  cx.fillStyle='white';cx.strokeStyle='#b41e64';cx.lineWidth=1.5;
+  cx.fillRect(ox+28,oy-68,70,18);cx.strokeRect(ox+28,oy-68,70,18);
+  cx.fillStyle='#b41e64';cx.font='11px Nunito';
+  cx.fillText('Rf = 50 kΩ',ox+30,oy-55);
+  cx.fillStyle='rgba(180,30,100,.8)';cx.font='10px Nunito';
+  cx.fillText('← realimentación negativa',ox-74,oy-60);
 
-    // Feedback (Rf) — animated
-    const fa=0.25+0.75*eas;
-    cx.strokeStyle=`rgba(180,30,100,${fa})`;cx.lineWidth=2.5;cx.setLineDash([7,5]);
-    cx.beginPath();cx.moveTo(ox+170,oy);cx.lineTo(ox+170,oy-95);cx.lineTo(ox-100,oy-95);cx.lineTo(ox-100,vmY-10);cx.stroke();
-    cx.setLineDash([]);
-    // Rf box
-    cx.fillStyle='white';cx.strokeStyle=`rgba(180,30,100,${fa})`;cx.lineWidth=1.5;
-    cx.fillRect(ox+30,oy-108,60,22);cx.strokeRect(ox+30,oy-108,60,22);
-    cx.fillStyle=`rgba(180,30,100,${fa})`;cx.font='13px Nunito';cx.fillText('Rf',ox+50,oy-91);
-    cx.font='bold 11px Nunito';
-    if(eas>0.15)cx.fillText('← realimentación negativa',ox-80,oy-100);
+  /* V- input + R1 */
+  const vmY=oy-14;
+  cx.strokeStyle='#3a6f1a';cx.lineWidth=2;
+  cx.beginPath();cx.moveTo(ox-210,vmY);cx.lineTo(ox-140,vmY);cx.stroke();
+  cx.fillStyle='#1a1a18';cx.font='bold 11px Nunito';
+  cx.fillText('Vin = 2V',ox-252,vmY+4);
+  /* R1 box */
+  cx.fillStyle='white';cx.strokeStyle='#19470b';cx.lineWidth=1.5;
+  cx.fillRect(ox-140,vmY-10,62,20);cx.strokeRect(ox-140,vmY-10,62,20);
+  cx.fillStyle='#19470b';cx.font='11px Nunito';
+  cx.fillText('R₁=10kΩ',ox-138,vmY+4);
+  cx.strokeStyle='#3a6f1a';cx.lineWidth=2;
+  cx.beginPath();cx.moveTo(ox-78,vmY);cx.lineTo(ox,vmY);cx.stroke();
+  /* nodo V- */
+  cx.beginPath();cx.arc(ox-80,vmY,4,0,Math.PI*2);
+  cx.fillStyle='#c0392b';cx.fill();
+  cx.fillStyle='#c0392b';cx.font='bold 10px Nunito';
+  cx.fillText('nodo V₋',ox-80,vmY-12);
 
-    // V- voltage bar (converges to 0)
-    const vmV=2*(1-eas);
-    const bx=26,by=55,bh=190,bw=22;
-    cx.fillStyle='#e8e8e4';cx.fillRect(bx,by,bw,bh);
-    cx.fillStyle=vmV>0.05?'#e07420':'#3a6f1a';
-    const fh=(vmV/2)*bh;
-    cx.fillRect(bx,by+bh-fh,bw,fh);
-    cx.strokeStyle='#aaa';cx.lineWidth=1;cx.strokeRect(bx,by,bw,bh);
-    cx.fillStyle='#444';cx.font='bold 12px Nunito';cx.textAlign='center';
-    cx.fillText('V₋',bx+bw/2,by-8);
-    cx.fillText(vmV.toFixed(3)+'V',bx+bw/2,by+bh+16);
-    cx.textAlign='left';
-
-    // Status
-    let msg='';
-    if(prog<.08)msg='Estado inicial: V₋ está lejos de V₊ = 0V';
-    else if(prog<.5)msg='La realimentación actúa: V₋ se acerca a V₊...';
-    else if(prog<.92)msg='V₋ converge rápidamente hacia 0V...';
-    else msg='✅ Equilibrio alcanzado: V₋ ≈ V₊ = 0V — Cortocircuito virtual establecido';
-    const el=document.getElementById('vsMsg');
-    el.textContent=msg;
-    el.style.color=prog>=.92?'#3a6f1a':'#5a5a56';
-
-    t++;
-    if(t<=195)vsId=requestAnimationFrame(draw);
-  }
-  draw();
+  /* V+ a tierra */
+  const vpY=oy+30;
+  cx.strokeStyle='#3a6f1a';cx.lineWidth=2;
+  cx.beginPath();cx.moveTo(ox-110,vpY);cx.lineTo(ox,vpY);cx.stroke();
+  cx.beginPath();cx.moveTo(ox-110,vpY);cx.lineTo(ox-110,vpY+18);cx.stroke();
+  [22,14,6].forEach((len,i)=>{
+    cx.beginPath();
+    cx.moveTo(ox-110-len/2,vpY+18+i*7);
+    cx.lineTo(ox-110+len/2,vpY+18+i*7);
+    cx.stroke();
+  });
+  cx.fillStyle='#19470b';cx.font='10px Nunito';
+  cx.fillText('V₊ = 0V',ox-148,vpY-4);
 }
 
-/* ── LOOP ANIMATION ── */
+/* ══════════════════════════════════════════
+   SECUENCIA CORTOCIRCUITO VIRTUAL — 3 PASOS
+   ══════════════════════════════════════════ */
+let vsStep=0;
+
+const VS_MSGS=[
+  'Iteración 1: el op-amp detecta un error grande y fuerza Vout a saturación. La realimentación devuelve parte de esa tensión a V₋, reduciendo el error.',
+  'Iteración 2: el error ya es menor. Vout sale del rango de saturación y el bucle corrige con más precisión hacia el equilibrio.',
+  '✅ Equilibrio alcanzado: V₋ ≈ V₊ = 0V. El cortocircuito virtual está establecido y Vout = −10V estable. (Si V₊ fuera otro valor, el equilibrio estaría en ese otro valor.)'
+];
+
+/* barras: [errorPct, corrPct] por iteración */
+const BAR_DATA=[[100,50],[60,78],[5,100]];
+
+function animBar(id,pct,delay){
+  setTimeout(()=>{
+    const el=document.getElementById(id);
+    if(el)el.style.width=pct+'%';
+  },delay);
+}
+
+function setIter(n,state){
+  const el=document.getElementById('iter'+n);
+  el.classList.remove('active','done');
+  if(state)el.classList.add(state);
+}
+
+function vsNext(){
+  if(vsStep>=3)return;
+  vsStep++;
+  const n=vsStep;
+
+  /* activar tarjeta actual, marcar anteriores como done */
+  for(let i=1;i<n;i++)setIter(i,'done');
+  setIter(n,'active');
+
+  /* animar barras */
+  animBar('b'+n+'e', BAR_DATA[n-1][0], 80);
+  animBar('b'+n+'c', BAR_DATA[n-1][1], 680);
+
+  /* mensaje */
+  const msg=document.getElementById('vsMsg');
+  msg.className='vs-msg'+(n===3?' ok':'');
+  msg.textContent=VS_MSGS[n-1];
+
+  /* deshabilitar botón al final */
+  if(n===3){
+    document.getElementById('vsNextBtn').disabled=true;
+    document.getElementById('vsBtnMain').disabled=true;
+  }
+}
+
+function vsReset(){
+  vsStep=0;
+  [1,2,3].forEach(n=>{
+    setIter(n,'');
+    /* resetear barras sin transición */
+    ['e','c'].forEach(t=>{
+      const el=document.getElementById('b'+n+t);
+      if(el){
+        el.style.transition='none';
+        el.style.width='0%';
+        setTimeout(()=>el.style.transition='width .75s ease',50);
+      }
+    });
+  });
+  const msg=document.getElementById('vsMsg');
+  msg.className='vs-msg';
+  msg.textContent='Pulsa "Siguiente iteración" para ver el proceso paso a paso';
+  ['vsNextBtn','vsBtnMain'].forEach(id=>{
+    const b=document.getElementById(id);
+    if(b){b.disabled=false;}
+  });
+}
+
+/* ══════════════════════════════════════════
+   LOOP ANIMATION (lazo abierto vs cerrado)
+   ══════════════════════════════════════════ */
 let loopId=null,loopRun=false;
 function runLoop(){
   const cv=document.getElementById('loopC');
   const cx=cv.getContext('2d');
   const W=cv.width,H=cv.height;
   if(loopId){cancelAnimationFrame(loopId);loopId=null;loopRun=false;return;}
-  loopRun=true;
-  let t=0;
+  loopRun=true;let t=0;
   function draw(){
-    cx.clearRect(0,0,W,H);
-    cx.fillStyle='#fafaf8';cx.fillRect(0,0,W,H);
-    const f=0.038,a=36;
-    const hw=W/2;
-
-    // LEFT — open loop
+    cx.clearRect(0,0,W,H);cx.fillStyle='#fafaf8';cx.fillRect(0,0,W,H);
+    const f=0.038,a=36,hw=W/2;
+    /* LEFT — open loop */
     cx.fillStyle='#fffbef';cx.fillRect(4,4,hw-8,H-8);
     cx.strokeStyle='#d4a020';cx.lineWidth=1.5;cx.strokeRect(4,4,hw-8,H-8);
     cx.fillStyle='#7a5800';cx.font='bold 12px Nunito,sans-serif';cx.textAlign='center';
     cx.fillText('🔴 LAZO ABIERTO',hw/2,24);
-    cx.fillStyle='#999';cx.font='11px Nunito';
-    cx.fillText('Entrada',hw/2,46);
-
+    cx.fillStyle='#999';cx.font='11px Nunito';cx.fillText('Entrada',hw/2,46);
     cx.strokeStyle='#3a6f1a';cx.lineWidth=1.8;cx.beginPath();
     for(let x=14;x<hw-14;x++){const y=72+a*.36*Math.sin(f*(x+t*2)*Math.PI);x===14?cx.moveTo(x,y):cx.lineTo(x,y);}
     cx.stroke();
-
     cx.fillStyle='#888';cx.font='18px sans-serif';cx.fillText('↓',hw/2,105);
-    cx.font='10px Nunito';cx.fillText('×100,000 →',hw/2,120);
-    cx.fillText('Salida recortada',hw/2,138);
-
+    cx.font='10px Nunito';cx.fillText('×100.000 →',hw/2,120);cx.fillText('Salida recortada',hw/2,138);
     const cl=36;
     cx.strokeStyle='#c0392b';cx.lineWidth=2;cx.beginPath();
-    for(let x=14;x<hw-14;x++){
-      const raw=a*2.1*Math.sin(f*(x+t*2)*Math.PI);
-      const y=170+Math.max(-cl,Math.min(cl,raw));
-      x===14?cx.moveTo(x,y):cx.lineTo(x,y);
-    }
+    for(let x=14;x<hw-14;x++){const raw=a*2.1*Math.sin(f*(x+t*2)*Math.PI);const y=170+Math.max(-cl,Math.min(cl,raw));x===14?cx.moveTo(x,y):cx.lineTo(x,y);}
     cx.stroke();
     cx.strokeStyle='rgba(192,57,43,.3)';cx.lineWidth=1;cx.setLineDash([4,4]);
     cx.beginPath();cx.moveTo(14,170-cl);cx.lineTo(hw-14,170-cl);cx.stroke();
     cx.beginPath();cx.moveTo(14,170+cl);cx.lineTo(hw-14,170+cl);cx.stroke();
     cx.setLineDash([]);
-    cx.fillStyle='#c0392b';cx.font='9px Nunito';
-    cx.fillText('+Vsat',hw-60,163);cx.fillText('−Vsat',hw-60,182);
-
-    // RIGHT — closed loop
+    cx.fillStyle='#c0392b';cx.font='9px Nunito';cx.fillText('+Vsat',hw-60,163);cx.fillText('−Vsat',hw-60,182);
+    /* RIGHT — closed loop */
     cx.fillStyle='#f3faf0';cx.fillRect(hw+4,4,W-hw-8,H-8);
     cx.strokeStyle='#3a6f1a';cx.lineWidth=1.5;cx.strokeRect(hw+4,4,W-hw-8,H-8);
-    cx.fillStyle='#19470b';cx.font='bold 12px Nunito';cx.textAlign='center';
-    cx.fillText('🟢 LAZO CERRADO',hw+W/4,24); // hmm, center of right half
-    cx.fillStyle='#999';cx.font='11px Nunito';
-    cx.fillText('Entrada',hw+(W-hw)/2,46);
-
+    cx.fillStyle='#19470b';cx.font='bold 12px Nunito';
+    cx.fillText('🟢 LAZO CERRADO',hw+(W-hw)/2,24);
+    cx.fillStyle='#999';cx.font='11px Nunito';cx.fillText('Entrada',hw+(W-hw)/2,46);
     cx.strokeStyle='#3a6f1a';cx.lineWidth=1.8;cx.beginPath();
     for(let x=14;x<(W-hw)-14;x++){const y=72+a*.36*Math.sin(f*(x+t*2)*Math.PI);x===14?cx.moveTo(hw+x,y):cx.lineTo(hw+x,y);}
     cx.stroke();
-
     cx.fillStyle='#888';cx.font='18px sans-serif';cx.fillText('↓',hw+(W-hw)/2,105);
-    cx.font='10px Nunito';cx.fillText('Av = Rf/R₁ = 5×',hw+(W-hw)/2,120);
-    cx.fillText('Salida limpia',hw+(W-hw)/2,138);
-
+    cx.font='10px Nunito';cx.fillText('Av = Rf/R₁ = 5×',hw+(W-hw)/2,120);cx.fillText('Salida limpia',hw+(W-hw)/2,138);
     cx.strokeStyle='#3a6f1a';cx.lineWidth=2;cx.beginPath();
-    for(let x=14;x<(W-hw)-14;x++){
-      const y=170+a*.85*Math.sin(f*(x+t*2)*Math.PI+Math.PI);
-      x===14?cx.moveTo(hw+x,y):cx.lineTo(hw+x,y);
-    }
+    for(let x=14;x<(W-hw)-14;x++){const y=170+a*.85*Math.sin(f*(x+t*2)*Math.PI+Math.PI);x===14?cx.moveTo(hw+x,y):cx.lineTo(hw+x,y);}
     cx.stroke();
-
-    cx.textAlign='left';
-    t++;
+    cx.textAlign='left';t++;
     if(loopRun)loopId=requestAnimationFrame(draw);
   }
   draw();
 }
 
-/* ── AUTO-START ANIMATIONS ON SCROLL ── */
-const autoObs=new IntersectionObserver(es=>{
-  es.forEach(e=>{
-    if(e.isIntersecting){
-      if(e.target.id==='reglas')runVS();
-      if(e.target.id==='lazo'&&!loopRun)runLoop();
-    }else{
-      if(e.target.id==='lazo'&&loopRun){cancelAnimationFrame(loopId);loopId=null;loopRun=false;}
-    }
-  });
-},{threshold:.3});
-const rs=document.getElementById('reglas');
-const ls=document.getElementById('lazo');
-if(rs)autoObs.observe(rs);
-if(ls)autoObs.observe(ls);
+/* ── INIT ── */
+window.addEventListener('DOMContentLoaded',()=>{
+  drawCircuit();
+  vsReset();
+});
 </script>
 </body>
 </html>
