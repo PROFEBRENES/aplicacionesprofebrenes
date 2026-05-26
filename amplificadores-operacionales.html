@@ -686,6 +686,629 @@ footer strong{color:var(--g3);}
   </div>
 </section>
 
+  <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demostración de la Ganancia del Amplificador Inversor</title>
+    <style>
+        :root {
+            --primary: #1e293b;
+            --secondary: #0f766e;
+            --accent: #2563eb;
+            --text: #334155;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+            --math-color: #b91c1c;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--text);
+            background-color: var(--bg);
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            border: 1px solid var(--border);
+        }
+
+        header {
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--secondary);
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        h2 {
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--secondary);
+            padding-left: 0.75rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            text-align: justify;
+        }
+
+        .circuit-container {
+            text-align: center;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: #f1f5f9;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .note-box {
+            background-color: #f0fdfa;
+            border-left: 4px solid var(--secondary);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95rem;
+        }
+
+        /* Math Styling without external libraries */
+        .math-block {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: #fafafa;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 1.25rem;
+            color: #000;
+        }
+
+        .math-inline {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 1.15rem;
+            font-style: italic;
+            color: #000;
+        }
+
+        .fraction {
+            display: inline-block;
+            vertical-align: middle;
+            text-align: center;
+            padding: 0 0.3rem;
+        }
+
+        .numerator {
+            display: block;
+            border-bottom: 1px solid #000;
+            padding: 0 0.2rem;
+            padding-bottom: 2px;
+        }
+
+        .denominator {
+            display: block;
+            padding: 0 0.2rem;
+            padding-top: 2px;
+        }
+
+        .math-sign {
+            padding: 0 0.5rem;
+            font-style: normal;
+        }
+
+        .parenthesis {
+            font-size: 1.8rem;
+            font-weight: 300;
+            vertical-align: middle;
+            line-height: 1;
+        }
+
+        .highlight-term {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .highlight-term::after {
+            content: "→ 0";
+            position: absolute;
+            bottom: -1.2rem;
+            left: 35%;
+            font-size: 0.8rem;
+            color: var(--math-color);
+            font-weight: bold;
+        }
+
+        .cancelled {
+            text-decoration: line-through;
+            text-decoration-color: var(--math-color);
+            text-decoration-thickness: 2px;
+            opacity: 0.7;
+        }
+
+        .step-list {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .step-list li {
+            margin-bottom: 0.5rem;
+        }
+
+        footer {
+            margin-top: 3rem;
+            border-top: 1px solid var(--border);
+            padding-top: 1rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Análisis y Demostración del Amplificador Operacional Inversor</h1>
+        <div class="subtitle">Deducción de la ganancia en lazo cerrado considerando ganancia en lazo abierto finita</div>
+    </header>
+
+    <main>
+        <section>
+            <h2>1. Planteamiento del Problema</h2>
+            <p>El objetivo es demostrar matemáticamente que la ganancia de tensión en lazo cerrado (<span class="math-inline">A<sub>cl</sub> = V<sub>out</sub> / V<sub>in</sub></span>) de un amplificador operacional en configuración inversora con retroalimentación negativa es:</p>
+            
+            <div class="math-block">
+                <span class="math-inline">A<sub>cl</sub></span>
+                <span class="math-sign">=</span>
+                <div class="fraction">
+                    <span class="numerator">V<sub>out</sub></span>
+                    <span class="denominator">V<sub>in</sub></span>
+                </div>
+                <span class="math-sign">=</span>
+                <span class="math-sign">-</span>
+                <div class="fraction">
+                    <span class="numerator">R<sub>f</sub></span>
+                    <span class="denominator">R<sub>1</sub></span>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>2. Esquema del Circuito</h2>
+            <p>A continuación se presenta el diagrama correspondiente a la configuración inversora analizada en los apuntes:</p>
+            
+            <div class="circuit-container">
+                <!-- SVG Diagram -->
+                <svg viewBox="0 0 500 240" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Op-amp Triangle -->
+                    <polygon points="220,80 220,180 320,130" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
+                    <text x="230" y="110" font-family="sans-serif" font-size="16" font-weight="bold" fill="#334155">-</text>
+                    <text x="230" y="160" font-family="sans-serif" font-size="16" font-weight="bold" fill="#334155">+</text>
+                    <text x="255" y="135" font-family="sans-serif" font-size="12" fill="#64748b">A<sub>ol</sub></text>
+
+                    <!-- Inverting Input Path (R1) -->
+                    <circle cx="40" cy="105" r="3" fill="#334155"/>
+                    <text x="30" y="95" font-family="sans-serif" font-size="12">V<sub>in</sub></text>
+                    <line x1="40" y1="105" x2="80" y2="105" stroke="#334155" stroke-width="2"/>
+                    
+                    <!-- Resistor R1 -->
+                    <rect x="80" y="95" width="50" height="20" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+                    <text x="100" y="90" font-family="sans-serif" font-size="12" font-weight="bold">R<sub>1</sub></text>
+                    <line x1="130" y1="105" x2="220" y2="105" stroke="#334155" stroke-width="2"/>
+                    
+                    <!-- Node V- -->
+                    <circle cx="160" cy="105" r="4" fill="#0f766e"/>
+                    <text x="155" y="125" font-family="sans-serif" font-size="12" font-weight="bold" fill="#0f766e">V<sub>-</sub></text>
+                    
+                    <!-- Corriente IR1 -->
+                    <path d="M 55 90 L 70 90" stroke="#b91c1c" stroke-width="1.5" marker-end="url(#arrow)"/>
+                    <text x="58" y="85" font-family="sans-serif" font-size="10" fill="#b91c1c">I<sub>R1</sub></text>
+
+                    <!-- Non-Inverting Input Path (GND) -->
+                    <line x1="200" y1="155" x2="220" y2="155" stroke="#334155" stroke-width="2"/>
+                    <line x1="200" y1="155" x2="200" y2="175" stroke="#334155" stroke-width="2"/>
+                    <!-- Ground Symbol -->
+                    <line x1="185" y1="175" x2="215" y2="175" stroke="#334155" stroke-width="2"/>
+                    <line x1="192" y1="180" x2="208" y2="180" stroke="#334155" stroke-width="2"/>
+                    <line x1="196" y1="185" x2="204" y2="185" stroke="#334155" stroke-width="2"/>
+                    <text x="165" y="170" font-family="sans-serif" font-size="12" font-weight="bold">V<sub>+</sub> = 0V</text>
+
+                    <!-- Feedback Path (Rf) -->
+                    <line x1="160" y1="105" x2="160" y2="45" stroke="#334155" stroke-width="2"/>
+                    <line x1="160" y1="45" x2="210" y2="45" stroke="#334155" stroke-width="2"/>
+                    
+                    <!-- Resistor Rf -->
+                    <rect x="210" y="35" width="50" height="20" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+                    <text x="228" y="30" font-family="sans-serif" font-size="12" font-weight="bold">R<sub>f</sub></text>
+                    
+                    <line x1="260" y1="45" x2="350" y2="45" stroke="#334155" stroke-width="2"/>
+                    <line x1="350" y1="45" x2="350" y2="130" stroke="#334155" stroke-width="2"/>
+
+                    <!-- Corriente IRf -->
+                    <path d="M 280 35 L 295 35" stroke="#b91c1c" stroke-width="1.5"/>
+                    <text x="282" y="30" font-family="sans-serif" font-size="10" fill="#b91c1c">I<sub>Rf</sub></text>
+
+                    <!-- Output Path -->
+                    <line x1="320" y1="130" x2="400" y2="130" stroke="#334155" stroke-width="2"/>
+                    <circle cx="350" cy="130" r="4" fill="#334155"/>
+                    <circle cx="400" cy="130" r="3" fill="#334155"/>
+                    <text x="410" y="135" font-family="sans-serif" font-size="12" font-weight="bold">V<sub>out</sub></text>
+
+                    <!-- Definitions for arrows -->
+                    <defs>
+                        <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#b91c1c"/>
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+
+            <div class="note-box">
+                <strong>Principio Fundamental:</strong> Debido a que la impedancia de entrada del terminal inversor (<span class="math-inline">V<sub>-</sub></span>) es idealmente infinita, <strong>no pasa intensidad</strong> hacia el interior del operacional. Por lo tanto, por la Ley de Corrientes de Kirchhoff, la intensidad que circula por <span class="math-inline">R<sub>1</sub></span> es exactamente la misma que pasará por <span class="math-inline">R<sub>f</sub></span> (<span class="math-inline">I<sub>R1</sub> = I<sub>Rf</sub></span>).
+            </div>
+        </section>
+
+        <section>
+            <h2>3. Desarrollo de la Derivación</h2>
+            
+            <p><strong>Paso 1:</strong> Planteamos las ecuaciones de corrientes en el nodo <span class="math-inline">V<sub>-</sub></span> utilizando la Ley de Ohm:</p>
+            <div class="math-block">
+                <span class="math-inline">I<sub>R1</sub></span>
+                <span class="math-sign">=</span>
+                <div class="fraction">
+                    <span class="numerator">V<sub>in</sub> - V<sub>-</sub></span>
+                    <span class="denominator">R<sub>1</sub></span>
+                </div>
+                <span class="math-sign">;</span>
+                <span class="math-inline">I<sub>Rf</sub></span>
+                <span class="math-sign">=</span>
+                <div class="fraction">
+                    <span class="numerator">V<sub>-</sub> - V<sub>out</sub></span>
+                    <span class="denominator">R<sub>f</sub></span>
+                </div>
+            </div>
+
+            <p>Igualando ambas corrientes (<span class="math-inline">I<sub>R1</sub> = I<sub>Rf</sub></span>) e igualando a cero obtenemos la ecuación de nodo fundamental:</p>
+            <div class="math-block">
+                <div class="fraction">
+                    <span class="numerator">V<sub>in</sub> - V<sub>-</sub></span>
+                    <span class="denominator">R<sub>1</sub></span>
+                </div>
+                <span class="math-sign">-</span>
+                <div class="fraction">
+                    <span class="numerator">V<sub>-</sub> - V<sub>out</sub></span>
+                    <span class="denominator">R<sub>f</sub></span>
+                </div>
+                <span class="math-sign">=</span>
+                <span class="math-inline">0</span>
+                <span class="math-sign">&rArr;</span>
+                <div class="fraction">
+                    <span class="numerator">V<sub>in</sub> - V<sub>-</sub></span>
+                    <span class="denominator">R<sub>1</sub></span>
+                </div>
+                <span class="math-sign">+</span>
+                <div class="fraction">
+                    <span class="numerator">V<sub>out</sub> - V<sub>-</sub></span>
+                    <span class="denominator">R<sub>f</sub></span>
+                </div>
+                <span class="math-sign">=</span>
+                <span class="math-inline">0</span>
+            </div>
+
+            <p><strong>Paso 2:</strong> Incorporamos la relación del amplificador operacional con ganancia en lazo abierto finita (<span class="math-inline">A<sub>ol</sub></span> o simplemente <span class="math-inline">A</span>):</p>
+            <div class="math-block">
+                <span class="math-inline">V<sub>out</sub></span>
+                <span class="math-sign">=</span>
+                <span class="math-inline">A &middot; (V<sub>+</sub> - V<sub>-</sub>)</span>
+            </div>
+            <p>Como el terminal no inversor (<span class="math-inline">V<sub>+</sub></span>) está conectado directamente a tierra, sabemos que <span class="math-inline">V<sub>+</sub> = 0</span>. Sustituyendo:</p>
+            <div class="math-block">
+                <span class="math-inline">V<sub>out</sub></span>
+                <span class="math-sign">=</span>
+                <span class="math-inline">A &middot; (0 - V<sub>-</sub>)</span>
+                <span class="math-sign">=</span>
+                <span class="math-inline">-A &middot; V<sub>-</sub></span>
+                <span class="math-sign">&rArr;</span>
+                <span class="math-inline">V<sub>-</sub></span>
+                <span class="math-sign">=</span>
+                <span class="math-sign">-</span>
+                <div class="fraction">
+                    <span class="numerator">V<sub>out</sub></span>
+                    <span class="denominator">A</span>
+                </div>
+            </div>
+
+            <p><strong>Paso 3:</strong> Sustituimos la expresión de <span class="math-inline">V<sub>-</sub></span> en la ecuación de corrientes obtenida en el Paso 1:</p>
+            <div class="math-block">
+                <div class="fraction">
+                    <span class="numerator">V<sub>in</sub> - <span class="parenthesis">(</span>-<div class="fraction"><span class="numerator">V<sub>out</sub></span><span class="denominator">A</span></div><span class="parenthesis">)</span></span>
+                    <span class="denominator">R<sub>1</sub></span>
+                </div>
+                <span class="math-sign">+</span>
+                <div class="fraction">
+                    <span class="numerator">V<sub>out</sub> - <span class="parenthesis">(</span>-<div class="fraction"><span class="numerator">V<sub>out</sub></span><span class="denominator">A</span></div><span class="parenthesis">)</span></span>
+                    <span class="denominator">R<sub>f</sub></span>
+                </div>
+                <span class="math-sign">=</span>
+                <span class="math-inline">0</span>
+                <span class="math-sign">&rArr;</span>
+                <div class="fraction">
+                    <span class="numerator">V<sub>in</sub> + <div class="fraction"><span class="numerator">V<sub>out</sub></span><span class="denominator">A</span></div></span>
+                    <span class="denominator">R<sub>1</sub></span>
+                </div>
+                <span class="math-sign">+</span>
+                <div class="fraction">
+                    <span class="numerator">V<sub>out</sub> + <div class="fraction"><span class="numerator">V<sub>out</sub></span><span class="denominator">A</span></div></span>
+                    <span class="denominator">R<sub>f</sub></span>
+                </div>
+                <span class="math-sign">=</span>
+                <span class="math-inline">0</span>
+            </div>
+
+            <p><strong>Paso 4:</strong> Desarrollamos algebraicamente multiplicando numerador y denominador para deshacer la doble fracción, o bien expandiendo cada término de forma individual:</p>
+            <div class="math-block">
+                <div class="fraction">
+                    <span class="numerator">V<sub>in</sub> &middot; A + V<sub>out</sub></span>
+                    <span class="denominator">R<sub>1</sub> &middot; A</span>
+                </div>
+                <span class="math-sign">+</span>
+                <div class="fraction">
+                    <span class="numerator">V<sub>out</sub> &middot; A + V<sub>out</sub></span>
+                    <span class="denominator">R<sub>f</sub> &middot; A</span>
+                </div>
+                <span class="math-sign">=</span>
+                <span class="math-inline">0</span>
+            </div>
+            
+            <p>Separando los denominadores para aislar cada componente:</p>
+            <div class="math-block">
+                <div class="fraction">
+                    <span class="numerator">V<sub>in</sub> &middot; <span class="cancelled">A</span></span>
+                    <span class="denominator">R<sub>1</sub> &middot; <span class="cancelled">A</span></span>
+                </div>
+                <span class="math-sign">+</span>
+                <div class="fraction">
+                    <span class="numerator">V<sub>out</sub></span>
+                    <span class="denominator">R<sub>1</sub> &middot; A</span>
+                </div>
+                <span class="math-sign">+</span>
+                <div class="fraction">
+                    <span class="numerator">V<sub>out</sub> &middot; <span class="cancelled">A</span></span>
+                    <span class="denominator">R<sub>f</sub> &middot; <span class="cancelled">A</span></span>
+                </div>
+                <span class="math-sign">+</span>
+                <div class="fraction">
+                    <span class="numerator">V<sub>out</sub></span>
+                    <span class="denominator">R<sub>f</sub> &middot; A</span>
+                </div>
+                <span class="math-sign">=</span>
+                <span class="math-inline">0</span>
+            </div>
+
+            <p>Simplificando los términos con <span class="math-inline">A</span> tanto arriba como abajo, la expresión se reduce a:</p>
+            <div class="math-block">
+                <div class="fraction">
+                    <span class="numerator">V<sub>in</sub></span>
+                    <span class="denominator">R<sub>1</sub></span>
+                </div>
+                <span class="math-sign">+</span>
+                <div class="fraction">
+                    <span class="numerator">V<sub>out</sub></span>
+                    <span class="denominator">R<sub>1</sub> &middot; A</span>
+                </div>
+                <span class="math-sign">+</span>
+                <div class="fraction">
+                    <span class="numerator">V<sub>out</sub></span>
+                    <span class="denominator">R<sub>f</sub></span>
+                </div>
+                <span class="math-sign">+</span>
+                <div class="fraction">
+                    <span class="numerator">V<sub>out</sub></span>
+                    <span class="denominator">R<sub>f</sub> &middot; A</span>
+                </div>
+                <span class="math-sign">=</span>
+                <span class="math-inline">0</span>
+            </div>
+
+            <p>Agrupamos los términos que contienen a <span class="math-inline">V<sub>out</sub></span>:</p>
+            <div class="math-block">
+                <div class="fraction">
+                    <span class="numerator">V<sub>in</sub></span>
+                    <span class="denominator">R<sub>1</sub></span>
+                </div>
+                <span class="math-sign">+</span>
+                <span class="math-inline">V<sub>out</sub></span>
+                <span class="math-sign">&middot;</span>
+                <span class="parenthesis">(</span>
+                <div class="fraction">
+                    <span class="numerator">1</span>
+                    <span class="denominator">R<sub>1</sub> &middot; A</span>
+                </div>
+                <span class="math-sign">+</span>
+                <div class="fraction">
+                    <span class="numerator">1</span>
+                    <span class="denominator">R<sub>f</sub></span>
+                </div>
+                <span class="math-sign">+</span>
+                <div class="fraction">
+                    <span class="numerator">1</span>
+                    <span class="denominator">R<sub>f</sub> &middot; A</span>
+                </div>
+                <span class="parenthesis">)</span>
+                <span class="math-sign">=</span>
+                <span class="math-inline">0</span>
+            </div>
+
+            <p>Despejamos el término de la tensión de entrada <span class="math-inline">V<sub>in</sub></span> pasándolo al lado derecho con signo negativo:</p>
+            <div class="math-block">
+                <div class="fraction">
+                    <span class="numerator">V<sub>in</sub></span>
+                    <span class="denominator">R<sub>1</sub></span>
+                </div>
+                <span class="math-sign">=</span>
+                <span class="math-sign">-</span>
+                <span class="math-inline">V<sub>out</sub></span>
+                <span class="math-sign">&middot;</span>
+                <span class="parenthesis">(</span>
+                <div class="fraction">
+                    <span class="numerator">1</span>
+                    <span class="denominator">R<sub>1</sub> &middot; A</span>
+                </div>
+                <span class="math-sign">+</span>
+                <div class="fraction">
+                    <span class="numerator">1</span>
+                    <span class="denominator">R<sub>f</sub></span>
+                </div>
+                <span class="math-sign">+</span>
+                <div class="fraction">
+                    <span class="numerator">1</span>
+                    <span class="denominator">R<sub>f</sub> &middot; A</span>
+                </div>
+                <span class="parenthesis">)</span>
+            </div>
+        </section>
+
+        <section>
+            <h2>4. Aproximación por Alta Ganancia (Lazo Abierto Ideal)</h2>
+            <p>En un amplificador operacional real, la ganancia en lazo abierto <span class="math-inline">A</span> es extremadamente alta (típicamente del orden de <span class="math-inline">10<sup>5</sup></span> a <span class="math-inline">10<sup>6</sup></span> o superior).</p>
+            <p>Al aplicar el límite matemático cuando <span class="math-inline">A &rarr; &infin;</span>, los cocientes que tienen a <span class="math-inline">A</span> en el denominador se vuelven despreciables por aproximarse prácticamente a cero:</p>
+            
+            <div class="math-block">
+                <div class="fraction">
+                    <span class="numerator">1</span>
+                    <span class="denominator">R<sub>1</sub> &middot; A</span>
+                </div>
+                <span class="math-sign">&rarr;</span>
+                <span class="math-inline">0</span>
+                <span class="math-sign">;</span>
+                <div class="fraction">
+                    <span class="numerator">1</span>
+                    <span class="denominator">R<sub>f</sub> &middot; A</span>
+                </div>
+                <span class="math-sign">&rarr;</span>
+                <span class="math-inline">0</span>
+            </div>
+
+            <p>Eliminando estos términos de nuestra ecuación, obtenemos la forma simplificada ideal:</p>
+            <div class="math-block">
+                <div class="fraction">
+                    <span class="numerator">V<sub>in</sub></span>
+                    <span class="denominator">R<sub>1</sub></span>
+                </div>
+                <span class="math-sign">=</span>
+                <span class="math-sign">-</span>
+                <span class="math-inline">V<sub>out</sub></span>
+                <span class="math-sign">&middot;</span>
+                <span class="parenthesis">(</span>
+                <div class="fraction">
+                    <span class="numerator"><span class="cancelled" style="text-decoration-color:var(--math-color);">1</span></span>
+                    <span class="denominator"><span class="highlight-term">R<sub>1</sub> &middot; A</span></span>
+                </div>
+                <span class="math-sign">+</span>
+                <div class="fraction">
+                    <span class="numerator">1</span>
+                    <span class="denominator">R<sub>f</sub></span>
+                </div>
+                <span class="math-sign">+</span>
+                <div class="fraction">
+                    <span class="numerator"><span class="cancelled" style="text-decoration-color:var(--math-color);">1</span></span>
+                    <span class="denominator"><span class="highlight-term">R<sub>f</sub> &middot; A</span></span>
+                </div>
+                <span class="parenthesis">)</span>
+                <span class="math-sign">&rArr;</span>
+                <div class="fraction">
+                    <span class="numerator">V<sub>in</sub></span>
+                    <span class="denominator">R<sub>1</sub></span>
+                </div>
+                <span class="math-sign">=</span>
+                <span class="math-sign">-</span>
+                <span class="math-inline">V<sub>out</sub></span>
+                <span class="math-sign">&middot;</span>
+                <span class="parenthesis">(</span>
+                <div class="fraction">
+                    <span class="numerator">1</span>
+                    <span class="denominator">R<sub>f</sub></span>
+                </div>
+                <span class="parenthesis">)</span>
+            </div>
+
+            <p>Finalmente, multiplicando ambos lados por <span class="math-inline">R<sub>f</sub></span> y reordenando para hallar la relación de transferencia de tensión:</p>
+            
+            <div class="math-block" style="background-color: #f1f5f9; border: 2px solid var(--secondary); font-weight: bold;">
+                <span class="math-inline">V<sub>out</sub></span>
+                <span class="math-sign">=</span>
+                <span class="math-inline">V<sub>in</sub> &middot;</span>
+                <span class="parenthesis">(</span>
+                <span class="math-sign">-</span>
+                <div class="fraction">
+                    <span class="numerator">R<sub>f</sub></span>
+                    <span class="denominator">R<sub>1</sub></span>
+                </div>
+                <span class="parenthesis">)</span>
+                <span class="math-sign">&rArr;</span>
+                <div class="fraction">
+                    <span class="numerator">V<sub>out</sub></span>
+                    <span class="denominator">V<sub>in</sub></span>
+                </div>
+                <span class="math-sign">=</span>
+                <span class="math-sign">-</span>
+                <div class="fraction">
+                    <span class="numerator">R<sub>f</sub></span>
+                    <span class="denominator">R<sub>1</sub></span>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>5. Conclusión e Interpretación</h2>
+            <p>La demostración rigurosa nos permite extraer dos conclusiones fundamentales de ingeniería electrónica:</p>
+            <ul class="step-list">
+                <li><strong>Independencia del componente activo:</strong> La ganancia del circuito depende <em>exclusivamente</em> de los componentes pasivos externos (<span class="math-inline">R<sub>f</sub></span> y <span class="math-inline">R<sub>1</sub></span>), asegurando estabilidad frente a variaciones térmicas o de fabricación del chip operacional.</li>
+                <li><strong>Significado del signo negativo:</strong> Representa una inversión de polaridad o un desfase de 180° entre la señal de entrada y la de salida.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>Demostración formal basada en leyes de Kirchhoff y análisis asintótico de circuitos lineales.</p>
+    </footer>
+</div>
+
+</body>
+</html>
+
+
 <!-- 7. SATURACIÓN -->
 <section class="sec fi" id="saturacion">
   <h2 class="stitle">⚠️ Saturación</h2>
