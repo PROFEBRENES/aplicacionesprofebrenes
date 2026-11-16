@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Del muelle comprimido al momento torsor en el alambre</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+:root{--bg:#eef1f5;--card:#fff;--fg:#17202e;--mut:#5a6578;--line:#cfd6e0;--acc:#1f5fbf;--ok:#177a3c;--bad:#c62828;--warn:#c76a00;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f141c;--card:#18202b;--fg:#e6ebf2;--mut:#97a3b6;--line:#2a3544;--acc:#6fa3ff;--ok:#4ade80;--bad:#ff7070;--warn:#fbbf24;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f141c;--card:#18202b;--fg:#e6ebf2;--mut:#97a3b6;--line:#2a3544;--acc:#6fa3ff;--ok:#4ade80;--bad:#ff7070;--warn:#fbbf24;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 "IBM Plex Sans",system-ui,sans-serif}
+main{max-width:1020px;margin:0 auto;padding:16px}
+h1{font-size:1.5rem;line-height:1.25;margin:.3em 0 .2em;font-weight:600}
+.mut{color:var(--mut);margin:0 0 8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin:12px 0}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:12px}
+@media(max-width:780px){.grid{grid-template-columns:1fr}}
+.grid .card{margin:0}
+canvas{display:block;width:100%;height:auto}
+#c3{aspect-ratio:1/1.05;touch-action:none;cursor:grab}
+.row{display:flex;gap:6px;flex-wrap:wrap}
+button{font:inherit;font-size:.9rem;border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:8px;padding:5px 10px;cursor:pointer}
+button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+input[type=range]{width:100%;accent-color:var(--acc)}
+label{display:block;font-size:.9rem;margin-top:8px}
+label b,.f b{font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--acc)}
+#cap{min-height:5.2em;margin:8px 0}
+.f{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.88rem;padding:4px 0;border-bottom:1px dashed var(--line);overflow-x:auto;white-space:nowrap}
+</style></head><body><main>
+<h1>De la fuerza de compresión al momento torsor</h1>
+<p class="mut">Mueve el deslizador: cortamos el alambre, aislamos el trozo superior y aplicamos el equilibrio. Arrastra el muelle 3D para girarlo.</p>
+<div class="card">
+<label for="s">Avance de la explicación: <b id="vs"></b></label>
+<input type="range" id="s" min="0" max="1" step="0.002" value="0">
+<div class="row" id="st" style="margin-top:8px"></div>
+<p id="cap"></p></div>
+<div class="grid"><div class="card"><canvas id="c3"></canvas></div><div class="card"><canvas id="c2" width="520" height="400"></canvas></div></div>
+<div class="card"><div class="row" style="gap:16px"><label style="flex:1 1 150px">F = <b id="vF"></b> N<input type="range" id="F" min="10" max="500" value="100"></label>
+<label style="flex:1 1 150px">D = <b id="vD"></b> mm<input type="range" id="D" min="10" max="80" value="30"></label>
+<label style="flex:1 1 150px">d = <b id="vd"></b> mm<input type="range" id="d" min="1" max="10" step="0.5" value="4"></label></div>
+<div id="fm" style="margin-top:8px"></div></div>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const S={s:0,F:100,D:30,d:4};
+const f=(x,n=1)=>x.toLocaleString("es-ES",{maximumFractionDigits:n});
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const sm=x=>x*x*(3-2*x),ph=(a,b)=>sm(Math.min(1,Math.max(0,(S.s-a)/(b-a))));
+const STG=["1. Comprimido","2. Corte","3. Equilibrio","4. Traslado: F + T","5. Torsión"],ST0=[0,.2,.4,.6,.85];
+const CAP=["El muelle está comprimido por una fuerza F que actúa sobre el eje del muelle (línea discontinua).",
+"Cortamos el alambre por una sección y nos quedamos con el trozo superior: es un sólido en equilibrio. La parte cortada ya no lo sujeta, así que hay que poner lo que hacía.",
+"Equilibrio de fuerzas, ΣF = 0: la sección del alambre debe ejercer sobre el trozo una fuerza igual a F y de sentido contrario (hacia arriba).",
+"Esa reacción no puede estar en el eje: la sección está en el alambre, a D/2 del eje. Al trasladar la fuerza al centro del alambre hay que añadir un momento. Equilibrio de momentos, ΣM = 0: T = F·D/2.",
+"Resultado: en la sección del alambre actúan la fuerza F (cortante) y el momento torsor T, que gira la sección sobre sí misma. Es torsión: τ(r) = T·r/Ip, lineal y máxima en la superficie."];
+const stage=()=>S.s<.15?0:S.s<.35?1:S.s<.55?2:S.s<.8?3:4;
+
+/* 3D (canvas 2D con proyección propia, sin librerías) */
+const R=1,rw=.14,N=5,p=.8,TH=2*Math.PI,cv=$("c3"),C3=cv.getContext("2d");
+const yc=2*p,cutA=2*TH,yTop=N*p+rw+.05,V={yaw:.5,pit:.28};
+const hx=a=>[R*Math.cos(a),p*a/TH,-R*Math.sin(a)];
+function pr(P,lf=0){let x=P[0],y=P[1]+lf-2.7,z=P[2];
+ const c=Math.cos(V.yaw),s=Math.sin(V.yaw);[x,z]=[x*c+z*s,-x*s+z*c];
+ const c2=Math.cos(V.pit),s2=Math.sin(V.pit);[y,z]=[y*c2-z*s2,y*s2+z*c2];
+ const k=765/(9-z);return{x:300+x*k,y:315-y*k,z,k}}
+function r3(){cv.width=600;cv.height=630;const x=C3,pc=ph(.15,.35),pe=ph(.35,.55),pm=ph(.55,.8),pt=ph(.8,1),lift=pc*.75,mu=css("--mut"),fg=css("--fg");
+ const ln=(a,b,lf=0)=>{const A=pr(a,lf),B=pr(b,lf);x.beginPath();x.moveTo(A.x,A.y);x.lineTo(B.x,B.y);x.stroke()};
+ const ring=(y,rad,lf)=>{x.beginPath();for(let i=0;i<=40;i++){const q=pr([rad*Math.cos(i/40*TH),y,rad*Math.sin(i/40*TH)],lf);i?x.lineTo(q.x,q.y):x.moveTo(q.x,q.y)}x.closePath();x.fillStyle="rgba(138,148,163,.35)";x.fill();x.strokeStyle=mu;x.lineWidth=1.5;x.stroke()};
+ const arr=(A,B,c,al,lf)=>{const P=pr(A,lf),Q=pr(B,lf);x.globalAlpha=al;x.strokeStyle=x.fillStyle=c;x.lineWidth=4;x.beginPath();x.moveTo(P.x,P.y);x.lineTo(Q.x,Q.y);x.stroke();
+  const a=Math.atan2(Q.y-P.y,Q.x-P.x),h=15;x.beginPath();x.moveTo(Q.x,Q.y);x.lineTo(Q.x-h*Math.cos(a-.4),Q.y-h*Math.sin(a-.4));x.lineTo(Q.x-h*Math.cos(a+.4),Q.y-h*Math.sin(a+.4));x.fill();x.globalAlpha=1};
+ ring(-rw-.05,1.45,0);
+ x.setLineDash([7,6]);x.strokeStyle=mu;x.lineWidth=1.2;ln([0,-.4,0],[0,yTop+1.6,0]);x.setLineDash([]);
+ const sg=[];for(const[a0,a1,lf,al]of[[0,cutA,0,1-.65*pc],[cutA,N*TH,lift,1]]){const n=Math.ceil((a1-a0)/TH*32);
+  for(let i=0;i<n;i++){const a=a0+(a1-a0)*i/n,b=a0+(a1-a0)*(i+1)/n;sg.push({A:pr(hx(a),lf),B:pr(hx(b),lf),al})}}
+ sg.sort((m,n)=>m.A.z+m.B.z-n.A.z-n.B.z);x.lineCap="round";
+ for(const g of sg){x.globalAlpha=g.al;x.strokeStyle=`hsl(214,42%,${48+12*(g.A.z+g.B.z)/2}%)`;x.lineWidth=rw*(g.A.k+g.B.k);x.beginPath();x.moveTo(g.A.x,g.A.y);x.lineTo(g.B.x,g.B.y);x.stroke()}
+ x.globalAlpha=1;x.lineCap="butt";
+ if(pc>0){x.beginPath();for(let i=0;i<=24;i++){const t=i/24*TH,q=pr([R+rw*1.05*Math.cos(t),yc+rw*1.05*Math.sin(t),0],lift);i?x.lineTo(q.x,q.y):x.moveTo(q.x,q.y)}x.fillStyle="#f59e0b";x.globalAlpha=pc;x.fill();
+  const w=-pt*.9;x.strokeStyle=fg;x.lineWidth=2;ln([R-rw*Math.cos(w),yc-rw*Math.sin(w),0],[R+rw*Math.cos(w),yc+rw*Math.sin(w),0],lift);x.globalAlpha=1}
+ ring(yTop,1.45,lift);
+ const red=css("--bad"),wn=css("--warn");
+ if(pm>0){x.globalAlpha=pm;x.strokeStyle=fg;x.lineWidth=2;ln([0,yc,0],[R*pm,yc,0],lift);x.globalAlpha=1;
+  x.strokeStyle=wn;x.lineWidth=3.5;x.beginPath();let L,Q;for(let i=0;i<=30;i++){const a=1.75*Math.PI-i/30*1.5*Math.PI;L=Q;Q=pr([R+.4*pm*Math.cos(a),yc+.4*pm*Math.sin(a),.02],lift);i?x.lineTo(Q.x,Q.y):x.moveTo(Q.x,Q.y)}x.stroke();
+  const a=Math.atan2(Q.y-L.y,Q.x-L.x);x.fillStyle=wn;x.beginPath();x.moveTo(Q.x+8*Math.cos(a),Q.y+8*Math.sin(a));x.lineTo(Q.x-9*Math.cos(a-.7),Q.y-9*Math.sin(a-.7));x.lineTo(Q.x-9*Math.cos(a+.7),Q.y-9*Math.sin(a+.7));x.fill()}
+ arr([0,yTop+1,0],[0,yTop+.05,0],red,1,lift);const F=pr([0,yTop+1.1,0],lift);x.fillStyle=red;x.font="600 20px IBM Plex Sans,sans-serif";x.fillText("F",F.x+10,F.y);
+ if(pe>0){arr([R*pm,yc-.9,0],[R*pm,yc,0],red,pe,lift);const G=pr([R*pm,yc-.95,0],lift);x.globalAlpha=pe;x.fillStyle=red;x.fillText("F",G.x+10,G.y+6);x.globalAlpha=1}}
+let dg=null;cv.onpointerdown=e=>{dg=[e.clientX,e.clientY];cv.setPointerCapture(e.pointerId);cv.style.cursor="grabbing"};
+cv.onpointermove=e=>{if(!dg)return;V.yaw+=(e.clientX-dg[0])*.01;V.pit=Math.max(-.2,Math.min(1,V.pit+(e.clientY-dg[1])*.006));dg=[e.clientX,e.clientY];r3()};
+cv.onpointerup=()=>{dg=null;cv.style.cursor="grab"};
+
+/* 2D */
+const X=$("c2").getContext("2d");
+function arrow(x1,y1,x2,y2,c,w=3){X.strokeStyle=X.fillStyle=c;X.lineWidth=w;X.beginPath();X.moveTo(x1,y1);X.lineTo(x2,y2);X.stroke();const a=Math.atan2(y2-y1,x2-x1),h=10;X.beginPath();X.moveTo(x2,y2);X.lineTo(x2-h*Math.cos(a-.4),y2-h*Math.sin(a-.4));X.lineTo(x2-h*Math.cos(a+.4),y2-h*Math.sin(a+.4));X.fill()}
+function tx(s,x,y,c,sz=14,al="center"){X.fillStyle=c;X.font=sz+"px IBM Plex Sans,sans-serif";X.textAlign=al;X.fillText(s,x,y)}
+function cw(cx,cy,rad,c,o){X.globalAlpha=o;X.strokeStyle=c;X.lineWidth=3;X.beginPath();X.arc(cx,cy,rad,-2.3,.9);X.stroke();const a=.9;arrow(cx+rad*Math.cos(a-.08),cy+rad*Math.sin(a-.08),cx+rad*Math.cos(a),cy+rad*Math.sin(a),c);X.globalAlpha=1}
+function r2(){const pe=ph(.35,.55),pm=ph(.55,.8),pt=ph(.8,1),pc=ph(.15,.35),fg=css("--fg"),mu=css("--mut"),rd=css("--bad"),wn=css("--warn"),ac=css("--acc");
+ X.clearRect(0,0,520,400);tx("Trozo superior aislado (esquema)",130,22,mu,13);tx("Sección ampliada",400,22,mu,13);
+ const ax=100,wx=190,wy=210;
+ X.strokeStyle=mu;X.lineWidth=1;X.setLineDash([6,4]);X.beginPath();X.moveTo(ax,40);X.lineTo(ax,330);X.stroke();X.setLineDash([]);tx("eje",ax-16,325,mu,12);
+ X.strokeStyle=fg;X.lineWidth=7;X.beginPath();X.moveTo(40,70);X.lineTo(210,70);X.stroke();
+ X.strokeStyle=ac;X.lineWidth=7;X.beginPath();X.moveTo(wx,70);X.lineTo(wx,wy-9);X.stroke();
+ X.fillStyle=css("--warn");X.beginPath();X.arc(wx,wy,9,0,7);X.fill();
+ if(pc>0){X.setLineDash([3,3]);X.strokeStyle=fg;X.lineWidth=1.5;X.beginPath();X.moveTo(wx-26,wy+11);X.lineTo(wx+26,wy+11);X.stroke();X.setLineDash([])}
+ arrow(ax,22,ax,64,rd);tx("F",ax-12,44,rd,15);
+ if(pe>0){const x=ax+(wx-ax)*pm;X.globalAlpha=pe;arrow(x,300,x,wy+18,rd);tx("F",x+14,285,rd,15);X.globalAlpha=1}
+ if(pm>0){X.globalAlpha=pm;X.strokeStyle=fg;X.lineWidth=1.5;X.beginPath();X.moveTo(ax,250);X.lineTo(wx,250);X.stroke();tx("D/2",(ax+wx)/2,244,fg,13);X.globalAlpha=1;cw(wx,wy,30,wn,pm);tx("T = F·D/2",wx+16,wy-42,wn,14)}
+ tx(pe>0?"ΣF = 0  ⇒  reacción = F":"",20+130,352,rd,14);tx(pm>0?"ΣM = 0  ⇒  T = F·D/2 = "+f(S.F*S.D/2,0)+" N·mm":"",150,376,wn,14);
+ const cx=400,cy=190,Rs=85;X.strokeStyle=fg;X.lineWidth=2;X.beginPath();X.arc(cx,cy,Rs,0,7);X.stroke();
+ X.fillStyle=css("--warn");X.globalAlpha=.25*pc;X.beginPath();X.arc(cx,cy,Rs,0,7);X.fill();X.globalAlpha=1;
+ if(pm>0)cw(cx,cy,Rs+16,wn,pm);
+ const phi=pt*.9;X.strokeStyle=fg;X.lineWidth=2.5;X.beginPath();X.moveTo(cx,cy);X.lineTo(cx+Rs*Math.cos(-phi+0),cy+Rs*Math.sin(-phi*-1));X.stroke();
+ if(pt>0){X.globalAlpha=pt;for(const q of[.33,.66,1]){arrow(cx+q*Rs,cy,cx+q*Rs,cy+q*55,rd,2)}X.strokeStyle=rd;X.setLineDash([4,3]);X.lineWidth=1.5;X.beginPath();X.moveTo(cx,cy);X.lineTo(cx+Rs,cy+55);X.stroke();X.setLineDash([]);
+  tx("τ = 0",cx-6,cy-10,fg,13);tx("τmáx",cx+Rs-4,cy+78,rd,14);tx("τ(r) = T·r/Ip",cx,cy+Rs+36,fg,14);X.globalAlpha=1}}
+
+function fm(){const T=S.F*S.D/2,Ip=Math.PI*S.d**4/32,Wp=Ip/(S.d/2);
+ $("fm").innerHTML=`<div class=f>T = F·D/2 = <b>${f(T,0)} N·mm</b></div><div class=f>Ip = π·d⁴/32 = <b>${f(Ip)} mm⁴</b> · Wp = π·d³/16 = <b>${f(Wp)} mm³</b></div><div class=f>τmáx = T/Wp = 8·F·D/(π·d³) = <b>${f(T/Wp)} MPa</b></div>`}
+function upd(){const k=stage();$("vs").textContent=f(S.s*100,0)+" %";$("cap").textContent=CAP[k];
+ $("vF").textContent=S.F;$("vD").textContent=S.D;$("vd").textContent=f(S.d);
+ document.querySelectorAll("#st button").forEach((b,i)=>b.className=i==k?"on":"");fm();r2();r3()}
+STG.forEach((t,i)=>{const b=document.createElement("button");b.textContent=t;b.onclick=()=>{S.s=ST0[i];$("s").value=S.s;upd()};$("st").append(b)});
+$("s").oninput=e=>{S.s=+e.target.value;upd()};
+for(const k of["F","D","d"])$(k).oninput=e=>{S[k]=+e.target.value;upd()};
+addEventListener("resize",()=>{cv.width=0;upd()});upd();
+</script></body></html>
